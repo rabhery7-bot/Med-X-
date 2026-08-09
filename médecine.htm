@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedX - Plateforme d'Apprentissage Médical</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0284c7;
+            --primary-dark: #0369a1;
+            --bg-main: #f8fafc;
+            --surface: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
+            --radius: 16px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui,
+sans-serif; }
+        body { background: var(--bg-main); color: var(--text-main); line-height: 1.5; }
+
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 1.25rem 2rem;
+            display: flex; justify-content: space-between; align-items: center;
+            position: sticky; top: 0; z-index: 100;
+        }
+        .logo { font-size: 1.6rem; font-weight: 800; color: var(--primary); text-decoration: none;
+display: flex; align-items: center; gap: 0.5rem; }
+
+        .hero {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: white; padding: 3.5rem 1.5rem; text-align: center;
+        }
+        .hero h1 { font-size: 2.2rem; margin-bottom: 0.5rem; }
+        .hero p { color: #94a3b8; max-width: 600px; margin: 0 auto; }
+
+        .container { max-width: 1200px; margin: 2rem auto; padding: 0 1.5rem; }
+
+        .section-title {
+            font-size: 1.4rem; font-weight: 700; margin-bottom: 1.5rem;
+            display: flex; align-items: center; gap: 0.75rem; color: var(--text-main);
+        }
+        .section-title i { color: var(--primary); }
+
+        /* Grille de cartes */
+        .grid-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3.5rem;
+        }
+
+        .card-item {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .card-item:hover { transform: translateY(-4px); border-color: var(--primary); }
+
+        .card-icon {
+            width: 48px; height: 48px;
+            background: #e0f2fe; color: var(--primary);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.25rem; margin-bottom: 1rem;
+        }
+        .card-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .card-desc { font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1.25rem; }
+
+        .btn-action {
+            background: #f1f5f9; color: var(--text-main);
+            border: none; padding: 0.6rem 1rem;
+            border-radius: 8px; font-weight: 600;
+            text-decoration: none; text-align: center;
+            display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+            cursor: pointer; transition: 0.2s;
+        }
+        .btn-action:hover { background: var(--primary); color: white; }
+
+        footer { text-align: center; padding: 2rem; color: var(--text-muted); border-top: 1px solid
+var(--border); margin-top: 3rem; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="#" class="logo"><i class="fa-solid fa-heart-pulse"></i> MedX</a>
+        <span style="font-size: 0.875rem; color: var(--text-muted);">Espace Étudiant</span>
+    </header>
+
+    <section class="hero">
+        <h1>Programme d'Études Médicales</h1>
+        <p>Accédez aux fiches de cours PDF et aux vidéothèques classées par Unités
+d'Enseignement.</p>
+    </section>
+
+    <main class="container">
+
+        <!-- ==================== SECTION 1 : CARTE DES PDF PAR UE
+==================== -->
+        <div class="section-title">
+            <i class="fa-solid fa-file-pdf"></i>
+            <h2>Fiches & Supports PDF par UE</h2>
+        </div>
+
+        <div class="grid-cards">
+
+            <!-- Carte PDF : Biomolécules -->
+            <div class="card-item">
+                <div>
+                    <div class="card-icon"><i class="fa-solid fa-dna"></i></div>
+                    <div class="card-title">Structure & Fonction des Biomolécules</div>
+                    <div class="card-desc">Accédez aux cours PDF sur les protéines, lipides et
+enzymes.</div>
+                </div>
+                <a href="pdf/biomolecules-cours.pdf" target="_blank" class="btn-action">
+                    Ouvrir PDF <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <!-- Carte PDF : Anatomie -->
+            <div class="card-item">
+                <div>
+                    <div class="card-icon"><i class="fa-solid fa-child"></i></div>
+                    <div class="card-title">Anatomie Humaine</div>
+                    <div class="card-desc">Fiches illustrées sur l'organisation générale et
+l'ostéologie.</div>
+                </div>
+                <a href="pdf/anatomie-cours.pdf" target="_blank" class="btn-action">
+                    Ouvrir PDF <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <!-- Carte PDF : Médicaments -->
+            <div class="card-item">
+                <div>
+                    <div class="card-icon"><i class="fa-solid fa-pills"></i></div>
+                    <div class="card-title">Initiation aux Médicaments</div>
+                    <div class="card-desc">Bases fondamentales de la pharmacologie générale.</div>
+                </div>
+                <a href="pdf/medicaments-cours.pdf" target="_blank" class="btn-action">
+                    Ouvrir PDF <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <!-- Carte PDF : Biomath & Biophysique -->
+            <div class="card-item">
+                <div>
+                    <div class="card-icon"><i class="fa-solid fa-calculator"></i></div>
+                    <div class="card-title">Biomathématiques & Biophysique</div>
+                    <div class="card-desc">Statistiques médicales et principes de biophysique.</div>
+                </div>
+                <a href="pdf/biomath-cours.pdf" target="_blank" class="btn-action">
+                    Ouvrir PDF <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <!-- Carte PDF : Physiologie -->
+            <div class="card-item">
+                <div>
+                    <div class="card-icon"><i class="fa-solid fa-wave-square"></i></div>
+                    <div class="card-title">Physiologie Humaine</div>
+                    <div class="card-desc">Fonctionnement cardiovasculaire, respiratoire et
+digestif.</div>
+                </div>
+                <a href="pdf/physiologie-cours.pdf" target="_blank" class="btn-action">
+                    Ouvrir PDF <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <!-- Carte PDF : Unités Spécifiques -->
+            <div class="card-item">
+                <div>
+                    <div class="card-icon"><i class="fa-solid fa-microscope"></i></div>
+                    <div class="card-title">Unités d'Études Spécifiques</div>
+                    <div class="card-desc">Supports PDF pour l'IRM, l'Ostéologie et l'Embryologie.</div>
+                </div>
+                <a href="pdf/specifiques-cours.pdf" target="_blank" class="btn-action">
+                    Ouvrir PDF <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+
+        </div>
+
+
+        <!-- ==================== SECTION 2 : CARTE DES VIDÉOS PAR UE
+==================== -->
+        <div class="section-title">
+            <i class="fa-solid fa-circle-play"></i>
+            <h2>Vidéothèques par UE</h2>
+        </div>
+
+        <div class="grid-cards">
+
+            <!-- Carte Vidéo : Biomolécules -->
+            <div class="card-item">
+                <div>
+                    <div class="card-icon"><i class="fa-solid fa-video"></i></div>
+                    <div class="card-title">Vidéothèque : Biomolécules</div>
+                    <div class="card-desc">Explications en vidéo des réactions et structures
+moléculaires.</div>
+                </div>
+                <a href="https://www.youtube.com/watch?v=EXEMPLE_ID" target="_blank"
+class="btn-action">
+                    Regarder Vidéo <i class="fa-solid fa-play"></i>
+                </a>
+            </div>
+
+            <!-- Carte Vidéo : Anatomie -->
+            <div class="card-item">
+                <div>
+                    <div class="card-icon"><i class="fa-solid fa-video"></i></div>
+                    <div class="card-title">Vidéothèque : Anatomie</div>
+                    <div class="card-desc">Tutoriels et modélisations 3D du corps humain.</div>
+                </div>
+                <a href="https://www.youtube.com/watch?v=EXEMPLE_ID" target="_blank"
+class="btn-action">
+                    Regarder Vidéo <i class="fa-solid fa-play"></i>
+                </a>
+            </div>
+
+            <!-- Carte Vidéo : Médicaments -->
+            <div class="card-item">
+                <div>
+                    <div class="card-icon"><i class="fa-solid fa-video"></i></div>
+                    <div class="card-title">Vidéothèque : Médicaments</div>
+                    <div class="card-desc">Vidéos explicatives sur les récepteurs et cibles
+thérapeutiques.</div>
+                </div>
+                <a href="https://www.youtube.com/watch?v=EXEMPLE_ID" target="_blank"
+class="btn-action">
+                    Regarder Vidéo <i class="fa-solid fa-play"></i>
+                </a>
+            </div>
+
+            <!-- Carte Vidéo : Biomath & Biophysique -->
+            <div class="card-item">
+                <div>
+                    <div class="card-icon"><i class="fa-solid fa-video"></i></div>
+                    <div class="card-title">Vidéothèque : Biomath & Biophysique</div>
+                    <div class="card-desc">Résolution d'exercices et phénomènes physiques en
+vidéo.</div>
+                </div>
+                <a href="https://www.youtube.com/watch?v=EXEMPLE_ID" target="_blank"
+class="btn-action">
+                    Regarder Vidéo <i class="fa-solid fa-play"></i>
+                </a>
+            </div>
+
+            <!-- Carte Vidéo : Physiologie -->
+            <div class="card-item">
+                <div>
+                    <div class="card-icon"><i class="fa-solid fa-video"></i></div>
+                    <div class="card-title">Vidéothèque : Physiologie</div>
+                    <div class="card-desc">Animations explicatives du système cardiaque et
+digestif.</div>
+                </div>
+                <a href="https://www.youtube.com/watch?v=EXEMPLE_ID" target="_blank"
+class="btn-action">
+                    Regarder Vidéo <i class="fa-solid fa-play"></i>
+                </a>
+            </div>
+
+            <!-- Carte Vidéo : Unités Spécifiques -->
+            <div class="card-item">
+                <div>
+                    <div class="card-icon"><i class="fa-solid fa-video"></i></div>
+                    <div class="card-title">Vidéothèque : Unités Spécifiques</div>
+                    <div class="card-desc">Démonstrations pratiques sur l'IRM et l'Embryologie.</div>
+                </div>
+                <a href="https://www.youtube.com/watch?v=EXEMPLE_ID" target="_blank"
+class="btn-action">
+                    Regarder Vidéo <i class="fa-solid fa-play"></i>
+                </a>
+            </div>
+
+</div>
+</main>
+<footer>
+&copy; 2026 MedX. Tous droits réservés.
+</footer>
+</body>
+</html>
