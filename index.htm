@@ -1,258 +1,588 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MedX - Apprendre la m�decine seul & efficacement</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MedX - Études de Santé</title>
 
-    <!-- Lien FontAwesome pour afficher l'ic�ne m�dicale du caduc�e -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-rel="stylesheet">
+  <!-- Configuration & Méta-balises PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#38bdf8">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="MedX">
 
-    <style>
-        :root {
-            --primary: #0284c7;
-            --primary-dark: #0369a1;
-            --bg-main: #f8fafc;
-            --surface: #ffffff;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --border: #e2e8f0;
-            --shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
-            --radius: 12px;
-        }
+  <!-- FontAwesome pour les icônes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
-        body { background: var(--bg-main); color: var(--text-main); line-height: 1.5; }
+  <style>
+    /* RESET & STYLES DE BASE */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
 
-        /* En-t�te / Barre de Navigation */
-        header {
-            background: var(--surface);
-            border-bottom: 1px solid var(--border);
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
+    body {
+      background-color: #f1f5f9;
+      color: #0f172a;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
 
-        /* Logo Mod�le B (SpaceX + Caduc�e) */
-        .logo-medx-icon {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.6rem;
-            font-size: 1.35rem;
-            font-weight: 800;
-            letter-spacing: 3px;
-            color: var(--text-main);
-            text-decoration: none;
-            text-transform: uppercase;
-            transition: opacity 0.2s ease;
-        }
+    /* CONTENEUR PRINCIPAL APPLICATION (Format Mobile) */
+    .app-container {
+      width: 100%;
+      max-width: 480px;
+      background-color: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+      padding-bottom: 70px; /* Espace pour le Bottom Nav */
+    }
 
-        .logo-medx-icon:hover {
-            opacity: 0.85;
-        }
+    /* EN-TÊTE MEDX */
+    .app-header {
+      background-color: #0f172a;
+      color: #ffffff;
+      padding: 20px;
+      text-align: center;
+    }
 
-        .icon-caduceus {
-            color: var(--primary);
-            font-size: 1.4rem;
-        }
+    .logo-container {
+      font-size: 2.2rem;
+      font-weight: 900;
+      letter-spacing: 1px;
+    }
 
-        .x-blue {
-            color: var(--primary);
-            font-weight: 900;
-        }
+    .logo-medx {
+      color: #38bdf8;
+    }
 
-        /* Liens de Navigation */
-        .nav-links {
-            display: flex;
-            gap: 1.5rem;
-        }
+    .subtitle {
+      font-size: 0.85rem;
+      color: #94a3b8;
+      margin-top: 4px;
+    }
 
-        .nav-links a {
-            text-decoration: none;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            font-weight: 600;
-            transition: color 0.2s;
-        }
+    /* MAIN CONTENT & SECTIONS */
+    main {
+      padding: 16px;
+      flex: 1;
+    }
 
-        .nav-links a:hover,
-        .nav-links a.active {
-            color: var(--primary);
-        }
+    .view-section {
+      display: none;
+    }
 
-        /* Hero Section */
-        .hero {
-            background: #f0f9ff;
-            padding: 4rem 1.5rem;
-            text-align: center;
-        }
-        .hero h1 { font-size: 2.2rem; margin-bottom: 0.75rem; color: var(--text-main); font-weight:
-800; }
-        .hero p { color: var(--text-muted); max-width: 600px; margin: 0 auto 1.5rem auto; }
-        .btn-hero {
-            background: var(--primary);
-            color: white;
-            text-decoration: none;
-            padding: 0.75rem 1.25rem;
-            border-radius: 8px;
-            font-weight: 600;
-            display: inline-block;
-        }
-        .btn-hero:hover { background: var(--primary-dark); }
+    .view-section.active {
+      display: block;
+    }
 
-        /* Section Ressources */
-        .container { max-width: 1200px; margin: 2.5rem auto; padding: 0 1.5rem; }
-        .section-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 1.25rem; }
+    /* CARTE D'ACCUEIL */
+    .welcome-card {
+      background: linear-gradient(135deg, #0284c7, #38bdf8);
+      color: white;
+      padding: 20px;
+      border-radius: 16px;
+      margin-bottom: 20px;
+    }
 
-        .grid-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.25rem;
-            margin-bottom: 2rem;
-        }
+    .welcome-card h2 {
+      font-size: 1.4rem;
+      margin-bottom: 6px;
+    }
 
-        .card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 1.5rem;
-            box-shadow: var(--shadow);
-        }
-        .card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
-        .card p { font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1rem; }
-        .card a { color: var(--primary); font-weight: 600; text-decoration: none; font-size: 0.9rem; }
-        .card a:hover { text-decoration: underline; }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
 
-        /* Bouton T�l�chargement App */
-        .btn-app {
-            background: var(--primary);
-            color: white;
-            text-decoration: none;
-            padding: 0.85rem 1.25rem;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 0.9rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .app-note { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.4rem; }
-    </style>
+    .stat-box {
+      background-color: #f8fafc;
+      border: 1px solid #e2e8f0;
+      padding: 16px;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .stat-box i {
+      font-size: 1.5rem;
+      color: #0284c7;
+      margin-bottom: 8px;
+    }
+
+    .stat-box h3 {
+      font-size: 1.2rem;
+    }
+
+    .stat-box span {
+      font-size: 0.8rem;
+      color: #64748b;
+    }
+
+    /* BOUTONS GENERAUX */
+    .btn-primary {
+      width: 100%;
+      background-color: #0284c7;
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-primary:active {
+      background-color: #0369a1;
+    }
+
+    /* GRILLE DE COURS & CARTES UE */
+    .subjects-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 15px;
+    }
+
+    .subject-card {
+      background: #ffffff;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .subject-thumb {
+      width: 100%;
+      height: 90px;
+      object-fit: cover;
+      background-color: #cbd5e1;
+    }
+
+    .card-content {
+      padding: 10px;
+    }
+
+    .card-content h3 {
+      font-size: 0.95rem;
+      margin-bottom: 4px;
+      color: #1e293b;
+    }
+
+    .progress-text {
+      font-size: 0.75rem;
+      color: #64748b;
+    }
+
+    /* SECTION QCM */
+    .qcm-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 16px;
+      margin-top: 15px;
+    }
+
+    .qcm-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .badge {
+      background-color: #e0f2fe;
+      color: #0369a1;
+      font-size: 0.75rem;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-weight: 600;
+    }
+
+    .question-text {
+      font-size: 1rem;
+      font-weight: 500;
+      margin-bottom: 16px;
+      line-height: 1.4;
+    }
+
+    .options-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .option-btn {
+      text-align: left;
+      background-color: #f8fafc;
+      border: 1px solid #cbd5e1;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      color: #334155;
+      cursor: pointer;
+    }
+
+    /* SECTIONS DÉTAILLÉES DES UE */
+    .ue-view-section {
+      display: none;
+      background-color: #ffffff;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 20;
+      overflow-y: auto;
+    }
+
+    .ue-view-section.active {
+      display: block;
+    }
+
+    .ue-header {
+      position: relative;
+      width: 100%;
+      height: 180px;
+      background-color: #0f172a;
+    }
+
+    .ue-header-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.8;
+    }
+
+    .back-btn {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      background-color: rgba(255, 255, 255, 0.85);
+      border: none;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      font-size: 1.1rem;
+      color: #0f172a;
+      cursor: pointer;
+      z-index: 21;
+    }
+
+    .ue-header h2 {
+      position: absolute;
+      bottom: 16px;
+      left: 16px;
+      color: white;
+      font-size: 1.4rem;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+    }
+
+    .ue-content {
+      padding: 16px;
+    }
+
+    .chapter-list {
+      margin: 15px 0;
+    }
+
+    .chapter-item {
+      padding: 12px;
+      background-color: #f8fafc;
+      margin-bottom: 8px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #334155;
+      border: 1px solid #e2e8f0;
+    }
+
+    /* BARRE DE NAVIGATION INFÉRIEURE (BOTTOM NAV) */
+    .bottom-nav {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 60px;
+      background-color: #ffffff;
+      border-top: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 10;
+    }
+
+    .nav-item {
+      background: none;
+      border: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #64748b;
+      font-size: 0.75rem;
+      cursor: pointer;
+      gap: 4px;
+    }
+
+    .nav-item i {
+      font-size: 1.2rem;
+    }
+
+    .nav-item.active {
+      color: #0284c7;
+      font-weight: 600;
+    }
+
+    /* SECTION A PROPOS */
+    .about-card {
+      background-color: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 15px;
+    }
+
+    .about-card ul {
+      list-style: none;
+      margin: 15px 0;
+    }
+
+    .about-card li {
+      margin-bottom: 8px;
+      color: #334155;
+      font-size: 0.9rem;
+    }
+
+    .about-card li i {
+      color: #10b981;
+      margin-right: 8px;
+    }
+
+    .version {
+      font-size: 0.8rem;
+      color: #94a3b8;
+      text-align: center;
+      margin-top: 10px;
+    }
+  </style>
 </head>
 <body>
 
-    <!-- EN-T�TE AVEC LE NOUVEAU LOGO SPACEX + CADUC�E -->
-    <header>
-        <a href="index.html" class="logo-medx-icon">
-            <i class="fa-solid fa-staff-snake icon-caduceus"></i>
-            <span>MED<strong class="x-blue">X</strong></span>
-        </a>
-
-        <nav class="nav-links">
-            <a href="index.html" class="active">Accueil</a>
-            <a href="#">Anglais</a>
-            <a href="medecine.html">M�decine</a>
-            <a href="#">Services</a>
-            <a href="#">� propos</a>
-        </nav>
+  <div class="app-container">
+    <!-- En-tête de l'application -->
+    <header class="app-header">
+      <div class="logo-container">
+        <span class="logo-medx">MedX</span>
+      </div>
+      <p class="subtitle">Révisions & Concours de Santé</p>
     </header>
 
-    <!-- BANNI�RE PRINCIPALE -->
-    <section class="hero">
-        <h1>Apprendre la m�decine seul & efficacement</h1>
-        <p>Une m�thode simple bas�e sur des ressources claires et des cours pratiques.</p>
-        <a href="medecine.html" class="btn-hero">D�couvrir les cours</a>
-    </section>
+    <!-- Contenu Principal -->
+    <main id="main-content">
 
-    <!-- RESSOURCES & EXERCICES -->
-    <main class="container">
-        <h2 class="section-title">Ressources & Exercices</h2>
-
-        <div class="grid-cards">
-            <div class="card">
-                <h3>Exercice sous forme de QCM</h3>
-                <p>Comprendre la le�on et m�moriser les points importants.</p>
-                <a href="#">Ouvrir l'exercice</a>
-            </div>
-
-            <div class="card">
-                <h3>Lesson sur toutes les Unit�s d'�tudes</h3>
-                <p>Ma�trisez les Unit�s d'�tudes.</p>
-                <a href="medecine.html">Lire la le�on</a>
-            </div>
-
-            <div class="card">
-                <h3>American English</h3>
-                <p>Expressions cl�s et vocabulaire usuel des natifs.</p>
-                <a href="#">D�couvrir</a>
-            </div>
+      <!-- SECTION ACCUEIL (HOME) -->
+      <section id="sec-home" class="view-section active">
+        <div class="welcome-card">
+          <h2>Bonjour, Étudiant ! 👋</h2>
+          <p>Prêt à réviser vos concours aujourd'hui ?</p>
         </div>
-
-        <!-- BOUTON D'APPLICATION -->
-        <div>
-            <a href="#" class="btn-app">
-                <i class="fa-solid fa-mobile-screen-button"></i> T�l�charger l'Application Android (APK
-Gratuit)
-            </a>
-            <div class="app-note">Compatible avec tous les smartphones Android.</div>
+        <div class="stats-grid">
+          <div class="stat-box">
+            <i class="fa-solid fa-book-open"></i>
+            <h3>8</h3>
+            <span>UE</span>
+          </div>
+          <div class="stat-box">
+            <i class="fa-solid fa-list-check"></i>
+            <h3>120+</h3>
+            <span>QCM</span>
+          </div>
         </div>
+        <button class="btn-primary" onclick="switchTab('qcm')">Commencer un QCM</button>
+      </section>
+
+      <!-- SECTION COURS -->
+      <section id="sec-cours" class="view-section">
+        <h2>Mes Cours</h2>
+        <div class="subjects-grid">
+          <!-- UE 1: Anatomie -->
+          <div class="subject-card" onclick="openUE('sec-anatomie')">
+            <img src="assets/header-anatomie.jpg" alt="Anatomie" class="subject-thumb">
+            <div class="card-content">
+              <h3>Anatomie</h3>
+              <span class="progress-text">Progression : 45%</span>
+            </div>
+          </div>
+
+          <!-- UE 2: Biomolécules -->
+          <div class="subject-card" onclick="openUE('sec-biomolecules')">
+            <img src="assets/header-biomolecules.jpg" alt="Biomolécules" class="subject-thumb">
+            <div class="card-content">
+              <h3>Structure & Biomolécules</h3>
+              <span class="progress-text">Progression : 40%</span>
+            </div>
+          </div>
+
+          <!-- UE 3: ICM -->
+          <div class="subject-card" onclick="openUE('sec-icm')">
+            <img src="assets/header-icm.jpg" alt="ICM" class="subject-thumb">
+            <div class="card-content">
+              <h3>ICM</h3>
+              <span class="progress-text">Progression : 30%</span>
+            </div>
+          </div>
+
+          <!-- UE 4: Physiologie -->
+          <div class="subject-card" onclick="openUE('sec-physiologie')">
+            <img src="assets/header-physiologie.jpg" alt="Physiologie" class="subject-thumb">
+            <div class="card-content">
+              <h3>Physiologie</h3>
+              <span class="progress-text">Progression : 10%</span>
+            </div>
+          </div>
+
+          <!-- UE 5: Biomath -->
+          <div class="subject-card" onclick="openUE('sec-biomath')">
+            <img src="assets/header-biomath.jpg" alt="Biomath" class="subject-thumb">
+            <div class="card-content">
+              <h3>Biomath & Biophysique</h3>
+              <span class="progress-text">Progression : 25%</span>
+            </div>
+          </div>
+
+          <!-- UE 6: Français Médical -->
+          <div class="subject-card" onclick="openUE('sec-francais')">
+            <img src="assets/header-francais.jpg" alt="Français Médical" class="subject-thumb">
+            <div class="card-content">
+              <h3>Français Médical</h3>
+              <span class="progress-text">Progression : 20%</span>
+            </div>
+          </div>
+
+          <!-- UE 7: Biocell -->
+          <div class="subject-card" onclick="openUE('sec-biocell')">
+            <img src="assets/header-biocell.jpg" alt="Biocell" class="subject-thumb">
+            <div class="card-content">
+              <h3>Biocell & Tissu</h3>
+              <span class="progress-text">Progression : 50%</span>
+            </div>
+          </div>
+
+          <!-- UE 8: UE Spécifique -->
+          <div class="subject-card" onclick="openUE('sec-uespecifique')">
+            <img src="assets/header-uespecifique.jpg" alt="UE Spécifique" class="subject-thumb">
+            <div class="card-content">
+              <h3>Unité d'étude spécifique</h3>
+              <span class="progress-text">Progression : 15%</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION QCM -->
+      <section id="sec-qcm" class="view-section">
+        <h2>Entraînement QCM</h2>
+        <div class="qcm-card">
+          <div class="qcm-header">
+            <span class="badge">Ostéologie / Crâne</span>
+            <span id="timer">⏱️ 00:45</span>
+          </div>
+          <p class="question-text">
+            Parmi les propositions suivantes concernant l'anatomie du crâne, laquelle est exacte ?
+          </p>
+          <div class="options-list">
+            <button class="option-btn" onclick="checkAnswer(this, false)">A. Le nerf optique passe par la fissure orbitaire supérieure.</button>
+            <button class="option-btn" onclick="checkAnswer(this, true)">B. Le foramen magnum se situe dans l'os occipital.</button>
+            <button class="option-btn" onclick="checkAnswer(this, false)">C. L'os frontal est un os pair du crâne.</button>
+            <button class="option-btn" onclick="checkAnswer(this, false)">D. Le canal carotidien traverse la grande aile de l'sphénoïde.</button>
+          </div>
+          <div id="feedback" class="feedback-box hidden"></div>
+        </div>
+      </section>
+
+      <!-- SECTION À PROPOS -->
+      <section id="sec-apropos" class="view-section">
+        <h2>À Propos de MedX</h2>
+        <div class="about-card">
+          <p><strong>MedX</strong> est votre plateforme d'apprentissage dédiée aux concours de santé.</p>
+          <ul>
+            <li><i class="fa-solid fa-check"></i> Cours complets et synthétisés</li>
+            <li><i class="fa-solid fa-check"></i> Séries de QCM avec explications</li>
+            <li><i class="fa-solid fa-check"></i> Suivi de progression en temps réel</li>
+          </ul>
+          <p class="version">Version 1.0.0</p>
+        </div>
+      </section>
+
+      <!-- SECTIONS DÉTAILLÉES DES UE -->
+      <section id="sec-anatomie" class="ue-view-section">
+        <header class="ue-header">
+          <button class="back-btn" onclick="switchTab('cours')"><i class="fa-solid fa-arrow-left"></i></button>
+          <img src="assets/header-anatomie.jpg" alt="Anatomie" class="ue-header-img">
+          <h2>Anatomie</h2>
+        </header>
+        <div class="ue-content">
+          <h3>Chapitres</h3>
+          <div class="chapter-list">
+            <div class="chapter-item"><i class="fa-solid fa-file-lines"></i> Ostéologie du Crâne</div>
+            <div class="chapter-item"><i class="fa-solid fa-file-lines"></i> Système Musculaire</div>
+          </div>
+          <button class="btn-primary">QCM de cette UE</button>
+        </div>
+      </section>
+
+      <section id="sec-biomolecules" class="ue-view-section">
+        <header class="ue-header">
+          <button class="back-btn" onclick="switchTab('cours')"><i class="fa-solid fa-arrow-left"></i></button>
+          <img src="assets/header-biomolecules.jpg" alt="Biomolécules" class="ue-header-img">
+          <h2>Structure & Biomolécules</h2>
+        </header>
+        <div class="ue-content">
+          <h3>Chapitres</h3>
+          <div class="chapter-list">
+            <div class="chapter-item"><i class="fa-solid fa-file-lines"></i> Acides Aminés & Protéines</div>
+          </div>
+          <button class="btn-primary">QCM de cette UE</button>
+        </div>
+      </section>
+
     </main>
 
-</body>
-</html> 
-     
-</head>
-<body>
-    <!-- Navigation -->
-    <header class="navbar">
-        <div class="logo">
-            <h1>Check & <span>Learn</span></h1>
-        </div>
-        <nav>
-            <ul>
-                <li><a href="#" class="active">Accueil</a></li>
-                <li><a href="anglais.htm">Anglais</a></li>
-                <li><a href="medecine.htm">M&eacute;decine</a></li>
-                <li><a href="contact.htm">Services</a></li>
-                <li><a href="a propos.htm">&Aacute; propos</a></li>
-            </ul>
-        </nav>
-    </header>
+    <!-- Navigation Inférieure (Bottom Nav) -->
+    <nav class="bottom-nav">
+      <button class="nav-item active" onclick="switchTab('home')">
+        <i class="fa-solid fa-house"></i>
+        <span>Home</span>
+      </button>
+      <button class="nav-item" onclick="switchTab('cours')">
+        <i class="fa-solid fa-book"></i>
+        <span>Cours</span>
+      </button>
+      <button class="nav-item" onclick="switchTab('qcm')">
+        <i class="fa-solid fa-file-pen"></i>
+        <span>QCM</span>
+      </button>
+      <button class="nav-item" onclick="switchTab('apropos')">
+        <i class="fa-solid fa-circle-info"></i>
+        <span>À propos</span>
+      </button>
+    </nav>
+  </div>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <h2>Apprendre l'anglais seul & efficacement</h2>
-        <p>Une m&eacute;thode simple bas&eacute;e sur des ressources claires et des cours pratiques.</p>
-        <a href="anglais.htm" class="btn-primary">D&eacute;couvrir les cours</a>
-    </section>
-
-    <!-- Section Ressources -->
-    <section class="courses-container">
-        <h3>Ressources & Exercices</h3>
-        <div class="grid-courses">
-            <div class="card">
-                <h4>Exercice Pluriel</h4>
-                <p>Pratiquez les r&egrave;gles de formation du pluriel en anglais.</p>
-                <a href="#" class="btn-card">Ouvrir l'exercice</a>
-            </div>
-            <div class="card">
-                <h4>Lesson on Noun</h4>
-                <p>Maitrisez l'utilisation des noms et substantifs.</p>
-                <a href="#" class="btn-card">Lire la le&ccedil;on</a>
-            </div>
-            <div class="card">
-                <h4>American English</h4>
-                <p>Expressions cl&eacute;s et vocabulaire usuel des natifs.</p>
-                <a href="#" class="btn-card">D&eacute;couvrir</a>
-            </div>
-        </div>
-    </section>
-
-    <script type="module" src="auth.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
