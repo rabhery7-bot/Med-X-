@@ -5,24 +5,46 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MedX - Études de Santé</title>
 
-  <!-- Configuration & Méta-balises PWA -->
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#38bdf8">
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="data:application/manifest+json,{
+    %22name%22: %22MedX - Études de Santé%22,
+    %22short_name%22: %22MedX%22,
+    %22start_url%22: %22./index.html%22,
+    %22display%22: %22standalone%22,
+    %22background_color%22: %22%23ffffff%22,
+    %22theme_color%22: %22%230284c7%22,
+    %22icons%22: [{
+      %22src%22: %22assets/icon.png%22,
+      %22sizes%22: %22512x512%22,
+      %22type%22: %22image/png%22,
+      %22purpose%22: %22any maskable%22
+    }]
+  }">
+  <meta name="theme-color" content="#0284c7">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="MedX">
 
-  <!-- FontAwesome pour les icônes -->
+  <!-- FontAwesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- PDF.js pour la lecture et le zoom fluide -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+  <script>
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+  </script>
 
   <style>
-    /* RESET & STYLES DE BASE */
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
     }
 
     body {
@@ -33,7 +55,6 @@
       min-height: 100vh;
     }
 
-    /* CONTENEUR PRINCIPAL APPLICATION (Format Mobile) */
     .app-container {
       width: 100%;
       max-width: 480px;
@@ -43,10 +64,9 @@
       flex-direction: column;
       position: relative;
       box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
-      padding-bottom: 70px; /* Espace pour le Bottom Nav */
+      padding-bottom: 70px;
     }
 
-    /* EN-TÊTE MEDX */
     .app-header {
       background-color: #0f172a;
       color: #ffffff;
@@ -58,442 +78,224 @@
       font-size: 2.2rem;
       font-weight: 900;
       letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
     }
 
-    .logo-medx {
-      color: #38bdf8;
-    }
+    .logo-medx { color: #38bdf8; }
+    .stethoscope-icon { color: #38bdf8; font-size: 1.8rem; }
+    .subtitle { font-size: 0.85rem; color: #94a3b8; margin-top: 4px; }
 
-    .subtitle {
-      font-size: 0.85rem;
-      color: #94a3b8;
-      margin-top: 4px;
-    }
+    main { padding: 16px; flex: 1; }
+    .view-section { display: none; }
+    .view-section.active { display: block; }
 
-    /* MAIN CONTENT & SECTIONS */
-    main {
-      padding: 16px;
-      flex: 1;
-    }
-
-    .view-section {
-      display: none;
-    }
-
-    .view-section.active {
-      display: block;
-    }
-
-    /* CARTE D'ACCUEIL */
     .welcome-card {
       background: linear-gradient(135deg, #0284c7, #38bdf8);
-      color: white;
-      padding: 20px;
-      border-radius: 16px;
-      margin-bottom: 20px;
+      color: white; padding: 20px; border-radius: 16px; margin-bottom: 20px;
     }
-
-    .welcome-card h2 {
-      font-size: 1.4rem;
-      margin-bottom: 6px;
-    }
+    .welcome-card h2 { font-size: 1.4rem; margin-bottom: 6px; }
 
     .stats-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 20px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;
     }
-
     .stat-box {
-      background-color: #f8fafc;
-      border: 1px solid #e2e8f0;
-      padding: 16px;
-      border-radius: 12px;
-      text-align: center;
+      background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 16px; border-radius: 12px; text-align: center;
     }
+    .stat-box i { font-size: 1.5rem; color: #0284c7; margin-bottom: 8px; }
+    .stat-box h3 { font-size: 1.2rem; }
+    .stat-box span { font-size: 0.8rem; color: #64748b; }
 
-    .stat-box i {
-      font-size: 1.5rem;
-      color: #0284c7;
-      margin-bottom: 8px;
-    }
-
-    .stat-box h3 {
-      font-size: 1.2rem;
-    }
-
-    .stat-box span {
-      font-size: 0.8rem;
-      color: #64748b;
-    }
-
-    /* BOUTONS GENERAUX */
     .btn-primary {
-      width: 100%;
-      background-color: #0284c7;
-      color: white;
-      border: none;
-      padding: 14px;
-      border-radius: 12px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.2s;
+      width: 100%; background-color: #0284c7; color: white; border: none;
+      padding: 14px; border-radius: 12px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: background 0.2s;
     }
+    .btn-primary:active { background-color: #0369a1; }
 
-    .btn-primary:active {
-      background-color: #0369a1;
-    }
-
-    /* GRILLE DE COURS & CARTES UE */
     .subjects-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-top: 15px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px;
     }
-
     .subject-card {
-      background: #ffffff;
-      border-radius: 12px;
-      overflow: hidden;
-      border: 1px solid #e2e8f0;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.03);
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
+      background: #ffffff; border-radius: 14px; overflow: hidden; border: 1px solid #e2e8f0;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); cursor: pointer; display: flex; flex-direction: column; transition: transform 0.2s;
+    }
+    .subject-card:active { transform: scale(0.98); }
+
+    .subject-banner {
+      height: 80px; display: flex; align-items: center; justify-content: center; color: #ffffff; font-size: 2rem;
     }
 
-    .subject-thumb {
-      width: 100%;
-      height: 90px;
-      object-fit: cover;
-      background-color: #cbd5e1;
-    }
+    .banner-anatomie { background: linear-gradient(135deg, #0284c7, #06b6d4); }
+    .banner-biomolecules { background: linear-gradient(135deg, #7c3aed, #a855f7); }
+    .banner-icm { background: linear-gradient(135deg, #059669, #10b981); }
+    .banner-physiologie { background: linear-gradient(135deg, #dc2626, #f43f5e); }
+    .banner-biomath { background: linear-gradient(135deg, #d97706, #f59e0b); }
+    .banner-francais { background: linear-gradient(135deg, #4f46e5, #6366f1); }
+    .banner-biocell { background: linear-gradient(135deg, #0891b2, #22d3ee); }
+    .banner-uespecifique { background: linear-gradient(135deg, #475569, #64748b); }
 
-    .card-content {
-      padding: 10px;
-    }
+    .card-content { padding: 12px; }
+    .card-content h3 { font-size: 0.95rem; margin-bottom: 4px; color: #1e293b; font-weight: 700; }
+    .progress-text { font-size: 0.75rem; color: #64748b; }
 
-    .card-content h3 {
-      font-size: 0.95rem;
-      margin-bottom: 4px;
-      color: #1e293b;
-    }
-
-    .progress-text {
-      font-size: 0.75rem;
-      color: #64748b;
-    }
-
-    /* SECTION QCM */
     .qcm-card {
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-radius: 16px;
-      padding: 16px;
-      margin-top: 15px;
+      background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 16px; margin-top: 15px;
     }
-
-    .qcm-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 15px;
-    }
-
-    .badge {
-      background-color: #e0f2fe;
-      color: #0369a1;
-      font-size: 0.75rem;
-      padding: 4px 8px;
-      border-radius: 6px;
-      font-weight: 600;
-    }
-
-    .question-text {
-      font-size: 1rem;
-      font-weight: 500;
-      margin-bottom: 16px;
-      line-height: 1.4;
-    }
-
-    .options-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
+    .qcm-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+    .badge { background-color: #e0f2fe; color: #0369a1; font-size: 0.75rem; padding: 4px 8px; border-radius: 6px; font-weight: 600; }
+    .question-text { font-size: 1rem; font-weight: 500; margin-bottom: 16px; line-height: 1.4; }
+    .options-list { display: flex; flex-direction: column; gap: 10px; }
     .option-btn {
-      text-align: left;
-      background-color: #f8fafc;
-      border: 1px solid #cbd5e1;
-      padding: 12px;
-      border-radius: 10px;
-      font-size: 0.9rem;
-      color: #334155;
-      cursor: pointer;
+      text-align: left; background-color: #f8fafc; border: 1px solid #cbd5e1; padding: 12px;
+      border-radius: 10px; font-size: 0.9rem; color: #334155; cursor: pointer;
     }
+    .feedback-box.hidden { display: none; }
 
-    /* SECTIONS DÉTAILLÉES DES UE */
-    .ue-view-section {
-      display: none;
-      background-color: #ffffff;
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 20;
-      overflow-y: auto;
-    }
-
-    .ue-view-section.active {
-      display: block;
-    }
-
-    .ue-header {
-      position: relative;
-      width: 100%;
-      height: 180px;
-      background-color: #0f172a;
-    }
-
-    .ue-header-img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0.8;
-    }
-
-    .back-btn {
-      position: absolute;
-      top: 16px;
-      left: 16px;
-      background-color: rgba(255, 255, 255, 0.85);
-      border: none;
-      border-radius: 50%;
-      width: 36px;
-      height: 36px;
-      font-size: 1.1rem;
-      color: #0f172a;
-      cursor: pointer;
-      z-index: 21;
-    }
-
-    .ue-header h2 {
-      position: absolute;
-      bottom: 16px;
-      left: 16px;
-      color: white;
-      font-size: 1.4rem;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.6);
-    }
-
-    .ue-content {
-      padding: 16px;
-    }
-
-    .chapter-list {
-      margin: 15px 0;
-    }
-
-    .chapter-item {
-      padding: 12px;
-      background-color: #f8fafc;
-      margin-bottom: 8px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      color: #334155;
-      border: 1px solid #e2e8f0;
-    }
-
-    /* BARRE DE NAVIGATION INFÉRIEURE (BOTTOM NAV) */
-    .bottom-nav {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 60px;
-      background-color: #ffffff;
-      border-top: 1px solid #e2e8f0;
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      z-index: 10;
-    }
-
-    .nav-item {
-      background: none;
-      border: none;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      color: #64748b;
-      font-size: 0.75rem;
-      cursor: pointer;
-      gap: 4px;
-    }
-
-    .nav-item i {
-      font-size: 1.2rem;
-    }
-
-    .nav-item.active {
-      color: #0284c7;
-      font-weight: 600;
-    }
-
-    /* SECTION A PROPOS */
     .about-card {
-      background-color: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 12px;
-      padding: 16px;
-      margin-top: 15px;
+      background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; margin-top: 15px;
+    }
+    .about-card p { margin-bottom: 12px; line-height: 1.5; color: #334155; font-size: 0.95rem; }
+    .about-card ul { list-style: none; margin: 15px 0; }
+    .about-card li { margin-bottom: 10px; color: #334155; font-size: 0.9rem; display: flex; align-items: center; }
+    .about-card li i { color: #10b981; margin-right: 10px; font-size: 1rem; }
+    .author-box { margin-top: 20px; padding-top: 15px; border-top: 1px solid #e2e8f0; }
+    .author-title { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b; margin-bottom: 4px; }
+    .author-name { font-size: 1rem; font-weight: 700; color: #0f172a; }
+    .contact-item { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: #475569; margin-top: 6px; }
+    .version { font-size: 0.8rem; color: #94a3b8; text-align: center; margin-top: 20px; }
+
+    .ue-view-section {
+      display: none; background-color: #ffffff; position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%; z-index: 20; overflow-y: auto;
+    }
+    .ue-view-section.active { display: block; }
+    .ue-header { position: relative; width: 100%; height: 140px; display: flex; align-items: flex-end; padding: 16px; }
+    .back-btn {
+      position: absolute; top: 16px; left: 16px; background: rgba(255, 255, 255, 0.9);
+      border: none; border-radius: 50%; width: 36px; height: 36px; font-size: 1.1rem; color: #0f172a; cursor: pointer; z-index: 21;
+    }
+    .ue-header h2 { color: white; font-size: 1.4rem; text-shadow: 0 2px 4px rgba(0,0,0,0.3); font-weight: 800; }
+    .ue-content { padding: 16px; }
+    .chapter-list { margin: 15px 0; }
+    .chapter-item {
+      padding: 12px; background-color: #f8fafc; margin-bottom: 10px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: space-between; color: #334155;
+      border: 1px solid #e2e8f0; cursor: pointer; font-size: 0.9rem;
+    }
+    .chapter-info { display: flex; align-items: center; gap: 12px; flex: 1; }
+    .chapter-details { display: flex; flex-direction: column; }
+    .file-size { font-size: 0.75rem; color: #0284c7; font-weight: 600; margin-top: 2px; }
+
+    /* VISIONNEUSE PDF AVEC ZOOM (+ / -) */
+    #pdf-viewer-modal {
+      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: #0f172a; z-index: 300; flex-direction: column;
+    }
+    #pdf-viewer-modal.active { display: flex; }
+    .viewer-top-bar {
+      height: 55px; background: #0284c7; color: white; display: flex;
+      justify-content: space-between; align-items: center; padding: 0 16px; font-weight: 600;
+    }
+    .viewer-close-btn { background: none; border: none; color: white; font-size: 1.3rem; cursor: pointer; }
+    
+    .viewer-toolbar {
+      height: 45px; background: #1e293b; color: white; display: flex;
+      justify-content: center; align-items: center; gap: 15px; font-size: 0.9rem; border-bottom: 1px solid #334155;
+    }
+    .tool-btn {
+      background: #0284c7; color: white; border: none; width: 32px; height: 32px;
+      border-radius: 6px; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center;
+    }
+    .tool-btn:active { background: #0369a1; }
+
+    .viewer-content-area {
+      flex: 1; overflow: auto; background: #334155; display: flex; justify-content: center; align-items: flex-start; padding: 15px;
+    }
+    .pdf-canvas-container {
+      background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.5); border-radius: 4px; overflow: hidden;
     }
 
-    .about-card ul {
-      list-style: none;
-      margin: 15px 0;
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%;
+      max-width: 480px; height: 60px; background-color: #ffffff; border-top: 1px solid #e2e8f0;
+      display: flex; justify-content: space-around; align-items: center; z-index: 10;
     }
-
-    .about-card li {
-      margin-bottom: 8px;
-      color: #334155;
-      font-size: 0.9rem;
+    .nav-item {
+      background: none; border: none; display: flex; flex-direction: column; align-items: center;
+      color: #64748b; font-size: 0.7rem; cursor: pointer; gap: 3px;
     }
-
-    .about-card li i {
-      color: #10b981;
-      margin-right: 8px;
-    }
-
-    .version {
-      font-size: 0.8rem;
-      color: #94a3b8;
-      text-align: center;
-      margin-top: 10px;
-    }
+    .nav-item i { font-size: 1.1rem; }
+    .nav-item.active { color: #0284c7; font-weight: 600; }
   </style>
 </head>
-<body>
+<body oncontextmenu="return false;">
 
   <div class="app-container">
-    <!-- En-tête de l'application -->
     <header class="app-header">
       <div class="logo-container">
+        <i class="fa-solid fa-stethoscope stethoscope-icon"></i>
         <span class="logo-medx">MedX</span>
       </div>
       <p class="subtitle">Révisions & Concours de Santé</p>
     </header>
 
-    <!-- Contenu Principal -->
     <main id="main-content">
-
-      <!-- SECTION ACCUEIL (HOME) -->
+      
+      <!-- HOME -->
       <section id="sec-home" class="view-section active">
         <div class="welcome-card">
-          <h2>Bonjour, Étudiant ! 👋</h2>
-          <p>Prêt à réviser vos concours aujourd'hui ?</p>
+          <h2>Bonjour, Dr RABIBISOA ! 👋</h2>
+          <p>Plateforme connectée Supabase & Révision 100% sans publicité.</p>
         </div>
         <div class="stats-grid">
-          <div class="stat-box">
-            <i class="fa-solid fa-book-open"></i>
-            <h3>8</h3>
-            <span>UE</span>
-          </div>
-          <div class="stat-box">
-            <i class="fa-solid fa-list-check"></i>
-            <h3>120+</h3>
-            <span>QCM</span>
-          </div>
+          <div class="stat-box"><i class="fa-solid fa-book-open"></i><h3>8</h3><span>Dossiers (UE)</span></div>
+          <div class="stat-box"><i class="fa-solid fa-cloud-arrow-down"></i><h3>Cloud</h3><span>Supabase Sync</span></div>
         </div>
-        <button class="btn-primary" onclick="switchTab('qcm')">Commencer un QCM</button>
+        <button class="btn-primary" onclick="switchTab('cours')">Accéder aux Cours</button>
       </section>
 
-      <!-- SECTION COURS -->
+      <!-- COURS -->
       <section id="sec-cours" class="view-section">
-        <h2>Mes Cours</h2>
+        <h2>Dossiers d'Enseignement (UE)</h2>
         <div class="subjects-grid">
-          <!-- UE 1: Anatomie -->
           <div class="subject-card" onclick="openUE('sec-anatomie')">
-            <img src="assets/header-anatomie.jpg" alt="Anatomie" class="subject-thumb">
-            <div class="card-content">
-              <h3>Anatomie</h3>
-              <span class="progress-text">Progression : 45%</span>
-            </div>
+            <div class="subject-banner banner-anatomie"><i class="fa-solid fa-bone"></i></div>
+            <div class="card-content"><h3>Anatomie</h3><span class="progress-text" id="count-anatomie">Chargement...</span></div>
           </div>
-
-          <!-- UE 2: Biomolécules -->
           <div class="subject-card" onclick="openUE('sec-biomolecules')">
-            <img src="assets/header-biomolecules.jpg" alt="Biomolécules" class="subject-thumb">
-            <div class="card-content">
-              <h3>Structure & Biomolécules</h3>
-              <span class="progress-text">Progression : 40%</span>
-            </div>
+            <div class="subject-banner banner-biomolecules"><i class="fa-solid fa-dna"></i></div>
+            <div class="card-content"><h3>Biomolécules</h3><span class="progress-text" id="count-biomolecules">Chargement...</span></div>
           </div>
-
-          <!-- UE 3: ICM -->
           <div class="subject-card" onclick="openUE('sec-icm')">
-            <img src="assets/header-icm.jpg" alt="ICM" class="subject-thumb">
-            <div class="card-content">
-              <h3>ICM</h3>
-              <span class="progress-text">Progression : 30%</span>
-            </div>
+            <div class="subject-banner banner-icm"><i class="fa-solid fa-pills"></i></div>
+            <div class="card-content"><h3>ICM</h3><span class="progress-text" id="count-icm">Chargement...</span></div>
           </div>
-
-          <!-- UE 4: Physiologie -->
           <div class="subject-card" onclick="openUE('sec-physiologie')">
-            <img src="assets/header-physiologie.jpg" alt="Physiologie" class="subject-thumb">
-            <div class="card-content">
-              <h3>Physiologie</h3>
-              <span class="progress-text">Progression : 10%</span>
-            </div>
+            <div class="subject-banner banner-physiologie"><i class="fa-solid fa-heart-pulse"></i></div>
+            <div class="card-content"><h3>Physiologie</h3><span class="progress-text" id="count-physiologie">Chargement...</span></div>
           </div>
-
-          <!-- UE 5: Biomath -->
           <div class="subject-card" onclick="openUE('sec-biomath')">
-            <img src="assets/header-biomath.jpg" alt="Biomath" class="subject-thumb">
-            <div class="card-content">
-              <h3>Biomath & Biophysique</h3>
-              <span class="progress-text">Progression : 25%</span>
-            </div>
+            <div class="subject-banner banner-biomath"><i class="fa-solid fa-calculator"></i></div>
+            <div class="card-content"><h3>Biomath</h3><span class="progress-text" id="count-biomath">Chargement...</span></div>
           </div>
-
-          <!-- UE 6: Français Médical -->
           <div class="subject-card" onclick="openUE('sec-francais')">
-            <img src="assets/header-francais.jpg" alt="Français Médical" class="subject-thumb">
-            <div class="card-content">
-              <h3>Français Médical</h3>
-              <span class="progress-text">Progression : 20%</span>
-            </div>
+            <div class="subject-banner banner-francais"><i class="fa-solid fa-language"></i></div>
+            <div class="card-content"><h3>Français Médical</h3><span class="progress-text" id="count-francais">Chargement...</span></div>
           </div>
-
-          <!-- UE 7: Biocell -->
           <div class="subject-card" onclick="openUE('sec-biocell')">
-            <img src="assets/header-biocell.jpg" alt="Biocell" class="subject-thumb">
-            <div class="card-content">
-              <h3>Biocell & Tissu</h3>
-              <span class="progress-text">Progression : 50%</span>
-            </div>
+            <div class="subject-banner banner-biocell"><i class="fa-solid fa-microscope"></i></div>
+            <div class="card-content"><h3>Biocell & Tissu</h3><span class="progress-text" id="count-biocell">Chargement...</span></div>
           </div>
-
-          <!-- UE 8: UE Spécifique -->
           <div class="subject-card" onclick="openUE('sec-uespecifique')">
-            <img src="assets/header-uespecifique.jpg" alt="UE Spécifique" class="subject-thumb">
-            <div class="card-content">
-              <h3>Unité d'étude spécifique</h3>
-              <span class="progress-text">Progression : 15%</span>
-            </div>
+            <div class="subject-banner banner-uespecifique"><i class="fa-solid fa-user-doctor"></i></div>
+            <div class="card-content"><h3>UE Spécifique</h3><span class="progress-text" id="count-uespecifique">Chargement...</span></div>
           </div>
         </div>
       </section>
 
-      <!-- SECTION QCM -->
+      <!-- QCM -->
       <section id="sec-qcm" class="view-section">
         <h2>Entraînement QCM</h2>
         <div class="qcm-card">
@@ -501,88 +303,355 @@
             <span class="badge">Ostéologie / Crâne</span>
             <span id="timer">⏱️ 00:45</span>
           </div>
-          <p class="question-text">
-            Parmi les propositions suivantes concernant l'anatomie du crâne, laquelle est exacte ?
-          </p>
+          <p class="question-text">Parmi les propositions suivantes concernant l'anatomie du crâne, laquelle est exacte ?</p>
           <div class="options-list">
             <button class="option-btn" onclick="checkAnswer(this, false)">A. Le nerf optique passe par la fissure orbitaire supérieure.</button>
             <button class="option-btn" onclick="checkAnswer(this, true)">B. Le foramen magnum se situe dans l'os occipital.</button>
             <button class="option-btn" onclick="checkAnswer(this, false)">C. L'os frontal est un os pair du crâne.</button>
-            <button class="option-btn" onclick="checkAnswer(this, false)">D. Le canal carotidien traverse la grande aile de l'sphénoïde.</button>
+            <button class="option-btn" onclick="checkAnswer(this, false)">D. Le canal carotidien traverse la grande aile du sphénoïde.</button>
           </div>
           <div id="feedback" class="feedback-box hidden"></div>
         </div>
       </section>
 
-      <!-- SECTION À PROPOS -->
+      <!-- À PROPOS -->
       <section id="sec-apropos" class="view-section">
         <h2>À Propos de MedX</h2>
         <div class="about-card">
-          <p><strong>MedX</strong> est votre plateforme d'apprentissage dédiée aux concours de santé.</p>
+          <p><strong>MedX</strong> est une application dédiée à l'apprentissage et aux révisions pour les concours de santé.</p>
           <ul>
-            <li><i class="fa-solid fa-check"></i> Cours complets et synthétisés</li>
-            <li><i class="fa-solid fa-check"></i> Séries de QCM avec explications</li>
-            <li><i class="fa-solid fa-check"></i> Suivi de progression en temps réel</li>
+            <li><i class="fa-solid fa-check"></i> 100% Sans Publicité</li>
+            <li><i class="fa-solid fa-check"></i> Visionneuse PDF intégrée avec zoom tactile (+ / -)</li>
+            <li><i class="fa-solid fa-check"></i> Synchronisation Supabase & Mode Hors-Ligne</li>
           </ul>
-          <p class="version">Version 1.0.0</p>
+          
+          <div class="author-box">
+            <div class="author-title">Auteur & Conception</div>
+            <div class="author-name">Dr RABIBISOA Herilala Nantenaina Pierre</div>
+            <div class="contact-item"><i class="fa-solid fa-envelope"></i> rabherilala@gmail.com</div>
+            <div class="contact-item"><i class="fa-solid fa-phone"></i> 0342002623</div>
+          </div>
+          <p class="version">Version 2.2.0 (Clean No-Ads)</p>
         </div>
       </section>
 
-      <!-- SECTIONS DÉTAILLÉES DES UE -->
+      <!-- SECTIONS UE -->
       <section id="sec-anatomie" class="ue-view-section">
-        <header class="ue-header">
+        <header class="ue-header banner-anatomie">
           <button class="back-btn" onclick="switchTab('cours')"><i class="fa-solid fa-arrow-left"></i></button>
-          <img src="assets/header-anatomie.jpg" alt="Anatomie" class="ue-header-img">
           <h2>Anatomie</h2>
         </header>
-        <div class="ue-content">
-          <h3>Chapitres</h3>
-          <div class="chapter-list">
-            <div class="chapter-item"><i class="fa-solid fa-file-lines"></i> Ostéologie du Crâne</div>
-            <div class="chapter-item"><i class="fa-solid fa-file-lines"></i> Système Musculaire</div>
-          </div>
-          <button class="btn-primary">QCM de cette UE</button>
-        </div>
+        <div class="ue-content"><h3>Fichiers disponibles</h3><div class="chapter-list" id="list-anatomie"></div></div>
       </section>
-
       <section id="sec-biomolecules" class="ue-view-section">
-        <header class="ue-header">
+        <header class="ue-header banner-biomolecules">
           <button class="back-btn" onclick="switchTab('cours')"><i class="fa-solid fa-arrow-left"></i></button>
-          <img src="assets/header-biomolecules.jpg" alt="Biomolécules" class="ue-header-img">
           <h2>Structure & Biomolécules</h2>
         </header>
-        <div class="ue-content">
-          <h3>Chapitres</h3>
-          <div class="chapter-list">
-            <div class="chapter-item"><i class="fa-solid fa-file-lines"></i> Acides Aminés & Protéines</div>
-          </div>
-          <button class="btn-primary">QCM de cette UE</button>
-        </div>
+        <div class="ue-content"><h3>Fichiers disponibles</h3><div class="chapter-list" id="list-biomolecules"></div></div>
+      </section>
+      <section id="sec-icm" class="ue-view-section">
+        <header class="ue-header banner-icm">
+          <button class="back-btn" onclick="switchTab('cours')"><i class="fa-solid fa-arrow-left"></i></button>
+          <h2>ICM</h2>
+        </header>
+        <div class="ue-content"><h3>Fichiers disponibles</h3><div class="chapter-list" id="list-icm"></div></div>
+      </section>
+      <section id="sec-physiologie" class="ue-view-section">
+        <header class="ue-header banner-physiologie">
+          <button class="back-btn" onclick="switchTab('cours')"><i class="fa-solid fa-arrow-left"></i></button>
+          <h2>Physiologie</h2>
+        </header>
+        <div class="ue-content"><h3>Fichiers disponibles</h3><div class="chapter-list" id="list-physiologie"></div></div>
+      </section>
+      <section id="sec-biomath" class="ue-view-section">
+        <header class="ue-header banner-biomath">
+          <button class="back-btn" onclick="switchTab('cours')"><i class="fa-solid fa-arrow-left"></i></button>
+          <h2>Biomath & Biophysique</h2>
+        </header>
+        <div class="ue-content"><h3>Fichiers disponibles</h3><div class="chapter-list" id="list-biomath"></div></div>
+      </section>
+      <section id="sec-francais" class="ue-view-section">
+        <header class="ue-header banner-francais">
+          <button class="back-btn" onclick="switchTab('cours')"><i class="fa-solid fa-arrow-left"></i></button>
+          <h2>Français Médical</h2>
+        </header>
+        <div class="ue-content"><h3>Fichiers disponibles</h3><div class="chapter-list" id="list-francais"></div></div>
+      </section>
+      <section id="sec-biocell" class="ue-view-section">
+        <header class="ue-header banner-biocell">
+          <button class="back-btn" onclick="switchTab('cours')"><i class="fa-solid fa-arrow-left"></i></button>
+          <h2>Biocell & Tissu</h2>
+        </header>
+        <div class="ue-content"><h3>Fichiers disponibles</h3><div class="chapter-list" id="list-biocell"></div></div>
+      </section>
+      <section id="sec-uespecifique" class="ue-view-section">
+        <header class="ue-header banner-uespecifique">
+          <button class="back-btn" onclick="switchTab('cours')"><i class="fa-solid fa-arrow-left"></i></button>
+          <h2>Unité Spécifique</h2>
+        </header>
+        <div class="ue-content"><h3>Fichiers disponibles</h3><div class="chapter-list" id="list-uespecifique"></div></div>
       </section>
 
     </main>
 
-    <!-- Navigation Inférieure (Bottom Nav) -->
+    <!-- VISIONNEUSE PDF AVEC ZOOM + / - -->
+    <div id="pdf-viewer-modal">
+      <div class="viewer-top-bar">
+        <span id="viewer-title-text" style="font-size:0.95rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:70%;">Document</span>
+        <button class="viewer-close-btn" onclick="closePdfViewer()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="viewer-toolbar">
+        <button class="tool-btn" onclick="changePage(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+        <span id="page-num-display">Page 1 / 1</span>
+        <button class="tool-btn" onclick="changePage(1)"><i class="fa-solid fa-chevron-right"></i></button>
+        <span style="border-left:1px solid #475569; height:20px; margin:0 5px;"></span>
+        <button class="tool-btn" onclick="adjustZoom(-0.25)">-</button>
+        <span id="zoom-level-display">100%</span>
+        <button class="tool-btn" onclick="adjustZoom(0.25)">+</button>
+      </div>
+      <div id="viewer-container" class="viewer-content-area">
+        <div class="pdf-canvas-container">
+          <canvas id="pdf-canvas"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOTTOM NAV -->
     <nav class="bottom-nav">
-      <button class="nav-item active" onclick="switchTab('home')">
-        <i class="fa-solid fa-house"></i>
-        <span>Home</span>
-      </button>
-      <button class="nav-item" onclick="switchTab('cours')">
-        <i class="fa-solid fa-book"></i>
-        <span>Cours</span>
-      </button>
-      <button class="nav-item" onclick="switchTab('qcm')">
-        <i class="fa-solid fa-file-pen"></i>
-        <span>QCM</span>
-      </button>
-      <button class="nav-item" onclick="switchTab('apropos')">
-        <i class="fa-solid fa-circle-info"></i>
-        <span>À propos</span>
-      </button>
+      <button class="nav-item active" onclick="switchTab('home')"><i class="fa-solid fa-house"></i><span>Home</span></button>
+      <button class="nav-item" onclick="switchTab('cours')"><i class="fa-solid fa-book"></i><span>Cours</span></button>
+      <button class="nav-item" onclick="switchTab('qcm')"><i class="fa-solid fa-file-pen"></i><span>QCM</span></button>
+      <button class="nav-item" onclick="switchTab('apropos')"><i class="fa-solid fa-circle-info"></i><span>À propos</span></button>
     </nav>
   </div>
 
-  <script src="script.js"></script>
+  <script>
+    const SUPABASE_URL = "https://g8wuDuBZ8Fbli57A-2nlpQ_ZNh-YLXU.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_g8wuDuBZ8Fbli57A-2nlpQ_ZNh-YLXU";
+    const STORAGE_BUCKET = "cours_medx";
+
+    let pdfDoc = null;
+    let pageNum = 1;
+    let pageRendering = false;
+    let pageNumPending = null;
+    let scale = 1.2;
+    let currentPdfUrl = '';
+
+    const canvas = document.getElementById('pdf-canvas');
+    const ctx = canvas.getContext('2d');
+
+    window.addEventListener('DOMContentLoaded', () => {
+      fetchSupabaseFiles();
+    });
+
+    async function fetchSupabaseFiles() {
+      const ueKeys = ['anatomie', 'biomolecules', 'icm', 'physiologie', 'biomath', 'francais', 'biocell', 'uespecifique'];
+      const counts = {};
+      ueKeys.forEach(k => counts[k] = 0);
+
+      try {
+        const response = await fetch(`${SUPABASE_URL}/storage/v1/object/list/${STORAGE_BUCKET}`, {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            prefix: "",
+            limit: 100,
+            offset: 0,
+            sortBy: { column: "name", order: "asc" }
+          })
+        });
+
+        if (!response.ok) throw new Error("Erreur de connexion Supabase");
+        const files = await response.json();
+
+        ueKeys.forEach(key => {
+          const listElem = document.getElementById('list-' + key);
+          if (listElem) listElem.innerHTML = '<div style="padding:10px; color:#64748b; font-size:0.85rem;">Aucun fichier dans ce dossier</div>';
+        });
+
+        if (Array.isArray(files)) {
+          files.forEach(file => {
+            if (!file.name) return;
+            const parts = file.name.split('/');
+            if (parts.length >= 2) {
+              const ueKey = parts[0].toLowerCase();
+              const fileName = parts.slice(1).join('/');
+              
+              if (counts[ueKey] !== undefined) {
+                if (counts[ueKey] === 0) {
+                  const listElem = document.getElementById('list-' + ueKey);
+                  if (listElem) listElem.innerHTML = '';
+                }
+                counts[ueKey]++;
+                const listElem = document.getElementById('list-' + ueKey);
+                if (listElem) {
+                  const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/${STORAGE_BUCKET}/${file.name}`;
+                  
+                  const div = document.createElement('div');
+                  div.className = 'chapter-item';
+                  div.innerHTML = `
+                    <div class="chapter-info" onclick="openPdfViewer('${publicUrl}', '${fileName.replace(/'/g, "\\'")}')">
+                      <i class="fa-solid fa-file-pdf" style="color:#ef4444; font-size:1.2rem;"></i>
+                      <div class="chapter-details">
+                        <span>${fileName}</span>
+                        <span class="file-size">Cloud Supabase</span>
+                      </div>
+                    </div>
+                  `;
+                  listElem.appendChild(div);
+                }
+              }
+            }
+          });
+        }
+
+        ueKeys.forEach(key => {
+          const countElem = document.getElementById('count-' + key);
+          if (countElem) countElem.innerText = counts[key] + ' Fichiers';
+        });
+
+      } catch (err) {
+        console.warn("Mode hors-ligne actif ou erreur réseau.");
+        ueKeys.forEach(key => {
+          const countElem = document.getElementById('count-' + key);
+          if (countElem) countElem.innerText = '0 Fichiers';
+        });
+      }
+    }
+
+    function openPdfViewer(url, title) {
+      document.getElementById('viewer-title-text').innerText = title;
+      document.getElementById('pdf-viewer-modal').classList.add('active');
+      currentPdfUrl = url;
+      pageNum = 1;
+      scale = 1.2;
+      loadPdfDocument(url);
+    }
+
+    function loadPdfDocument(url) {
+      pdfjsLib.getDocument(url).promise.then(function(pdfDoc_) {
+        pdfDoc = pdfDoc_;
+        document.getElementById('page-num-display').innerText = `Page ${pageNum} / ${pdfDoc.numPages}`;
+        renderPage(pageNum);
+      }).catch(function(error) {
+        alert("Impossible de charger le fichier PDF. Vérifiez votre connexion ou le stockage Supabase.");
+        closePdfViewer();
+      });
+    }
+
+    function renderPage(num) {
+      pageRendering = true;
+      pdfDoc.getPage(num).then(function(page) {
+        const viewport = page.getViewport({ scale: scale });
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+
+        const renderContext = {
+          canvasContext: ctx,
+          viewport: viewport
+        };
+        const renderTask = page.render(renderContext);
+
+        renderTask.promise.then(function() {
+          pageRendering = false;
+          if (pageNumPending !== null) {
+            renderPage(pageNumPending);
+            pageNumPending = null;
+          }
+        });
+      });
+      document.getElementById('page-num-display').innerText = `Page ${pageNum} / ${pdfDoc.numPages}`;
+      document.getElementById('zoom-level-display').innerText = Math.round(scale * 100) + '%';
+    }
+
+    function queueRenderPage(num) {
+      if (pageRendering) {
+        pageNumPending = num;
+      } else {
+        renderPage(num);
+      }
+    }
+
+    function changePage(val) {
+      if (!pdfDoc) return;
+      if (pageNum + val < 1 || pageNum + val > pdfDoc.numPages) return;
+      pageNum += val;
+      queueRenderPage(pageNum);
+    }
+
+    function adjustZoom(val) {
+      scale += val;
+      if (scale < 0.5) scale = 0.5;
+      if (scale > 3.0) scale = 3.0;
+      queueRenderPage(pageNum);
+    }
+
+    function closePdfViewer() {
+      document.getElementById('pdf-viewer-modal').classList.remove('active');
+      pdfDoc = null;
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
+      document.querySelectorAll('.ue-view-section').forEach(sec => sec.classList.remove('active'));
+
+      const target = document.getElementById('sec-' + tabId);
+      if (target) target.classList.add('active');
+
+      const navButtons = document.querySelectorAll('.nav-item');
+      navButtons.forEach(btn => btn.classList.remove('active'));
+      const activeBtn = Array.from(navButtons).find(btn => btn.getAttribute('onclick') && btn.getAttribute('onclick').includes(`'${tabId}'`));
+      if (activeBtn) activeBtn.classList.add('active');
+
+      window.scrollTo(0, 0);
+    }
+
+    function openUE(ueId) {
+      document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
+      document.querySelectorAll('.ue-view-section').forEach(sec => sec.classList.remove('active'));
+      const target = document.getElementById(ueId);
+      if (target) target.classList.add('active');
+      window.scrollTo(0, 0);
+    }
+
+    function checkAnswer(buttonElement, isCorrect) {
+      const buttons = buttonElement.parentElement.querySelectorAll('.option-btn');
+      buttons.forEach(btn => btn.style.pointerEvents = 'none');
+      const feedbackBox = document.getElementById('feedback');
+
+      if (isCorrect) {
+        buttonElement.style.backgroundColor = '#dcfce7';
+        buttonElement.style.borderColor = '#16a34a';
+        buttonElement.style.color = '#15803d';
+        if (feedbackBox) {
+          feedbackBox.classList.remove('hidden');
+          feedbackBox.style.backgroundColor = '#dcfce7';
+          feedbackBox.style.color = '#15803d';
+          feedbackBox.style.padding = '10px';
+          feedbackBox.style.borderRadius = '8px';
+          feedbackBox.style.marginTop = '10px';
+          feedbackBox.innerHTML = '✅ <strong>Bravo !</strong> Bonne réponse.';
+        }
+      } else {
+        buttonElement.style.backgroundColor = '#fee2e2';
+        buttonElement.style.borderColor = '#dc2626';
+        buttonElement.style.color = '#b91c1c';
+        if (feedbackBox) {
+          feedbackBox.classList.remove('hidden');
+          feedbackBox.style.backgroundColor = '#fee2e2';
+          feedbackBox.style.color = '#b91c1c';
+          feedbackBox.style.padding = '10px';
+          feedbackBox.style.borderRadius = '8px';
+          feedbackBox.style.marginTop = '10px';
+          feedbackBox.innerHTML = '❌ <strong>Incorrect.</strong> Réessayez une autre option.';
+        }
+      }
+    }
+  </script>
 </body>
 </html>
