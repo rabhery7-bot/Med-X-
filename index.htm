@@ -4,21 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MedX - Études de Santé</title>
+  <meta name="description" content="Application de révisions médicales, cours PDF, vidéos par UE, QCM, classement avec notes par UE et protection anti-capture.">
 
-  <!-- PWA Manifest -->
-  <link rel="manifest" href="data:application/manifest+json,{
-    %22name%22: %22MedX - Études de Santé%22,
-    %22short_name%22: %22MedX%22,
-    %22start_url%22: %22./index.html%22,
-    %22display%22: %22standalone%22,
-    %22background_color%22: %22%230b1120%22,
-    %22theme_color%22: %22%230284c7%22
-  }">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="apple-touch-icon" href="./icon-192.png">
   <meta name="theme-color" content="#0284c7">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="MedX">
 
-  <!-- Icônes & Moteur PDF.js -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
   <script>
@@ -31,17 +25,22 @@
 
     .app-container {
       width: 100%; max-width: 480px; background-color: #0f172a; min-height: 100vh;
-      display: flex; flex-direction: column; position: relative; padding-bottom: 70px;
+      display: flex; flex-direction: column; position: relative; padding-bottom: 72px;
     }
 
     .app-header {
-      background-color: #1e293b; color: #ffffff; padding: 18px; text-align: center;
+      background-color: #1e293b; color: #ffffff; padding: 14px 16px; text-align: center;
       border-bottom: 1px solid #334155;
     }
-    .logo-container { font-size: 2rem; font-weight: 900; display: flex; align-items: center; justify-content: center; gap: 10px; }
+    .logo-container { font-size: 1.8rem; font-weight: 900; display: flex; align-items: center; justify-content: center; gap: 10px; }
     .logo-medx { color: #38bdf8; }
-    .stethoscope-icon { color: #38bdf8; font-size: 1.6rem; }
-    .subtitle { font-size: 0.8rem; color: #94a3b8; margin-top: 4px; }
+    .stethoscope-icon { color: #38bdf8; font-size: 1.45rem; }
+    .subtitle { font-size: 0.76rem; color: #94a3b8; margin-top: 2px; }
+    .version-pill {
+      display: inline-block; margin-top: 6px; font-size: 0.68rem; color: #38bdf8;
+      background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.3);
+      padding: 2px 8px; border-radius: 999px; cursor: pointer;
+    }
 
     main { padding: 16px; flex: 1; }
     .view-section { display: none; }
@@ -49,16 +48,16 @@
 
     .welcome-card {
       background: linear-gradient(135deg, #0369a1, #0284c7);
-      color: white; padding: 18px; border-radius: 14px; margin-bottom: 18px;
+      color: white; padding: 18px; border-radius: 14px; margin-bottom: 16px;
     }
-    .welcome-card h2 { font-size: 1.3rem; margin-bottom: 6px; }
-    .welcome-card p { font-size: 0.88rem; opacity: 0.95; line-height: 1.4; }
+    .welcome-card h2 { font-size: 1.25rem; margin-bottom: 6px; }
+    .welcome-card p { font-size: 0.86rem; opacity: 0.95; line-height: 1.4; }
 
-    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px; }
+    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
     .stat-box { background-color: #1e293b; border: 1px solid #334155; padding: 14px; border-radius: 12px; text-align: center; }
-    .stat-box i { font-size: 1.4rem; color: #38bdf8; margin-bottom: 6px; }
+    .stat-box i { font-size: 1.35rem; color: #38bdf8; margin-bottom: 6px; }
     .stat-box h3 { font-size: 1.2rem; color: #fff; }
-    .stat-box span { font-size: 0.78rem; color: #94a3b8; }
+    .stat-box span { font-size: 0.76rem; color: #94a3b8; }
 
     .btn-primary {
       width: 100%; background-color: #0284c7; color: white; border: none;
@@ -66,14 +65,19 @@
     }
     .btn-primary:active { background-color: #0369a1; }
 
-    .subjects-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
+    .btn-secondary {
+      width: 100%; background-color: #1e293b; color: #f8fafc; border: 1px solid #475569;
+      padding: 12px; border-radius: 10px; font-size: 0.9rem; font-weight: 600; cursor: pointer; margin-top: 10px;
+    }
+
+    .subjects-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
     .subject-card {
       background: #1e293b; border-radius: 12px; overflow: hidden; border: 1px solid #334155;
       cursor: pointer; display: flex; flex-direction: column;
     }
     .subject-card:active { transform: scale(0.98); }
 
-    .subject-banner { height: 70px; display: flex; align-items: center; justify-content: center; color: #ffffff; font-size: 1.8rem; }
+    .subject-banner { height: 66px; display: flex; align-items: center; justify-content: center; color: #ffffff; font-size: 1.7rem; }
     .banner-anatomie { background: linear-gradient(135deg, #0284c7, #06b6d4); }
     .banner-biomolecules { background: linear-gradient(135deg, #7c3aed, #a855f7); }
     .banner-icm { background: linear-gradient(135deg, #059669, #10b981); }
@@ -84,65 +88,148 @@
     .banner-uespecifique { background: linear-gradient(135deg, #475569, #64748b); }
 
     .card-content { padding: 10px 12px; }
-    .card-content h3 { font-size: 0.92rem; margin-bottom: 3px; color: #f8fafc; font-weight: 700; }
-    .progress-text { font-size: 0.75rem; color: #94a3b8; }
+    .card-content h3 { font-size: 0.9rem; margin-bottom: 3px; color: #f8fafc; font-weight: 700; }
+    .progress-text { font-size: 0.74rem; color: #94a3b8; }
 
-    /* VUE UE & LEÇONS */
     .ue-view-section {
       display: none; background-color: #0f172a; position: absolute; top: 0; left: 0;
-      width: 100%; height: 100%; z-index: 20; overflow-y: auto; padding-bottom: 80px;
+      width: 100%; height: 100%; z-index: 20; overflow-y: auto; padding-bottom: 82px;
     }
     .ue-view-section.active { display: block; }
-    .ue-header { position: relative; width: 100%; height: 120px; display: flex; align-items: flex-end; padding: 16px; }
+    .ue-header { position: relative; width: 100%; height: 115px; display: flex; align-items: flex-end; padding: 16px; }
     .back-btn {
       position: absolute; top: 14px; left: 14px; background: rgba(15, 23, 42, 0.85);
       border: 1px solid rgba(255,255,255,0.2); border-radius: 50%; width: 36px; height: 36px;
       font-size: 1rem; color: #ffffff; cursor: pointer; z-index: 21;
     }
-    .ue-header h2 { color: white; font-size: 1.3rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5); font-weight: 800; }
-    .ue-content { padding: 16px; }
+    .ue-header h2 { color: white; font-size: 1.25rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5); font-weight: 800; }
+    .ue-content { padding: 14px; }
 
     .lesson-card {
-      padding: 13px; background-color: #1e293b; margin-bottom: 10px; border-radius: 12px;
+      padding: 12px; background-color: #1e293b; margin-bottom: 9px; border-radius: 12px;
       display: flex; align-items: center; justify-content: space-between; gap: 10px;
       border: 1px solid #334155;
     }
     .lesson-main {
-      display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; cursor: pointer;
+      display: flex; align-items: center; gap: 11px; flex: 1; min-width: 0; cursor: pointer;
     }
     .lesson-details { display: flex; flex-direction: column; min-width: 0; }
-    .lesson-title { font-weight: 600; font-size: 0.92rem; color: #f8fafc; line-height: 1.3; }
-    .lesson-status { font-size: 0.74rem; margin-top: 3px; display: flex; align-items: center; gap: 5px; }
+    .lesson-title { font-weight: 600; font-size: 0.88rem; color: #f8fafc; line-height: 1.3; }
+    .lesson-status { font-size: 0.72rem; margin-top: 3px; display: flex; align-items: center; gap: 5px; }
     .status-online { color: #38bdf8; }
     .status-offline { color: #4ade80; font-weight: 600; }
 
     .lesson-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
     .action-btn {
-      border: none; border-radius: 8px; padding: 8px 10px; font-size: 0.8rem; font-weight: 600;
+      border: none; border-radius: 8px; padding: 7px 9px; font-size: 0.78rem; font-weight: 600;
       cursor: pointer; display: flex; align-items: center; gap: 5px;
     }
     .btn-dl { background-color: #0284c7; color: #ffffff; }
     .btn-dl:active { background-color: #0369a1; }
     .btn-dl:disabled { background-color: #334155; color: #94a3b8; cursor: wait; }
     .btn-saved { background-color: rgba(74, 222, 128, 0.15); color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.4); }
-    .btn-del { background-color: rgba(248, 113, 113, 0.15); color: #f87171; padding: 8px; }
+    .btn-del { background-color: rgba(248, 113, 113, 0.15); color: #f87171; padding: 7px 8px; }
 
-    /* LECTEUR PDF INTÉGRÉ AVEC ZOOM */
+    /* QCM */
+    .qcm-top-bar {
+      display: flex; justify-content: space-between; align-items: center;
+      background: #1e293b; border: 1px solid #334155; border-radius: 12px;
+      padding: 11px 13px; margin-bottom: 14px;
+    }
+    .qcm-score-badge {
+      background: rgba(56, 189, 248, 0.15); color: #38bdf8;
+      padding: 5px 10px; border-radius: 8px; font-weight: 700; font-size: 0.83rem;
+    }
+    .qcm-card {
+      background: #1e293b; border: 1px solid #334155; border-radius: 14px; padding: 15px; margin-bottom: 13px;
+    }
+    .qcm-meta {
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 9px;
+    }
+    .qcm-ue-tag {
+      background: #0f172a; color: #38bdf8; border: 1px solid #334155;
+      font-size: 0.72rem; font-weight: 600; padding: 3px 8px; border-radius: 6px;
+    }
+    .qcm-question {
+      font-size: 0.94rem; font-weight: 600; color: #f8fafc; line-height: 1.42; margin-bottom: 12px;
+    }
+    .qcm-options { display: flex; flex-direction: column; gap: 8px; }
+    .qcm-opt-btn {
+      width: 100%; text-align: left; background: #0f172a; color: #e2e8f0;
+      border: 1px solid #334155; border-radius: 10px; padding: 10px 12px;
+      font-size: 0.86rem; line-height: 1.35; cursor: pointer;
+    }
+    .qcm-opt-btn:hover:not(:disabled) { border-color: #38bdf8; }
+    .qcm-opt-btn.correct {
+      background: rgba(74, 222, 128, 0.18); border-color: #4ade80; color: #86efac; font-weight: 600;
+    }
+    .qcm-opt-btn.wrong {
+      background: rgba(248, 113, 113, 0.18); border-color: #f87171; color: #fca5a5;
+    }
+    .qcm-explanation {
+      margin-top: 11px; padding: 10px 12px; border-radius: 8px;
+      background: #0f172a; border-left: 3px solid #38bdf8;
+      font-size: 0.82rem; color: #cbd5e1; line-height: 1.4; display: none;
+    }
+
+    /* FORMULAIRES */
+    .form-card { background: #1e293b; border: 1px solid #334155; border-radius: 14px; padding: 15px; margin-top: 14px; }
+    .form-group { margin-bottom: 10px; }
+    .form-group label { display: block; font-size: 0.78rem; color: #cbd5e1; margin-bottom: 4px; font-weight: 600; }
+    .form-control {
+      width: 100%; padding: 9px 10px; border: 1px solid #475569; border-radius: 8px;
+      font-size: 0.86rem; background-color: #0f172a; color: #f8fafc;
+    }
+    .grades-input-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;
+    }
+
+    /* CLASSEMENT COMPLET AVEC TOUTES LES NOTES /20 PAR UE + MOYENNE GÉNÉRALE */
+    .rank-student-card {
+      background: #1e293b; border: 1px solid #334155; border-radius: 13px;
+      padding: 13px; margin-bottom: 10px;
+    }
+    .rank-student-header {
+      display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 9px;
+    }
+    .rank-student-left { display: flex; align-items: center; gap: 9px; min-width: 0; }
+    .lb-pos {
+      width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 0.8rem; flex-shrink: 0; background: #0f172a; color: #cbd5e1;
+    }
+    .pos-1 { background: #eab308; color: #0f172a; }
+    .pos-2 { background: #cbd5e1; color: #0f172a; }
+    .pos-3 { background: #d97706; color: #ffffff; }
+    .moyenne-pill {
+      background: rgba(74, 222, 128, 0.15); color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.35);
+      padding: 4px 9px; border-radius: 8px; font-weight: 800; font-size: 0.82rem; flex-shrink: 0;
+    }
+    .ue-notes-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 5px; font-size: 0.74rem; color: #cbd5e1;
+    }
+    .ue-note-box {
+      background: #0f172a; border: 1px solid #283548; border-radius: 6px;
+      padding: 5px 7px; display: flex; justify-content: space-between; align-items: center;
+    }
+
+    /* LECTEUR PDF INTÉGRÉ + ZOOM + FILIGRANE ANTI-CAPTURE */
     #pdf-viewer-modal {
       display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: #0b1120; z-index: 300; flex-direction: column;
+      user-select: none; -webkit-user-select: none;
     }
     #pdf-viewer-modal.active { display: flex; }
     .viewer-top-bar {
       height: 54px; background: #1e293b; color: white; display: flex;
       justify-content: space-between; align-items: center; padding: 0 14px; font-weight: 600;
-      border-bottom: 1px solid #334155;
+      border-bottom: 1px solid #334155; z-index: 305;
     }
     .viewer-close-btn { background: none; border: none; color: white; font-size: 1.3rem; cursor: pointer; padding: 5px; }
 
     .viewer-toolbar {
       height: 46px; background: #1e293b; color: white; display: flex;
       justify-content: center; align-items: center; gap: 10px; font-size: 0.85rem; border-bottom: 1px solid #334155;
+      z-index: 305;
     }
     .tool-btn {
       background: #0284c7; color: white; border: none; min-width: 34px; height: 32px; padding: 0 8px;
@@ -151,11 +238,58 @@
     .tool-btn:active { background: #0369a1; }
 
     .viewer-content-area {
-      flex: 1; overflow: auto; background: #0f172a; display: flex; flex-direction: column;
+      position: relative; flex: 1; overflow: auto; background: #0f172a; display: flex; flex-direction: column;
       align-items: center; padding: 14px; -webkit-overflow-scrolling: touch;
     }
-    .pdf-canvas-container { background: white; box-shadow: 0 4px 16px rgba(0,0,0,0.6); border-radius: 4px; overflow: hidden; }
+    .pdf-canvas-container { position: relative; background: white; box-shadow: 0 4px 16px rgba(0,0,0,0.6); border-radius: 4px; overflow: hidden; }
     #pdf-canvas { display: block; }
+
+    .watermark-layer {
+      position: fixed; top: 100px; left: 0; right: 0; bottom: 0;
+      pointer-events: none; z-index: 304; overflow: hidden;
+      display: none; flex-wrap: wrap; justify-content: space-around; align-content: space-around;
+      opacity: 0.22;
+    }
+    .watermark-layer.active { display: flex; }
+    .watermark-tag {
+      color: #38bdf8; font-size: 0.85rem; font-weight: 800; letter-spacing: 1px;
+      transform: rotate(-28deg); padding: 18px 12px; white-space: nowrap;
+      text-shadow: 0 0 1px rgba(0,0,0,0.6);
+    }
+    .privacy-shield {
+      display: none; position: fixed; inset: 0; background: #0b1120; z-index: 400;
+      color: #f8fafc; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; padding: 24px;
+    }
+    .privacy-shield.active { display: flex; }
+
+    /* LECTEUR VIDÉO INTÉGRÉ + FILIGRANE */
+    #video-viewer-modal {
+      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: #0b1120; z-index: 310; flex-direction: column;
+      user-select: none; -webkit-user-select: none;
+    }
+    #video-viewer-modal.active { display: flex; }
+    .video-player-area {
+      position: relative; flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;
+      padding: 14px; background: #090e1a;
+    }
+    .video-box {
+      position: relative; width: 100%; max-width: 460px; aspect-ratio: 16 / 9; background: #000;
+      border-radius: 12px; overflow: hidden; border: 1px solid #334155;
+    }
+    .video-box iframe, .video-box video {
+      width: 100%; height: 100%; border: none; display: block;
+    }
+    .video-watermark-overlay {
+      position: absolute; inset: 0; pointer-events: none; z-index: 5;
+      display: flex; flex-wrap: wrap; justify-content: space-around; align-content: center;
+      background: rgba(15, 23, 42, 0.08);
+    }
+    .video-watermark-item {
+      color: rgba(255, 255, 255, 0.34); font-size: 0.78rem; font-weight: 800;
+      transform: rotate(-24deg); padding: 10px 14px; white-space: nowrap;
+    }
 
     .fallback-box {
       display: none; background: #1e293b; border: 1px solid #334155; border-radius: 12px;
@@ -167,26 +301,16 @@
       padding: 11px 16px; border-radius: 8px; font-weight: 600; font-size: 0.9rem;
     }
 
-    /* À PROPOS */
-    .about-card {
-      background-color: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 16px; margin-top: 12px;
-    }
-    .about-card p { margin-bottom: 12px; line-height: 1.5; color: #cbd5e1; font-size: 0.92rem; }
-    .author-box { margin-top: 16px; padding-top: 14px; border-top: 1px solid #334155; }
-    .author-title { font-size: 0.78rem; text-transform: uppercase; color: #94a3b8; margin-bottom: 4px; }
-    .author-name { font-size: 1rem; font-weight: 700; color: #f8fafc; }
-    .contact-item { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: #94a3b8; margin-top: 6px; }
-
     .bottom-nav {
       position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%;
-      max-width: 480px; height: 60px; background-color: #1e293b; border-top: 1px solid #334155;
+      max-width: 480px; height: 62px; background-color: #1e293b; border-top: 1px solid #334155;
       display: flex; justify-content: space-around; align-items: center; z-index: 10;
     }
     .nav-item {
       background: none; border: none; display: flex; flex-direction: column; align-items: center;
-      color: #94a3b8; font-size: 0.7rem; cursor: pointer; gap: 3px;
+      color: #94a3b8; font-size: 0.56rem; cursor: pointer; gap: 3px;
     }
-    .nav-item i { font-size: 1.1rem; }
+    .nav-item i { font-size: 0.96rem; }
     .nav-item.active { color: #38bdf8; font-weight: 600; }
   </style>
 </head>
@@ -199,142 +323,257 @@
         <span class="logo-medx">MedX</span>
       </div>
       <p class="subtitle">Révisions & Concours de Santé</p>
+      <span class="version-pill" id="app-version-pill" onclick="checkForUpdatesManual()" title="Vérifier les mises à jour">Auto-MAJ • v1.4.0</span>
     </header>
 
     <main id="main-content">
       <!-- HOME -->
       <section id="sec-home" class="view-section active">
         <div class="welcome-card">
-          <h2>Bonjour, Étudiant (e)!</h2>
-          <p>Téléchargez vos leçons PDF dans chaque UE pour les lire en haute définition même en mode hors-ligne.</p>
+          <h2>Bonjour, Étudiant (e)! </h2>
+          <p>10 leçons PDF par UE, 5 vidéos par UE, QCM, classement avec toutes les notes /20 et protection filigrane.</p>
         </div>
         <div class="stats-grid">
-          <div class="stat-box"><i class="fa-solid fa-book-open"></i><h3>8</h3><span>Unités (UE)</span></div>
           <div class="stat-box"><i class="fa-solid fa-cloud-arrow-down"></i><h3 id="offline-total-count">0</h3><span>PDF Hors-ligne</span></div>
+          <div class="stat-box"><i class="fa-solid fa-shield-halved"></i><h3 id="home-protection-status">ACTIF</h3><span>Filigrane PDF/Vidéo</span></div>
         </div>
         <button class="btn-primary" onclick="switchTab('cours')">Accéder aux Cours (UE)</button>
+        <button class="btn-secondary" onclick="switchTab('classement')"><i class="fa-solid fa-trophy"></i> Voir le Classement & Notes /20</button>
       </section>
 
-      <!-- COURS (LES 8 UE) -->
+      <!-- COURS (LES 8 UE - 10 ESPACES PDF CHACUNE + FORMULAIRE AJOUT PDF) -->
       <section id="sec-cours" class="view-section">
-        <h2>Unités d'Enseignement (UE)</h2>
-        <div class="subjects-grid">
-          <div class="subject-card" onclick="openUE('sec-anatomie')">
-            <div class="subject-banner banner-anatomie"><i class="fa-solid fa-bone"></i></div>
-            <div class="card-content"><h3>Anatomie</h3><span class="progress-text" id="count-anatomie">0 Leçon</span></div>
+        <h2>Cours par UE (10 leçons / UE)</h2>
+        <div class="subjects-grid" id="cours-ue-grid"></div>
+
+        <!-- ESPACE RÉSERVE AJOUT LEÇON PDF (1 À 10 PAR UE) -->
+        <div class="form-card">
+          <h3 style="font-size:0.98rem; margin-bottom:10px; color:#f8fafc;"><i class="fa-solid fa-file-pdf" style="color:#38bdf8;"></i> Espace de réserve : Ajouter une leçon PDF (1 à 10)</h3>
+          <div class="form-group">
+            <label>Unité d'Enseignement (UE) :</label>
+            <select id="new-pdf-ue" class="form-control">
+              <option value="anatomie">Anatomie</option>
+              <option value="biomolecules">Biomolécules</option>
+              <option value="icm">ICM</option>
+              <option value="physiologie">Physiologie</option>
+              <option value="biomath">Biomath</option>
+              <option value="francais">Français Médical</option>
+              <option value="biocell">Biocell & Tissu</option>
+              <option value="uespecifique">UE Spécifique</option>
+            </select>
           </div>
-          <div class="subject-card" onclick="openUE('sec-biomolecules')">
-            <div class="subject-banner banner-biomolecules"><i class="fa-solid fa-dna"></i></div>
-            <div class="card-content"><h3>Biomolécules</h3><span class="progress-text" id="count-biomolecules">0 Leçon</span></div>
+          <div class="form-group">
+            <label>Emplacement de la leçon PDF (1 à 10) :</label>
+            <select id="new-pdf-slot" class="form-control">
+              <option value="0">Leçon 1</option>
+              <option value="1">Leçon 2</option>
+              <option value="2">Leçon 3</option>
+              <option value="3">Leçon 4</option>
+              <option value="4">Leçon 5</option>
+              <option value="5">Leçon 6</option>
+              <option value="6">Leçon 7</option>
+              <option value="7">Leçon 8</option>
+              <option value="8">Leçon 9</option>
+              <option value="9">Leçon 10</option>
+            </select>
           </div>
-          <div class="subject-card" onclick="openUE('sec-icm')">
-            <div class="subject-banner banner-icm"><i class="fa-solid fa-pills"></i></div>
-            <div class="card-content"><h3>ICM</h3><span class="progress-text" id="count-icm">0 Leçon</span></div>
+          <div class="form-group">
+            <label>Titre de la leçon PDF :</label>
+            <input type="text" id="new-pdf-title" class="form-control" placeholder="Ex : Leçon 1 : Ostéologie du crâne">
           </div>
-          <div class="subject-card" onclick="openUE('sec-physiologie')">
-            <div class="subject-banner banner-physiologie"><i class="fa-solid fa-heart-pulse"></i></div>
-            <div class="card-content"><h3>Physiologie</h3><span class="progress-text" id="count-physiologie">0 Leçon</span></div>
+          <div class="form-group">
+            <label>Lien du fichier PDF (URL directe / Drive / Dropbox) :</label>
+            <input type="text" id="new-pdf-url" class="form-control" placeholder="https://.../cours.pdf">
           </div>
-          <div class="subject-card" onclick="openUE('sec-biomath')">
-            <div class="subject-banner banner-biomath"><i class="fa-solid fa-calculator"></i></div>
-            <div class="card-content"><h3>Biomath</h3><span class="progress-text" id="count-biomath">0 Leçon</span></div>
-          </div>
-          <div class="subject-card" onclick="openUE('sec-francais')">
-            <div class="subject-banner banner-francais"><i class="fa-solid fa-language"></i></div>
-            <div class="card-content"><h3>Français Médical</h3><span class="progress-text" id="count-francais">0 Leçon</span></div>
-          </div>
-          <div class="subject-card" onclick="openUE('sec-biocell')">
-            <div class="subject-banner banner-biocell"><i class="fa-solid fa-microscope"></i></div>
-            <div class="card-content"><h3>Biocell & Tissu</h3><span class="progress-text" id="count-biocell">0 Leçon</span></div>
-          </div>
-          <div class="subject-card" onclick="openUE('sec-uespecifique')">
-            <div class="subject-banner banner-uespecifique"><i class="fa-solid fa-user-doctor"></i></div>
-            <div class="card-content"><h3>UE Spécifique</h3><span class="progress-text" id="count-uespecifique">0 Leçon</span></div>
-          </div>
+          <button class="btn-primary" onclick="addPdfToSlot()">Enregistrer la leçon PDF dans l'UE</button>
+          <div id="new-pdf-status" style="margin-top:8px; font-size:0.83rem; text-align:center; font-weight:600;"></div>
         </div>
       </section>
 
-      <!-- À PROPOS -->
-      <section id="sec-apropos" class="view-section">
-        <h2>À Propos de MedX</h2>
-        <div class="about-card">
-          <p><strong>MedX</strong> permet aux étudiants en santé de consulter et télécharger leurs cours PDF par Unité d'Enseignement pour réviser en mode hors-ligne.</p>
-          <div class="author-box">
-            <div class="author-title">Auteur & Conception</div>
-            <div class="author-name">Dr RABIBISOA Herilala Nantenaina Pierre</div>
-            <div class="contact-item"><i class="fa-solid fa-envelope"></i> rasfrancisco669@gmail.com</div>
-            <div class="contact-item"><i class="fa-solid fa-phone"></i> 0341597438</div>
+      <!-- VUE DÉTAILLÉE D'UNE UE DE COURS -->
+      <section id="sec-ue-cours-detail" class="ue-view-section">
+        <header id="cours-ue-header" class="ue-header banner-anatomie">
+          <button class="back-btn" onclick="switchTab('cours')"><i class="fa-solid fa-arrow-left"></i></button>
+          <h2 id="cours-ue-title">Anatomie</h2>
+        </header>
+        <div class="ue-content"><div id="cours-lessons-list"></div></div>
+      </section>
+
+      <!-- SECTION VIDÉOS (LES 8 UE - 5 VIDÉOS + ESPACE AJOUT VIDÉO) -->
+      <section id="sec-videos" class="view-section">
+        <h2>Vidéos par UE</h2>
+        <p style="font-size:0.84rem; color:#94a3b8; margin-top:4px;">5 espaces vidéo par UE + ajout rapide.</p>
+        <div class="subjects-grid" id="videos-ue-grid"></div>
+
+        <div class="form-card">
+          <h3 style="font-size:0.98rem; margin-bottom:10px; color:#f8fafc;"><i class="fa-solid fa-video" style="color:#38bdf8;"></i> Espace de réserve : Ajouter une vidéo</h3>
+          <div class="form-group">
+            <label>Unité d'Enseignement (UE) :</label>
+            <select id="new-video-ue" class="form-control">
+              <option value="anatomie">Anatomie</option>
+              <option value="biomolecules">Biomolécules</option>
+              <option value="icm">ICM</option>
+              <option value="physiologie">Physiologie</option>
+              <option value="biomath">Biomath</option>
+              <option value="francais">Français Médical</option>
+              <option value="biocell">Biocell & Tissu</option>
+              <option value="uespecifique">UE Spécifique</option>
+            </select>
           </div>
+          <div class="form-group">
+            <label>Emplacement (1 à 5) :</label>
+            <select id="new-video-slot" class="form-control">
+              <option value="0">Vidéo 1</option>
+              <option value="1">Vidéo 2</option>
+              <option value="2">Vidéo 3</option>
+              <option value="3">Vidéo 4</option>
+              <option value="4">Vidéo 5</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Titre de la vidéo :</label>
+            <input type="text" id="new-video-title" class="form-control" placeholder="Ex : Vidéo 1 : Ostéologie">
+          </div>
+          <div class="form-group">
+            <label>Lien YouTube ou MP4 :</label>
+            <input type="text" id="new-video-url" class="form-control" placeholder="https://www.youtube.com/watch?v=... ou .../video.mp4">
+          </div>
+          <button class="btn-primary" onclick="addVideoToSlot()">Enregistrer la vidéo</button>
+          <div id="new-video-status" style="margin-top:8px; font-size:0.83rem; text-align:center; font-weight:600;"></div>
         </div>
       </section>
 
-      <!-- SECTIONS DÉTAILLÉES DES 8 UE -->
-      <section id="sec-anatomie" class="ue-view-section">
-        <header class="ue-header banner-anatomie">
-          <button class="back-btn" onclick="switchTab('cours')"><i class="fa-solid fa-arrow-left"></i></button>
-          <h2>Anatomie</h2>
+      <!-- VUE DÉTAILLÉE D'UNE UE DE VIDÉOS -->
+      <section id="sec-ue-videos-detail" class="ue-view-section">
+        <header id="videos-ue-header" class="ue-header banner-anatomie">
+          <button class="back-btn" onclick="switchTab('videos')"><i class="fa-solid fa-arrow-left"></i></button>
+          <h2 id="videos-ue-title">Vidéos • Anatomie</h2>
         </header>
-        <div class="ue-content"><div id="list-anatomie"></div></div>
+        <div class="ue-content"><div id="videos-lessons-list"></div></div>
       </section>
 
-      <section id="sec-biomolecules" class="ue-view-section">
-        <header class="ue-header banner-biomolecules">
-          <button class="back-btn" onclick="switchTab('cours')"><i class="fa-solid fa-arrow-left"></i></button>
-          <h2>Structure & Biomolécules</h2>
-        </header>
-        <div class="ue-content"><div id="list-biomolecules"></div></div>
+      <!-- QCM (ORGANISÉ PAR UE + ESPACE RÉSERVE AJOUT QCM) -->
+      <section id="sec-qcm" class="view-section">
+        <h2>QCM par UE</h2>
+        <p style="font-size:0.84rem; color:#94a3b8; margin-top:4px;">Choisissez une UE pour répondre instantanément.</p>
+        <div class="subjects-grid" id="qcm-ue-grid"></div>
+
+        <div class="form-card">
+          <h3 style="font-size:0.98rem; margin-bottom:10px; color:#f8fafc;"><i class="fa-solid fa-plus-circle" style="color:#38bdf8;"></i> Espace de réserve : Ajouter un QCM</h3>
+          <div class="form-group">
+            <label>Unité d'Enseignement (UE) :</label>
+            <select id="new-qcm-ue" class="form-control">
+              <option value="anatomie">Anatomie</option>
+              <option value="biomolecules">Biomolécules</option>
+              <option value="icm">ICM</option>
+              <option value="physiologie">Physiologie</option>
+              <option value="biomath">Biomath</option>
+              <option value="francais">Français Médical</option>
+              <option value="biocell">Biocell & Tissu</option>
+              <option value="uespecifique">UE Spécifique</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Question :</label>
+            <input type="text" id="new-qcm-question" class="form-control" placeholder="Ex : Quel os forme la pommette ?">
+          </div>
+          <div class="form-group">
+            <label>Option A :</label>
+            <input type="text" id="new-qcm-opt0" class="form-control" placeholder="Proposition A">
+          </div>
+          <div class="form-group">
+            <label>Option B :</label>
+            <input type="text" id="new-qcm-opt1" class="form-control" placeholder="Proposition B">
+          </div>
+          <div class="form-group">
+            <label>Option C :</label>
+            <input type="text" id="new-qcm-opt2" class="form-control" placeholder="Proposition C">
+          </div>
+          <div class="form-group">
+            <label>Option D :</label>
+            <input type="text" id="new-qcm-opt3" class="form-control" placeholder="Proposition D">
+          </div>
+          <div class="form-group">
+            <label>Bonne réponse :</label>
+            <select id="new-qcm-correct" class="form-control">
+              <option value="0">Option A</option>
+              <option value="1">Option B</option>
+              <option value="2">Option C</option>
+              <option value="3">Option D</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Explication :</label>
+            <input type="text" id="new-qcm-exp" class="form-control" placeholder="Explication après réponse...">
+          </div>
+          <button class="btn-primary" onclick="addCustomQcm()">Enregistrer le QCM</button>
+          <div id="new-qcm-status" style="margin-top:8px; font-size:0.83rem; text-align:center; font-weight:600;"></div>
+        </div>
       </section>
 
-      <section id="sec-icm" class="ue-view-section">
-        <header class="ue-header banner-icm">
-          <button class="back-btn" onclick="switchTab('cours')"><i class="fa-solid fa-arrow-left"></i></button>
-          <h2>ICM</h2>
+      <!-- VUE DÉTAILLÉE DES QCM D'UNE UE -->
+      <section id="sec-ue-qcm-detail" class="ue-view-section">
+        <header id="qcm-ue-header" class="ue-header banner-anatomie">
+          <button class="back-btn" onclick="switchTab('qcm')"><i class="fa-solid fa-arrow-left"></i></button>
+          <h2 id="qcm-ue-title">QCM - Anatomie</h2>
         </header>
-        <div class="ue-content"><div id="list-icm"></div></div>
+        <div class="ue-content">
+          <div class="qcm-top-bar">
+            <span class="qcm-score-badge" id="qcm-ue-score-display">Score UE : 0 / 0</span>
+            <button class="action-btn btn-dl" onclick="resetCurrentUeQcm()"><i class="fa-solid fa-rotate-right"></i> Refaire</button>
+          </div>
+          <div id="qcm-ue-questions-list"></div>
+        </div>
       </section>
 
-      <section id="sec-physiologie" class="ue-view-section">
-        <header class="ue-header banner-physiologie">
-          <button class="back-btn" onclick="switchTab('cours')"><i class="fa-solid fa-arrow-left"></i></button>
-          <h2>Physiologie</h2>
-        </header>
-        <div class="ue-content"><div id="list-physiologie"></div></div>
+      <!-- CLASSEMENT AVEC TOUTES LES NOTES /20 PAR UE + MOYENNE GÉNÉRALE -->
+      <section id="sec-classement" class="view-section">
+        <h2>Classement & Notes (/20)</h2>
+        <p style="font-size:0.82rem; color:#94a3b8; margin-top:4px; margin-bottom:10px;">
+          Chaque étudiant affiche toutes ses notes sur 20 par UE ainsi que sa moyenne générale.
+        </p>
+
+        <div id="leaderboard-container"></div>
+
+        <div class="form-card">
+          <h3 style="font-size:0.98rem; margin-bottom:10px; color:#f8fafc;"><i class="fa-solid fa-user-plus" style="color:#38bdf8;"></i> Ajouter une personne & ses notes (/20)</h3>
+          <div class="form-group">
+            <label>Nom ou prénom :</label>
+            <input type="text" id="new-person-name" class="form-control" placeholder="Ex : Rakoto Jean">
+          </div>
+          <div class="grades-input-grid" id="rank-grades-inputs"></div>
+          <button class="btn-primary" onclick="addPersonWithGradesToRanking()">Ajouter au classement (Moyenne auto)</button>
+          <div id="new-person-status" style="margin-top:8px; font-size:0.83rem; text-align:center; font-weight:600;"></div>
+        </div>
+
+        <button class="btn-secondary" onclick="resetGlobalRanking()"><i class="fa-solid fa-rotate-left"></i> Réinitialiser les ajouts</button>
       </section>
 
-      <section id="sec-biomath" class="ue-view-section">
-        <header class="ue-header banner-biomath">
-          <button class="back-btn" onclick="switchTab('cours')"><i class="fa-solid fa-arrow-left"></i></button>
-          <h2>Biomath & Biophysique</h2>
-        </header>
-        <div class="ue-content"><div id="list-biomath"></div></div>
-      </section>
-
-      <section id="sec-francais" class="ue-view-section">
-        <header class="ue-header banner-francais">
-          <button class="back-btn" onclick="switchTab('cours')"><i class="fa-solid fa-arrow-left"></i></button>
-          <h2>Français Médical</h2>
-        </header>
-        <div class="ue-content"><div id="list-francais"></div></div>
-      </section>
-
-      <section id="sec-biocell" class="ue-view-section">
-        <header class="ue-header banner-biocell">
-          <button class="back-btn" onclick="switchTab('cours')"><i class="fa-solid fa-arrow-left"></i></button>
-          <h2>Biocell & Tissu</h2>
-        </header>
-        <div class="ue-content"><div id="list-biocell"></div></div>
-      </section>
-
-      <section id="sec-uespecifique" class="ue-view-section">
-        <header class="ue-header banner-uespecifique">
-          <button class="back-btn" onclick="switchTab('cours')"><i class="fa-solid fa-arrow-left"></i></button>
-          <h2>Unité Spécifique</h2>
-        </header>
-        <div class="ue-content"><div id="list-uespecifique"></div></div>
+      <!-- ESPACE PROTECTION DES CONTENUS (FILIGRANE PDF & VIDÉO) -->
+      <section id="sec-protection" class="view-section">
+        <h2>Protection des Contenus</h2>
+        <div class="form-card">
+          <p style="font-size:0.85rem; color:#cbd5e1; line-height:1.45; margin-bottom:12px;">
+            Active un filigrane anti-capture d'écran sur le <strong>lecteur PDF</strong> et le <strong>lecteur vidéo</strong>, bloque la copie/clic droit dans les lecteurs et masque l'écran si l'application perd le focus.
+          </p>
+          <div class="form-group">
+            <label>Activer la protection filigrane :</label>
+            <select id="protection-enabled-select" class="form-control" onchange="saveProtectionSettings()">
+              <option value="true">Activée (Recommandé)</option>
+              <option value="false">Désactivée</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Texte du filigrane (watermark) :</label>
+            <input type="text" id="watermark-text-input" class="form-control" value="MedX • Dr RABIBISOA • 0342002623" onchange="saveProtectionSettings()">
+          </div>
+          <button class="btn-primary" onclick="saveProtectionSettings()">Enregistrer la protection</button>
+          <div id="protection-status" style="margin-top:8px; font-size:0.83rem; color:#4ade80; text-align:center; font-weight:600;"></div>
+        </div>
       </section>
     </main>
 
-    <!-- LECTEUR PDF INTÉGRÉ AVEC ZOOM (+ / -) -->
+    <!-- LECTEUR PDF INTÉGRÉ AVEC ZOOM (+ / -) ET FILIGRANE -->
     <div id="pdf-viewer-modal">
       <div class="viewer-top-bar">
         <span id="viewer-title-text" style="font-size:0.95rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:75%;">Leçon PDF</span>
@@ -361,60 +600,885 @@
           </a>
         </div>
       </div>
+      <div class="watermark-layer" id="pdf-watermark-layer"></div>
+    </div>
+
+    <!-- LECTEUR VIDÉO INTÉGRÉ AVEC FILIGRANE -->
+    <div id="video-viewer-modal">
+      <div class="viewer-top-bar">
+        <span id="video-viewer-title" style="font-size:0.95rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:75%;">Vidéo</span>
+        <button class="viewer-close-btn" onclick="closeVideoViewer()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="video-player-area">
+        <div class="video-box">
+          <div id="video-player-container" style="width:100%; height:100%;"></div>
+          <div class="video-watermark-overlay" id="video-watermark-layer"></div>
+        </div>
+        <div style="margin-top:14px;">
+          <a id="video-external-link" href="#" target="_blank" rel="noopener noreferrer" class="fallback-link-btn">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i> Ouvrir dans le navigateur / application
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOUCLIER ANTI-CAPTURE AU CHANGEMENT D'ONGLET / ARRIÈRE-PLAN -->
+    <div class="privacy-shield" id="privacy-shield">
+      <i class="fa-solid fa-shield-halved" style="font-size:2.4rem; color:#38bdf8; margin-bottom:12px;"></i>
+      <h3 style="margin-bottom:8px;">Contenu Protégé MedX</h3>
+      <p style="font-size:0.88rem; color:#94a3b8; max-width:300px; margin-bottom:16px;">
+        La lecture est masquée lorsque la fenêtre perd le focus.
+      </p>
+      <button class="btn-primary" style="max-width:220px;" onclick="hidePrivacyShield()">Reprendre la lecture</button>
     </div>
 
     <nav class="bottom-nav">
       <button class="nav-item active" onclick="switchTab('home')"><i class="fa-solid fa-house"></i><span>Home</span></button>
       <button class="nav-item" onclick="switchTab('cours')"><i class="fa-solid fa-book"></i><span>Cours</span></button>
-      <button class="nav-item" onclick="switchTab('apropos')"><i class="fa-solid fa-circle-info"></i><span>À propos</span></button>
+      <button class="nav-item" onclick="switchTab('videos')"><i class="fa-solid fa-circle-play"></i><span>Vidéos</span></button>
+      <button class="nav-item" onclick="switchTab('qcm')"><i class="fa-solid fa-file-pen"></i><span>QCM</span></button>
+      <button class="nav-item" onclick="switchTab('classement')"><i class="fa-solid fa-trophy"></i><span>Classement</span></button>
+      <button class="nav-item" onclick="switchTab('protection')"><i class="fa-solid fa-shield-halved"></i><span>Protection</span></button>
     </nav>
   </div>
 
   <script>
+    /* =========================================================================
+       ESPACE MISE À JOUR AUTOMATIQUE DU SITE & DE L'APPLICATION
+       - Incrémentez APP_VERSION à chaque modification HTML (ex: "v1.4.1").
+       - Pensez aussi à changer CACHE_NAME dans sw.js (ex: "medx-app-shell-v5").
+       ========================================================================= */
+    const APP_VERSION = "v1.4.0";
+
+    function triggerAutoUpdateCheck() {
+      if (!('serviceWorker' in navigator)) return;
+      navigator.serviceWorker.getRegistration().then((reg) => {
+        if (!reg) return;
+        reg.update();
+        if (reg.waiting) {
+          reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+        }
+      }).catch(() => {});
+
+      const savedVer = localStorage.getItem("MedX_Last_Seen_Version");
+      if (savedVer && savedVer !== APP_VERSION) {
+        localStorage.setItem("MedX_Last_Seen_Version", APP_VERSION);
+        window.location.reload();
+      } else {
+        localStorage.setItem("MedX_Last_Seen_Version", APP_VERSION);
+      }
+    }
+
+    function checkForUpdatesManual() {
+      triggerAutoUpdateCheck();
+      alert(`Version actuelle : ${APP_VERSION}. Vérification de mise à jour lancée.`);
+    }
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').then((reg) => {
+          reg.update();
+          reg.addEventListener('updatefound', () => {
+            const newWorker = reg.installing;
+            if (newWorker) {
+              newWorker.addEventListener('statechange', () => {
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  window.location.reload();
+                }
+              });
+            }
+          });
+        }).catch((err) => {
+          console.warn('Service Worker non enregistré :', err);
+        });
+        triggerAutoUpdateCheck();
+      });
+
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') {
+          triggerAutoUpdateCheck();
+        } else if (isReadingProtectedContent() && getProtectionSettings().enabled) {
+          document.getElementById("privacy-shield").classList.add("active");
+        }
+      });
+    }
+
+    const UE_META = [
+      { key: "anatomie", label: "Anatomie", banner: "banner-anatomie", icon: "fa-bone" },
+      { key: "biomolecules", label: "Biomolécules", banner: "banner-biomolecules", icon: "fa-dna" },
+      { key: "icm", label: "ICM", banner: "banner-icm", icon: "fa-pills" },
+      { key: "physiologie", label: "Physiologie", banner: "banner-physiologie", icon: "fa-heart-pulse" },
+      { key: "biomath", label: "Biomath", banner: "banner-biomath", icon: "fa-calculator" },
+      { key: "francais", label: "Français Médical", banner: "banner-francais", icon: "fa-language" },
+      { key: "biocell", label: "Biocell & Tissu", banner: "banner-biocell", icon: "fa-microscope" },
+      { key: "uespecifique", label: "UE Spécifique", banner: "banner-uespecifique", icon: "fa-user-doctor" }
+    ];
+
     // =========================================================================
-    // 1. ESPACES RÉSERVÉS AUX LEÇONS ET LIENS PDF DE CHAQUE UE
-    // Remplacez les exemples ci-dessous par vos vrais titres et liens PDF (.pdf)
+    // PROTECTION DES CONTENUS (FILIGRANE PDF & VIDÉO + ANTI-COPIE)
     // =========================================================================
-    const CATALOGUE_COURS = {
+    const PROTECTION_KEY = "MedX_Protection_Settings_v1";
+
+    function getProtectionSettings() {
+      try {
+        return JSON.parse(localStorage.getItem(PROTECTION_KEY)) || {
+          enabled: true,
+          watermarkText: "MedX • Dr RABIBISOA • 0342002623"
+        };
+      } catch {
+        return { enabled: true, watermarkText: "MedX • Dr RABIBISOA • 0342002623" };
+      }
+    }
+
+    function saveProtectionSettings() {
+      const enabled = document.getElementById("protection-enabled-select").value === "true";
+      const watermarkText = document.getElementById("watermark-text-input").value.trim() || "MedX • Protégé";
+      localStorage.setItem(PROTECTION_KEY, JSON.stringify({ enabled, watermarkText }));
+
+      const homeStatus = document.getElementById("home-protection-status");
+      if (homeStatus) homeStatus.innerText = enabled ? "ACTIF" : "INACTIF";
+
+      const st = document.getElementById("protection-status");
+      if (st) st.innerText = "✅ Paramètres de protection enregistrés.";
+      applyWatermarks();
+    }
+
+    function applyWatermarks() {
+      const cfg = getProtectionSettings();
+      const pdfLayer = document.getElementById("pdf-watermark-layer");
+      const vidLayer = document.getElementById("video-watermark-layer");
+
+      if (!cfg.enabled) {
+        pdfLayer.classList.remove("active");
+        pdfLayer.innerHTML = "";
+        vidLayer.innerHTML = "";
+        return;
+      }
+
+      const txt = escapeHtml(cfg.watermarkText);
+      pdfLayer.innerHTML = Array.from({ length: 18 }, () => `<div class="watermark-tag">${txt}</div>`).join("");
+      pdfLayer.classList.add("active");
+
+      vidLayer.innerHTML = Array.from({ length: 6 }, () => `<div class="video-watermark-item">${txt}</div>`).join("");
+    }
+
+    function isReadingProtectedContent() {
+      return document.getElementById("pdf-viewer-modal").classList.contains("active") ||
+             document.getElementById("video-viewer-modal").classList.contains("active");
+    }
+
+    function hidePrivacyShield() {
+      document.getElementById("privacy-shield").classList.remove("active");
+    }
+
+    document.addEventListener("contextmenu", (e) => {
+      if (isReadingProtectedContent() && getProtectionSettings().enabled) {
+        e.preventDefault();
+      }
+    });
+
+    // =========================================================================
+    // 1. ESPACE DE RÉSERVE COURS PDF (10 EMPLACEMENTS PAR UE : LEÇON 1 À 10)
+    // =========================================================================
+    const RESERVE_COURS_PDF_PAR_UE = {
+      /* RÉSERVE PDF ANATOMIE (10 places) */
+      anatomie: Array.from({ length: 10 }, (_, i) => ({ titre: `Leçon ${i + 1} : Anatomie`, lien: "assets/anatomie/Anatomie de la rate.pdf" })),
+      anatomie: Array.from({ length: 10 }, (_, i) => ({ titre: `Leçon ${i + 2} : Anatomie`, lien: "assets/anatomie/LE-CŒUR-5-Pr-RAVALISOA-Agnes.pdf" })),
+
+      /* RÉSERVE PDF BIOMOLÉCULES (10 places) */
+      biomolecules: Array.from({ length: 10 }, (_, i) => ({ titre: `Leçon ${i + 1} : Biomolécules`, lien: "" })),
+      /* RÉSERVE PDF ICM (10 places) */
+      icm: Array.from({ length: 10 }, (_, i) => ({ titre: `Leçon ${i + 1} : ICM`, lien: "assets/anatomie/icm/1604323401_1-histoire_medicaments_&_pharmacie.pdf" })),
+
+
+      /* RÉSERVE PDF PHYSIOLOGIE (10 places) */
+      physiologie: Array.from({ length: 10 }, (_, i) => ({ titre: `Leçon ${i + 1} : Physiologie`, lien: "" })),
+      /* RÉSERVE PDF BIOMATH (10 places) */
+      biomath: Array.from({ length: 10 }, (_, i) => ({ titre: `Leçon ${i + 1} : Biomath`, lien: "" })),
+      /* RÉSERVE PDF FRANÇAIS MÉDICAL (10 places) */
+      francais: Array.from({ length: 10 }, (_, i) => ({ titre: `Leçon ${i + 1} : Français Médical`, lien: "" })),
+      /* RÉSERVE PDF BIOCELL & TISSU (10 places) */
+      biocell: Array.from({ length: 10 }, (_, i) => ({ titre: `Leçon ${i + 1} : Biocell & Tissu`, lien: "assets/anatomie/biocell et tissu/BIOCELL.pdf" })),
+      /* RÉSERVE PDF UE SPÉCIFIQUE (10 places) */
+      uespecifique: Array.from({ length: 10 }, (_, i) => ({ titre: `Leçon ${i + 1} : UE Spécifique`, lien: "" }))
+    };
+
+    const CUSTOM_PDF_KEY = "MedX_Custom_PDF_Lessons_v1";
+
+    function getCoursCatalogue() {
+      const cat = JSON.parse(JSON.stringify(RESERVE_COURS_PDF_PAR_UE));
+      try {
+        const saved = JSON.parse(localStorage.getItem(CUSTOM_PDF_KEY)) || {};
+        Object.keys(saved).forEach(ueKey => {
+          if (!cat[ueKey]) return;
+          Object.keys(saved[ueKey]).forEach(slotIdx => {
+            const idx = parseInt(slotIdx, 10);
+            if (cat[ueKey][idx] && saved[ueKey][slotIdx]) {
+              cat[ueKey][idx] = saved[ueKey][slotIdx];
+            }
+          });
+        });
+      } catch {}
+      return cat;
+    }
+
+    function addPdfToSlot() {
+      const ueKey = document.getElementById("new-pdf-ue").value;
+      const slotIdx = parseInt(document.getElementById("new-pdf-slot").value, 10);
+      const titreInput = document.getElementById("new-pdf-title");
+      const urlInput = document.getElementById("new-pdf-url");
+      const status = document.getElementById("new-pdf-status");
+
+      const titre = titreInput.value.trim() || `Leçon ${slotIdx + 1}`;
+      const lien = urlInput.value.trim();
+
+      if (!lien) {
+        status.style.color = "#f87171";
+        status.innerText = "❌ Collez un lien PDF valide.";
+        return;
+      }
+
+      let saved = {};
+      try { saved = JSON.parse(localStorage.getItem(CUSTOM_PDF_KEY)) || {}; } catch {}
+      if (!saved[ueKey]) saved[ueKey] = {};
+      saved[ueKey][slotIdx] = { titre, lien };
+      localStorage.setItem(CUSTOM_PDF_KEY, JSON.stringify(saved));
+
+      titreInput.value = "";
+      urlInput.value = "";
+      status.style.color = "#4ade80";
+      status.innerText = `✅ Leçon PDF enregistrée dans l'emplacement ${slotIdx + 1}/10 !`;
+      renderCoursUeGrid();
+      if (document.getElementById("sec-ue-cours-detail").classList.contains("active") && activeCoursUeKey === ueKey) {
+        renderCoursLessons(ueKey);
+      }
+    }
+
+    // =========================================================================
+    // 2. ESPACE DE RÉSERVE VIDÉOS (5 EMPLACEMENTS PAR UE)
+    // =========================================================================
+    const RESERVE_VIDEOS_PAR_UE = {
+      anatomie: Array.from({ length: 5 }, (_, i) => ({ titre: `Vidéo ${i + 1} : Anatomie`, lien: "" })),
+      biomolecules: Array.from({ length: 5 }, (_, i) => ({ titre: `Vidéo ${i + 1} : Biomolécules`, lien: "" })),
+      icm: Array.from({ length: 5 }, (_, i) => ({ titre: `Vidéo ${i + 1} : ICM`, lien: "" })),
+      physiologie: Array.from({ length: 5 }, (_, i) => ({ titre: `Vidéo ${i + 1} : Physiologie`, lien: "" })),
+      biomath: Array.from({ length: 5 }, (_, i) => ({ titre: `Vidéo ${i + 1} : Biomath`, lien: "" })),
+      francais: Array.from({ length: 5 }, (_, i) => ({ titre: `Vidéo ${i + 1} : Français Médical`, lien: "" })),
+      biocell: Array.from({ length: 5 }, (_, i) => ({ titre: `Vidéo ${i + 1} : Biocell & Tissu`, lien: "" })),
+      uespecifique: Array.from({ length: 5 }, (_, i) => ({ titre: `Vidéo ${i + 1} : UE Spécifique`, lien: "" }))
+    };
+
+    const CUSTOM_VIDEOS_KEY = "MedX_Custom_Videos_v1";
+
+    function getVideosCatalogue() {
+      const cat = JSON.parse(JSON.stringify(RESERVE_VIDEOS_PAR_UE));
+      try {
+        const saved = JSON.parse(localStorage.getItem(CUSTOM_VIDEOS_KEY)) || {};
+        Object.keys(saved).forEach(ueKey => {
+          if (!cat[ueKey]) return;
+          Object.keys(saved[ueKey]).forEach(slotIdx => {
+            const idx = parseInt(slotIdx, 10);
+            if (cat[ueKey][idx] && saved[ueKey][slotIdx]) {
+              cat[ueKey][idx] = saved[ueKey][slotIdx];
+            }
+          });
+        });
+      } catch {}
+      return cat;
+    }
+
+    function addVideoToSlot() {
+      const ueKey = document.getElementById("new-video-ue").value;
+      const slotIdx = parseInt(document.getElementById("new-video-slot").value, 10);
+      const titreInput = document.getElementById("new-video-title");
+      const urlInput = document.getElementById("new-video-url");
+      const status = document.getElementById("new-video-status");
+
+      const titre = titreInput.value.trim() || `Vidéo ${slotIdx + 1}`;
+      const lien = urlInput.value.trim();
+
+      if (!lien) {
+        status.style.color = "#f87171";
+        status.innerText = "❌ Collez un lien vidéo (YouTube, MP4, etc.).";
+        return;
+      }
+
+      let saved = {};
+      try { saved = JSON.parse(localStorage.getItem(CUSTOM_VIDEOS_KEY)) || {}; } catch {}
+      if (!saved[ueKey]) saved[ueKey] = {};
+      saved[ueKey][slotIdx] = { titre, lien };
+      localStorage.setItem(CUSTOM_VIDEOS_KEY, JSON.stringify(saved));
+
+      titreInput.value = "";
+      urlInput.value = "";
+      status.style.color = "#4ade80";
+      status.innerText = `✅ Vidéo enregistrée dans l'emplacement ${slotIdx + 1}/5 !`;
+      renderVideosUeGrid();
+      if (document.getElementById("sec-ue-videos-detail").classList.contains("active") && activeVideosUeKey === ueKey) {
+        renderVideosList(ueKey);
+      }
+    }
+
+    // =========================================================================
+    // 3. ESPACE DE RÉSERVE QCM PAR UE
+    // =========================================================================
+    const RESERVE_QCM_PAR_UE = {
       anatomie: [
-        { titre: "Leçon 1 : Anatomie du cœur", lien: "assets/anatomie/LE-CŒUR-5-Pr-RAVALISOA-Agnes.pdf " },
-        { titre: "Leçon 2 : Anatomie du médiastin", lien: "assets/anatomie/MEDIASTIN-Pr-RAVALISOA-Agnes.pdf " },
-        { titre: "Leçon 3 : Anatomie de la rate", lien: "assets/anatomie/Anatomie de la rate.pdf" }
+        {
+          question: "Par quel orifice de la base du crâne passe le nerf mandibulaire (V3) ?",
+          options: ["Le foramen ovale", "Le canal optique", "Le foramen stylomastoïdien", "La lame criblée de l'ethmoïde"],
+          correctIndex: 0,
+          explanation: "Le nerf mandibulaire (V3) traverse le foramen ovale dans la fosse crânienne moyenne."
+        }
       ],
       biomolecules: [
-        { titre: "Leçon 1 : Structure des acides aminés et protéines", lien: "assets/anatomie/sfb/Aa, peptides, protéines.pptx" },
-        { titre: "Leçon 2 : Chimie Dr Dina", lien: "assets/anatomie/sfb/Cours chimie PACES.pdf" }
-        { titre: "Leçon 3 : Lipides Pr Doll", lien: "assets/anatomie/sfb/Lipides Pr Doll Rakoto.pdf" },
-        { titre: "Leçon 4 : acide nucléiques Pr Doll", lien:"assets/anatomie/sfb/Acide-nucleique-Pr-Doll-Rakoto.pdf" }
+        {
+          question: "Quelle liaison relie deux acides aminés au sein d'une chaîne polypeptidique ?",
+          options: ["Une liaison glycosidique", "Une liaison peptidique", "Une liaison phosphodiester", "Une liaison ester"],
+          correctIndex: 1,
+          explanation: "La liaison peptidique est une liaison amide covalente entre le groupe carboxyle et le groupe amine."
+        }
       ],
       icm: [
-        { titre: "Leçon 1 : Histoire du médicament", lien: "assets/anatomie/icm/1604323401_1-histoire_medicaments_&_pharmacie.pdf" },
-        { titre: "Leçon 2 : Mécanismes d'action des médicaments", lien: "" }
+        {
+          question: "Quelle voie d'administration offre une biodisponibilité de 100 % ?",
+          options: ["La voie orale", "La voie intraveineuse (IV)", "La voie sous-cutanée", "La voie rectale"],
+          correctIndex: 1,
+          explanation: "La voie intraveineuse délivre le principe actif directement dans la circulation systémique."
+        }
       ],
-      physiologie: [ 
-        { titre: "Leçon 1 : Physiologie respiratoire Pr Rondro", lien: "assets/anatomie/phyysiologie/4-PHYSIOLOGIE RESPIRATOIRE-1paces.pdf" },
-        { titre: "Leçon 2 : Physiologie du système digestif", lien: "" }
+      physiologie: [
+        {
+          question: "Quelle structure constitue le pacemaker physiologique principal du cœur ?",
+          options: ["Le nœud atrio-ventriculaire", "Le faisceau de His", "Le nœud sino-atrial", "Les fibres de Purkinje"],
+          correctIndex: 2,
+          explanation: "Le nœud sino-atrial impose le rythme sinusal normal."
+        }
       ],
       biomath: [
-        { titre: "Leçon 1 : Biomath Pr Rasata", lien: "assets/anatomie/biomath/Biomaths Avril 2019.ppt" },
-        { titre: "Leçon 2 : Biophysique des fluides et hémodynamique", lien: "" }
+        {
+          question: "Que mesure la sensibilité d'un test diagnostique ?",
+          options: [
+            "La probabilité que le test soit positif chez un sujet malade",
+            "La probabilité que le test soit négatif chez un sujet sain",
+            "La prévalence de la maladie",
+            "La valeur prédictive négative"
+          ],
+          correctIndex: 0,
+          explanation: "La sensibilité correspond à P(T+ | M+)."
+        }
       ],
       francais: [
-        { titre: "Leçon 1 : Terminologie médicale et étymologie", lien: "" },
-        { titre: "Leçon 2 : Rédaction scientifique et synthèse", lien: "" }
+        {
+          question: "Que signifie le préfixe médical « brady- » ?",
+          options: ["Rapide", "Lent", "Douloureux", "Absent"],
+          correctIndex: 1,
+          explanation: "Du grec bradys signifiant lent."
+        }
       ],
       biocell: [
-        { titre: "Leçon 1 : Toutes  Biocell Pr Rakotroka", lien: "assets/anatomie/biocell et tissu/BIOCELL.pdf" },
-        { titre: "Leçon 2 : Histologie des tissus épithéliaux", lien: "" }
+        {
+          question: "Quel organite cellulaire produit l'ATP par phosphorylation oxydative ?",
+          options: ["L'appareil de Golgi", "Le lysosome", "La mitochondrie", "Le peroxysome"],
+          correctIndex: 2,
+          explanation: "La mitochondrie assure la phosphorylation oxydative."
+        }
       ],
       uespecifique: [
-        { titre: "Leçon 1 : imagerie médicale (irm)", lien: " assets/anatomie/ue spésifique/irm/Diapo TDM.pdf " },
-        { titre: "Leçon 2 : Ostéo (anatomie du crâne)", lien: "assets/anatomie/ue spésifique/osteo/ANATOMIE DU CRANE 2023 volume 1 PACES TANA.pdf" }
+        {
+          question: "Quel signe clinique évoque une hémorragie digestive haute ?",
+          options: ["Une hématémèse", "Une hématurie", "Une hémoptysie", "Une épistaxis"],
+          correctIndex: 0,
+          explanation: "L'hématémèse correspond à un vomissement de sang d'origine digestive haute."
+        }
       ]
     };
-    // =========================================================================
 
-    // Convertisseur automatique pour les liens Google Drive / Dropbox
+    const CUSTOM_QCM_KEY = "MedX_Custom_QCM_v1";
+    const CUSTOM_RANKING_KEY = "MedX_Custom_Ranking_Students_v1";
+
+    const DEFAULT_10_STUDENTS = [
+      { id: "s1", name: "Andrianina R.", notes: { anatomie: 17, biomolecules: 16, icm: 15, physiologie: 16.5, biomath: 15.5, francais: 16, biocell: 17, uespecifique: 16 }, custom: false },
+      { id: "s2", name: "Rakotoarisoa M.", notes: { anatomie: 15.5, biomolecules: 15, icm: 14.5, physiologie: 16, biomath: 14, francais: 15, biocell: 15.5, uespecifique: 15 }, custom: false },
+      { id: "s3", name: "Rasoanaivo T.", notes: { anatomie: 14.5, biomolecules: 14, icm: 14, physiologie: 15, biomath: 13.5, francais: 14.5, biocell: 14, uespecifique: 14.5 }, custom: false },
+      { id: "s4", name: "Randrianasolo K.", notes: { anatomie: 13.5, biomolecules: 14, icm: 13, physiologie: 13.5, biomath: 13, francais: 14, biocell: 13.5, uespecifique: 13 }, custom: false },
+      { id: "s5", name: "Ravelomanana S.", notes: { anatomie: 13, biomolecules: 12.5, icm: 12.5, physiologie: 13, biomath: 12, francais: 13, biocell: 12.5, uespecifique: 12.5 }, custom: false },
+      { id: "s6", name: "Razafindrakoto H.", notes: { anatomie: 12, biomolecules: 12, icm: 11.5, physiologie: 12.5, biomath: 11.5, francais: 12, biocell: 12, uespecifique: 11.5 }, custom: false },
+      { id: "s7", name: "Ramanantsoa L.", notes: { anatomie: 11.5, biomolecules: 11, icm: 11, physiologie: 11.5, biomath: 10.5, francais: 11.5, biocell: 11, uespecifique: 11 }, custom: false },
+      { id: "s8", name: "Rafalimanana N.", notes: { anatomie: 10.5, biomolecules: 10.5, icm: 10, physiologie: 11, biomath: 10, francais: 10.5, biocell: 10.5, uespecifique: 10 }, custom: false },
+      { id: "s9", name: "Raharison V.", notes: { anatomie: 10, biomolecules: 9.5, icm: 10, physiologie: 10, biomath: 9.5, francais: 10, biocell: 9.5, uespecifique: 10 }, custom: false },
+      { id: "s10", name: "Rajaonarison E.", notes: { anatomie: 9, biomolecules: 9, icm: 8.5, physiologie: 9.5, biomath: 8.5, francais: 9, biocell: 9, uespecifique: 9 }, custom: false }
+    ];
+
+    function getFullQcmBank() {
+      const bank = JSON.parse(JSON.stringify(RESERVE_QCM_PAR_UE));
+      try {
+        const custom = JSON.parse(localStorage.getItem(CUSTOM_QCM_KEY)) || {};
+        Object.keys(custom).forEach(ue => {
+          if (bank[ue]) bank[ue] = bank[ue].concat(custom[ue]);
+        });
+      } catch {}
+      return bank;
+    }
+
+    function addCustomQcm() {
+      const ue = document.getElementById("new-qcm-ue").value;
+      const question = document.getElementById("new-qcm-question").value.trim();
+      const opt0 = document.getElementById("new-qcm-opt0").value.trim();
+      const opt1 = document.getElementById("new-qcm-opt1").value.trim();
+      const opt2 = document.getElementById("new-qcm-opt2").value.trim();
+      const opt3 = document.getElementById("new-qcm-opt3").value.trim();
+      const correctIndex = parseInt(document.getElementById("new-qcm-correct").value, 10);
+      const explanation = document.getElementById("new-qcm-exp").value.trim() || "Bonne réponse enregistrée.";
+      const status = document.getElementById("new-qcm-status");
+
+      if (!question || !opt0 || !opt1 || !opt2 || !opt3) {
+        status.style.color = "#f87171";
+        status.innerText = "❌ Remplissez la question et les 4 propositions (A, B, C, D).";
+        return;
+      }
+
+      let custom = {};
+      try { custom = JSON.parse(localStorage.getItem(CUSTOM_QCM_KEY)) || {}; } catch {}
+      if (!custom[ue]) custom[ue] = [];
+      custom[ue].push({ question, options: [opt0, opt1, opt2, opt3], correctIndex, explanation });
+      localStorage.setItem(CUSTOM_QCM_KEY, JSON.stringify(custom));
+
+      ["new-qcm-question", "new-qcm-opt0", "new-qcm-opt1", "new-qcm-opt2", "new-qcm-opt3", "new-qcm-exp"].forEach(id => {
+        document.getElementById(id).value = "";
+      });
+
+      status.style.color = "#4ade80";
+      status.innerText = "✅ QCM ajouté dans l'UE sélectionnée !";
+      renderQcmUeGrid();
+    }
+
+    function renderRankGradeInputs() {
+      const container = document.getElementById("rank-grades-inputs");
+      if (!container) return;
+      container.innerHTML = UE_META.map(ue => `
+        <div class="form-group" style="margin-bottom:0;">
+          <label>${escapeHtml(ue.label)} (/20) :</label>
+          <input type="number" step="0.25" min="0" max="20" id="rank-grade-${ue.key}" class="form-control" placeholder="0 - 20">
+        </div>
+      `).join("");
+    }
+
+    function getCustomRankingStudents() {
+      try {
+        return JSON.parse(localStorage.getItem(CUSTOM_RANKING_KEY)) || [];
+      } catch {
+        return [];
+      }
+    }
+
+    function computeAverageFromNotes(notesObj) {
+      const vals = UE_META
+        .map(ue => notesObj ? notesObj[ue.key] : null)
+        .filter(v => typeof v === "number" && !isNaN(v));
+      if (vals.length === 0) return 0;
+      return Number((vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(2));
+    }
+
+    function addPersonWithGradesToRanking() {
+      const nameInput = document.getElementById("new-person-name");
+      const status = document.getElementById("new-person-status");
+      const name = nameInput.value.trim();
+
+      if (!name) {
+        status.style.color = "#f87171";
+        status.innerText = "❌ Entrez le nom de la personne.";
+        return;
+      }
+
+      const notes = {};
+      UE_META.forEach(ue => {
+        const raw = document.getElementById(`rank-grade-${ue.key}`).value.trim();
+        const num = parseFloat(raw);
+        notes[ue.key] = (raw !== "" && !isNaN(num) && num >= 0 && num <= 20) ? num : 0;
+      });
+
+      const list = getCustomRankingStudents();
+      list.push({ id: "rk_" + Date.now(), name, notes, custom: true });
+      localStorage.setItem(CUSTOM_RANKING_KEY, JSON.stringify(list));
+
+      nameInput.value = "";
+      UE_META.forEach(ue => {
+        document.getElementById(`rank-grade-${ue.key}`).value = "";
+      });
+
+      const avg = computeAverageFromNotes(notes);
+      status.style.color = "#4ade80";
+      status.innerText = `✅ Ajouté au classement • Moyenne générale : ${avg.toFixed(2)} / 20`;
+      renderLeaderboard();
+    }
+
+    function deleteCustomRankingStudent(id) {
+      const updated = getCustomRankingStudents().filter(s => s.id !== id);
+      localStorage.setItem(CUSTOM_RANKING_KEY, JSON.stringify(updated));
+      renderLeaderboard();
+    }
+
+    function resetGlobalRanking() {
+      if (!confirm("Réinitialiser les personnes ajoutées ?")) return;
+      localStorage.removeItem(CUSTOM_RANKING_KEY);
+      renderLeaderboard();
+    }
+
+    function renderLeaderboard() {
+      const lbContainer = document.getElementById("leaderboard-container");
+      if (!lbContainer) return;
+
+      const allStudents = [
+        ...DEFAULT_10_STUDENTS,
+        ...getCustomRankingStudents()
+      ].map(st => ({
+        ...st,
+        moyenne: computeAverageFromNotes(st.notes)
+      }));
+
+      allStudents.sort((a, b) => b.moyenne - a.moyenne);
+
+      lbContainer.innerHTML = allStudents.map((st, idx) => {
+        const pos = idx + 1;
+        const posClass = pos === 1 ? "pos-1" : pos === 2 ? "pos-2" : pos === 3 ? "pos-3" : "";
+        const delBtn = st.custom
+          ? `<button class="action-btn btn-del" onclick="deleteCustomRankingStudent('${st.id}')" title="Supprimer"><i class="fa-solid fa-trash"></i></button>`
+          : "";
+
+        const ueBoxes = UE_META.map(ue => {
+          const noteVal = (st.notes && typeof st.notes[ue.key] === "number") ? `${st.notes[ue.key]}/20` : "—";
+          return `
+            <div class="ue-note-box">
+              <span>${escapeHtml(ue.label)}</span>
+              <strong>${escapeHtml(noteVal)}</strong>
+            </div>
+          `;
+        }).join("");
+
+        return `
+          <div class="rank-student-card">
+            <div class="rank-student-header">
+              <div class="rank-student-left">
+                <div class="lb-pos ${posClass}">${pos}</div>
+                <div style="font-weight:700; font-size:0.92rem; color:#f8fafc;">${escapeHtml(st.name)}</div>
+              </div>
+              <div style="display:flex; align-items:center; gap:7px;">
+                <span class="moyenne-pill">Moy : ${st.moyenne.toFixed(2)}/20</span>
+                ${delBtn}
+              </div>
+            </div>
+            <div class="ue-notes-grid">${ueBoxes}</div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    let activeCoursUeKey = "anatomie";
+    let activeVideosUeKey = "anatomie";
+    let activeQcmUeKey = "anatomie";
+    let ueQcmCorrect = 0;
+    let ueQcmAnswered = 0;
+
+    function renderCoursUeGrid() {
+      const grid = document.getElementById("cours-ue-grid");
+      const cat = getCoursCatalogue();
+      if (!grid) return;
+      grid.innerHTML = "";
+
+      UE_META.forEach(ue => {
+        const lessons = cat[ue.key] || [];
+        const activePdf = lessons.filter(l => l.lien && l.lien.trim() !== "").length;
+        const card = document.createElement("div");
+        card.className = "subject-card";
+        card.onclick = () => openCoursUE(ue.key);
+        card.innerHTML = `
+          <div class="subject-banner ${ue.banner}"><i class="fa-solid ${ue.icon}"></i></div>
+          <div class="card-content">
+            <h3>${escapeHtml(ue.label)}</h3>
+            <span class="progress-text">${activePdf} / ${lessons.length} PDF</span>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function openCoursUE(ueKey) {
+      activeCoursUeKey = ueKey;
+      const meta = UE_META.find(u => u.key === ueKey) || UE_META[0];
+      const header = document.getElementById("cours-ue-header");
+      header.className = `ue-header ${meta.banner}`;
+      document.getElementById("cours-ue-title").innerText = meta.label;
+
+      renderCoursLessons(ueKey);
+
+      document.querySelectorAll(".view-section").forEach(sec => sec.classList.remove("active"));
+      document.querySelectorAll(".ue-view-section").forEach(sec => sec.classList.remove("active"));
+      document.getElementById("sec-ue-cours-detail").classList.add("active");
+      window.scrollTo(0, 0);
+    }
+
+    function renderCoursLessons(ueKey) {
+      const listEl = document.getElementById("cours-lessons-list");
+      const cat = getCoursCatalogue();
+      const lessons = cat[ueKey] || [];
+      if (!listEl) return;
+      listEl.innerHTML = "";
+
+      lessons.forEach((lesson, idx) => {
+        const storageKey = `${ueKey}_${idx}`;
+        const isSavedOffline = offlineCacheKeys.has(storageKey);
+        const hasLink = lesson.lien && lesson.lien.trim() !== "";
+
+        const card = document.createElement("div");
+        card.className = "lesson-card";
+
+        const statusHtml = isSavedOffline
+          ? `<span class="lesson-status status-offline"><i class="fa-solid fa-circle-check"></i> Stocké hors-ligne</span>`
+          : hasLink
+            ? `<span class="lesson-status status-online"><i class="fa-solid fa-globe"></i> Disponible en ligne</span>`
+            : `<span class="lesson-status" style="color:#64748b;">Emplacement réserve ${idx + 1}/10 (lien PDF à ajouter)</span>`;
+
+        const actionHtml = !hasLink
+          ? ""
+          : isSavedOffline
+            ? `<button class="action-btn btn-saved" onclick="openLesson('${ueKey}', ${idx})"><i class="fa-solid fa-book-open"></i> Lire</button>
+               <button class="action-btn btn-del" onclick="removeOfflineLesson('${storageKey}')" title="Supprimer du cache"><i class="fa-solid fa-trash"></i></button>`
+            : `<button class="action-btn btn-dl" onclick="downloadLessonOffline('${ueKey}', ${idx}, this)"><i class="fa-solid fa-download"></i> Télécharger</button>`;
+
+        card.innerHTML = `
+          <div class="lesson-main" onclick="openLesson('${ueKey}', ${idx})">
+            <i class="fa-solid fa-file-pdf" style="color:${isSavedOffline ? '#4ade80' : hasLink ? '#f87171' : '#475569'}; font-size:1.3rem; flex-shrink:0;"></i>
+            <div class="lesson-details">
+              <span class="lesson-title">${escapeHtml(lesson.titre)}</span>
+              ${statusHtml}
+            </div>
+          </div>
+          <div class="lesson-actions">${actionHtml}</div>
+        `;
+        listEl.appendChild(card);
+      });
+    }
+
+    function renderVideosUeGrid() {
+      const grid = document.getElementById("videos-ue-grid");
+      const cat = getVideosCatalogue();
+      if (!grid) return;
+      grid.innerHTML = "";
+
+      UE_META.forEach(ue => {
+        const vids = cat[ue.key] || [];
+        const activeVids = vids.filter(v => v.lien && v.lien.trim() !== "").length;
+        const card = document.createElement("div");
+        card.className = "subject-card";
+        card.onclick = () => openVideosUE(ue.key);
+        card.innerHTML = `
+          <div class="subject-banner ${ue.banner}"><i class="fa-solid ${ue.icon}"></i></div>
+          <div class="card-content">
+            <h3>${escapeHtml(ue.label)}</h3>
+            <span class="progress-text">${activeVids} / ${vids.length} Vidéos</span>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function openVideosUE(ueKey) {
+      activeVideosUeKey = ueKey;
+      const meta = UE_META.find(u => u.key === ueKey) || UE_META[0];
+      const header = document.getElementById("videos-ue-header");
+      header.className = `ue-header ${meta.banner}`;
+      document.getElementById("videos-ue-title").innerText = `Vidéos • ${meta.label}`;
+
+      renderVideosList(ueKey);
+
+      document.querySelectorAll(".view-section").forEach(sec => sec.classList.remove("active"));
+      document.querySelectorAll(".ue-view-section").forEach(sec => sec.classList.remove("active"));
+      document.getElementById("sec-ue-videos-detail").classList.add("active");
+      window.scrollTo(0, 0);
+    }
+
+    function renderVideosList(ueKey) {
+      const listEl = document.getElementById("videos-lessons-list");
+      const cat = getVideosCatalogue();
+      const vids = cat[ueKey] || [];
+      if (!listEl) return;
+      listEl.innerHTML = "";
+
+      vids.forEach((vid, idx) => {
+        const hasLink = vid.lien && vid.lien.trim() !== "";
+        const card = document.createElement("div");
+        card.className = "lesson-card";
+
+        const statusHtml = hasLink
+          ? `<span class="lesson-status status-online"><i class="fa-solid fa-circle-play"></i> Prête à lire</span>`
+          : `<span class="lesson-status" style="color:#64748b;">Emplacement réserve ${idx + 1}/5 (lien vidéo à ajouter)</span>`;
+
+        const actionHtml = hasLink
+          ? `<button class="action-btn btn-dl" onclick="openVideoItem('${ueKey}', ${idx})"><i class="fa-solid fa-play"></i> Lire</button>`
+          : "";
+
+        card.innerHTML = `
+          <div class="lesson-main" onclick="openVideoItem('${ueKey}', ${idx})">
+            <i class="fa-solid fa-film" style="color:${hasLink ? '#38bdf8' : '#475569'}; font-size:1.3rem; flex-shrink:0;"></i>
+            <div class="lesson-details">
+              <span class="lesson-title">${escapeHtml(vid.titre)}</span>
+              ${statusHtml}
+            </div>
+          </div>
+          <div class="lesson-actions">${actionHtml}</div>
+        `;
+        listEl.appendChild(card);
+      });
+    }
+
+    function extractYouTubeId(url) {
+      const m = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{6,})/);
+      return m ? m[1] : null;
+    }
+
+    function openVideoItem(ueKey, idx) {
+      const cat = getVideosCatalogue();
+      const vid = cat[ueKey][idx];
+      if (!vid || !vid.lien || vid.lien.trim() === "") {
+        alert("Aucun lien vidéo n'a encore été renseigné pour cet emplacement de réserve.");
+        return;
+      }
+
+      applyWatermarks();
+      const rawUrl = vid.lien.trim();
+      document.getElementById("video-viewer-title").innerText = vid.titre;
+      document.getElementById("video-external-link").href = rawUrl;
+      const container = document.getElementById("video-player-container");
+
+      const ytId = extractYouTubeId(rawUrl);
+      if (ytId) {
+        container.innerHTML = `<iframe src="https://www.youtube.com/embed/${ytId}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+      } else if (/\.(mp4|webm|ogg)(\?.*)?$/i.test(rawUrl)) {
+        container.innerHTML = `<video src="${escapeHtml(rawUrl)}" controls autoplay playsinline controlsList="nodownload"></video>`;
+      } else {
+        container.innerHTML = `<iframe src="${escapeHtml(rawUrl)}" allowfullscreen></iframe>`;
+      }
+
+      document.getElementById("video-viewer-modal").classList.add("active");
+    }
+
+    function closeVideoViewer() {
+      document.getElementById("video-viewer-modal").classList.remove("active");
+      document.getElementById("video-player-container").innerHTML = "";
+    }
+
+    function renderQcmUeGrid() {
+      const grid = document.getElementById("qcm-ue-grid");
+      const bank = getFullQcmBank();
+      if (!grid) return;
+      grid.innerHTML = "";
+
+      UE_META.forEach(ue => {
+        const count = (bank[ue.key] || []).length;
+        const card = document.createElement("div");
+        card.className = "subject-card";
+        card.onclick = () => openQcmUE(ue.key);
+        card.innerHTML = `
+          <div class="subject-banner ${ue.banner}"><i class="fa-solid ${ue.icon}"></i></div>
+          <div class="card-content">
+            <h3>${escapeHtml(ue.label)}</h3>
+            <span class="progress-text">${count} Question${count > 1 ? 's' : ''}</span>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function openQcmUE(ueKey) {
+      activeQcmUeKey = ueKey;
+      const meta = UE_META.find(u => u.key === ueKey) || UE_META[0];
+      const header = document.getElementById("qcm-ue-header");
+      header.className = `ue-header ${meta.banner}`;
+      document.getElementById("qcm-ue-title").innerText = `QCM • ${meta.label}`;
+
+      renderCurrentUeQcm();
+
+      document.querySelectorAll(".view-section").forEach(sec => sec.classList.remove("active"));
+      document.querySelectorAll(".ue-view-section").forEach(sec => sec.classList.remove("active"));
+      document.getElementById("sec-ue-qcm-detail").classList.add("active");
+      window.scrollTo(0, 0);
+    }
+
+    function renderCurrentUeQcm() {
+      const bank = getFullQcmBank();
+      const questions = bank[activeQcmUeKey] || [];
+      const container = document.getElementById("qcm-ue-questions-list");
+      ueQcmCorrect = 0;
+      ueQcmAnswered = 0;
+      updateUeQcmScore(questions.length);
+
+      if (!container) return;
+      container.innerHTML = "";
+
+      if (questions.length === 0) {
+        container.innerHTML = `<div style="padding:16px; text-align:center; color:#94a3b8; font-size:0.88rem;">Aucun QCM dans cette UE pour le moment.</div>`;
+        return;
+      }
+
+      questions.forEach((q, qIdx) => {
+        const card = document.createElement("div");
+        card.className = "qcm-card";
+        const optionsHtml = q.options.map((opt, oIdx) => `
+          <button class="qcm-opt-btn" id="ueqcm-${qIdx}-opt-${oIdx}" onclick="answerUeQcm(${qIdx}, ${oIdx})">
+            ${String.fromCharCode(65 + oIdx)}. ${escapeHtml(opt)}
+          </button>
+        `).join("");
+
+        card.innerHTML = `
+          <div class="qcm-meta">
+            <span class="qcm-ue-tag">Question ${qIdx + 1} / ${questions.length}</span>
+            <span style="font-size:0.75rem; color:#94a3b8;">Réponse instantanée</span>
+          </div>
+          <div class="qcm-question">${escapeHtml(q.question)}</div>
+          <div class="qcm-options">${optionsHtml}</div>
+          <div class="qcm-explanation" id="ueqcm-exp-${qIdx}">${escapeHtml(q.explanation)}</div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function answerUeQcm(qIdx, chosenIdx) {
+      const bank = getFullQcmBank();
+      const questions = bank[activeQcmUeKey] || [];
+      const q = questions[qIdx];
+      if (!q) return;
+
+      const btns = q.options.map((_, i) => document.getElementById(`ueqcm-${qIdx}-opt-${i}`));
+      if (!btns[0] || btns[0].disabled) return;
+
+      btns.forEach(b => { if (b) b.disabled = true; });
+      ueQcmAnswered++;
+
+      const isCorrect = chosenIdx === q.correctIndex;
+      if (isCorrect) {
+        ueQcmCorrect++;
+        btns[chosenIdx].classList.add("correct");
+      } else {
+        btns[chosenIdx].classList.add("wrong");
+        btns[q.correctIndex].classList.add("correct");
+      }
+
+      const exp = document.getElementById(`ueqcm-exp-${qIdx}`);
+      if (exp) exp.style.display = "block";
+
+      updateUeQcmScore(questions.length);
+    }
+
+    function updateUeQcmScore(total) {
+      const el = document.getElementById("qcm-ue-score-display");
+      if (el) el.innerText = `Score UE : ${ueQcmCorrect} / ${total}`;
+    }
+
+    function resetCurrentUeQcm() {
+      renderCurrentUeQcm();
+    }
+
     function normalizePdfUrl(url) {
       if (!url) return "";
       const driveMatch = url.match(/drive\.google\.com\/file\/d\/([^/]+)/);
@@ -427,7 +1491,6 @@
       return url;
     }
 
-    // BASE DE DONNÉES INTERNE POUR LE STOCKAGE OFFLINE (IndexedDB)
     let db;
     const offlineCacheKeys = new Set();
     const DB_NAME = "MedX_Offline_Storage_v1";
@@ -446,7 +1509,7 @@
     };
 
     function syncOfflineKeys() {
-      if (!db) { renderCatalogue(); return; }
+      if (!db) { renderCoursUeGrid(); return; }
       offlineCacheKeys.clear();
       const tx = db.transaction(STORE_NAME, "readonly");
       const req = tx.objectStore(STORE_NAME).getAllKeys();
@@ -454,20 +1517,16 @@
         (req.result || []).forEach(k => offlineCacheKeys.add(k));
         const totalOfflineEl = document.getElementById("offline-total-count");
         if (totalOfflineEl) totalOfflineEl.innerText = offlineCacheKeys.size;
-        renderCatalogue();
+        renderCoursUeGrid();
+        if (document.getElementById("sec-ue-cours-detail").classList.contains("active")) {
+          renderCoursLessons(activeCoursUeKey);
+        }
       };
     }
 
-    function formatBytes(bytes) {
-      if (!bytes) return "";
-      const sizes = ["Octets", "Ko", "Mo", "Go"];
-      const i = Math.floor(Math.log(bytes) / Math.log(1024));
-      return (bytes / Math.pow(1024, i)).toFixed(1) + " " + sizes[i];
-    }
-
-    // TÉLÉCHARGEMENT & STOCKAGE OFFLINE D'UN PDF
     async function downloadLessonOffline(ueKey, index, btnEl) {
-      const lesson = CATALOGUE_COURS[ueKey][index];
+      const cat = getCoursCatalogue();
+      const lesson = cat[ueKey][index];
       if (!lesson || !lesson.lien) return;
 
       const storageKey = `${ueKey}_${index}`;
@@ -480,24 +1539,20 @@
         const response = await fetch(directUrl);
         if (!response.ok) throw new Error("HTTP " + response.status);
         const arrayBuffer = await response.arrayBuffer();
-
-        if (arrayBuffer.byteLength < 100) throw new Error("Fichier vide ou bloqué");
+        if (arrayBuffer.byteLength < 100) throw new Error("Fichier vide");
 
         const tx = db.transaction(STORE_NAME, "readwrite");
         tx.objectStore(STORE_NAME).put({
           key: storageKey,
           titre: lesson.titre,
-          size: formatBytes(arrayBuffer.byteLength),
           data: arrayBuffer
         });
 
-        tx.oncomplete = () => {
-          syncOfflineKeys();
-        };
+        tx.oncomplete = () => syncOfflineKeys();
       } catch (err) {
         btnEl.disabled = false;
         btnEl.innerHTML = `<i class="fa-solid fa-download"></i> Télécharger`;
-        alert("Impossible de télécharger automatiquement ce lien (le serveur bloque l'accès direct ou vous êtes hors connexion). Essayez d'ouvrir la leçon directement.");
+        alert("Impossible de télécharger automatiquement ce lien (restriction CORS du serveur ou appareil hors connexion).");
       }
     }
 
@@ -509,65 +1564,10 @@
       tx.oncomplete = () => syncOfflineKeys();
     }
 
-    // AFFICHAGE DES LEÇONS PAR UE
-    function renderCatalogue() {
-      Object.keys(CATALOGUE_COURS).forEach(ueKey => {
-        const listEl = document.getElementById("list-" + ueKey);
-        const countEl = document.getElementById("count-" + ueKey);
-        const lessons = CATALOGUE_COURS[ueKey] || [];
-
-        if (countEl) {
-          countEl.innerText = lessons.length + (lessons.length > 1 ? " Leçons" : " Leçon");
-        }
-        if (!listEl) return;
-        listEl.innerHTML = "";
-
-        if (lessons.length === 0) {
-          listEl.innerHTML = `<div style="padding:14px; text-align:center; color:#94a3b8; font-size:0.85rem;">Aucune leçon configurée pour cette UE.</div>`;
-          return;
-        }
-
-        lessons.forEach((lesson, idx) => {
-          const storageKey = `${ueKey}_${idx}`;
-          const isSavedOffline = offlineCacheKeys.has(storageKey);
-          const hasLink = lesson.lien && lesson.lien.trim() !== "";
-
-          const card = document.createElement("div");
-          card.className = "lesson-card";
-
-          const statusHtml = isSavedOffline
-            ? `<span class="lesson-status status-offline"><i class="fa-solid fa-circle-check"></i> Stocké hors-ligne</span>`
-            : hasLink
-              ? `<span class="lesson-status status-online"><i class="fa-solid fa-globe"></i> Disponible en ligne</span>`
-              : `<span class="lesson-status" style="color:#64748b;">Lien PDF à ajouter</span>`;
-
-          const actionHtml = !hasLink
-            ? ""
-            : isSavedOffline
-              ? `<button class="action-btn btn-saved" onclick="openLesson('${ueKey}', ${idx})"><i class="fa-solid fa-book-open"></i> Lire</button>
-                 <button class="action-btn btn-del" onclick="removeOfflineLesson('${storageKey}')" title="Supprimer du cache"><i class="fa-solid fa-trash"></i></button>`
-              : `<button class="action-btn btn-dl" onclick="downloadLessonOffline('${ueKey}', ${idx}, this)"><i class="fa-solid fa-download"></i> Télécharger</button>`;
-
-          card.innerHTML = `
-            <div class="lesson-main" onclick="openLesson('${ueKey}', ${idx})">
-              <i class="fa-solid fa-file-pdf" style="color:${isSavedOffline ? '#4ade80' : '#f87171'}; font-size:1.35rem; flex-shrink:0;"></i>
-              <div class="lesson-details">
-                <span class="lesson-title">${escapeHtml(lesson.titre)}</span>
-                ${statusHtml}
-              </div>
-            </div>
-            <div class="lesson-actions">${actionHtml}</div>
-          `;
-          listEl.appendChild(card);
-        });
-      });
-    }
-
     function escapeHtml(str) {
       return String(str).replace(/[&<>"']/g, m => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m]));
     }
 
-    // LECTEUR PDF INTÉGRÉ (PRIORITÉ AU STOCKAGE OFFLINE, SINON EN LIGNE)
     let pdfDoc = null;
     let pageNum = 1;
     let pageRendering = false;
@@ -578,17 +1578,19 @@
     const ctx = canvas.getContext("2d");
 
     function openLesson(ueKey, idx) {
-      const lesson = CATALOGUE_COURS[ueKey][idx];
+      const cat = getCoursCatalogue();
+      const lesson = cat[ueKey][idx];
       if (!lesson) return;
 
       const storageKey = `${ueKey}_${idx}`;
       const directUrl = normalizePdfUrl(lesson.lien);
 
       if (!offlineCacheKeys.has(storageKey) && !directUrl) {
-        alert("Aucun lien PDF n'a encore été renseigné pour cette leçon dans le code.");
+        alert("Aucun lien PDF n'a encore été renseigné pour cette leçon.");
         return;
       }
 
+      applyWatermarks();
       document.getElementById("viewer-title-text").innerText = lesson.titre;
       document.getElementById("pdf-viewer-modal").classList.add("active");
       document.getElementById("pdf-loading").style.display = "block";
@@ -601,7 +1603,6 @@
       scale = 1.0;
       pdfDoc = null;
 
-      // 1. Vérifier si le PDF est déjà stocké en local (Offline)
       if (db && offlineCacheKeys.has(storageKey)) {
         const tx = db.transaction(STORE_NAME, "readonly");
         const req = tx.objectStore(STORE_NAME).get(storageKey);
@@ -614,7 +1615,6 @@
           }
         };
       } else {
-        // 2. Sinon charger depuis le lien en ligne
         renderPdfSource({ url: directUrl, withCredentials: false });
       }
     }
@@ -684,6 +1684,7 @@
 
     function closePdfViewer() {
       document.getElementById("pdf-viewer-modal").classList.remove("active");
+      document.getElementById("pdf-watermark-layer").classList.remove("active");
       pdfDoc = null;
     }
 
@@ -699,15 +1700,16 @@
       window.scrollTo(0, 0);
     }
 
-    function openUE(ueId) {
-      document.querySelectorAll(".view-section").forEach(sec => sec.classList.remove("active"));
-      document.querySelectorAll(".ue-view-section").forEach(sec => sec.classList.remove("active"));
-      const target = document.getElementById(ueId);
-      if (target) target.classList.add("active");
-      window.scrollTo(0, 0);
-    }
+    const initProt = getProtectionSettings();
+    document.getElementById("protection-enabled-select").value = String(initProt.enabled);
+    document.getElementById("watermark-text-input").value = initProt.watermarkText;
+    document.getElementById("home-protection-status").innerText = initProt.enabled ? "ACTIF" : "INACTIF";
 
-    renderCatalogue();
+    renderCoursUeGrid();
+    renderVideosUeGrid();
+    renderQcmUeGrid();
+    renderRankGradeInputs();
+    renderLeaderboard();
   </script>
 </body>
 </html>
