@@ -641,14 +641,14 @@
       <button class="nav-item" onclick="switchTab('protection')"><i class="fa-solid fa-shield-halved"></i><span>Protection</span></button>
     </nav>
   </div>
-
+  <script src="webview-compat.js"></script>
   <script>
     /* =========================================================================
        ESPACE MISE À JOUR AUTOMATIQUE DU SITE & DE L'APPLICATION
        - Incrémentez APP_VERSION à chaque modification HTML (ex: "v1.4.1").
        - Pensez aussi à changer CACHE_NAME dans sw.js (ex: "medx-app-shell-v5").
        ========================================================================= */
-    const APP_VERSION = "v1.4.0";
+    const APP_VERSION = "v1.5.0";
 
     function triggerAutoUpdateCheck() {
       if (!('serviceWorker' in navigator)) return;
@@ -782,13 +782,13 @@
     // =========================================================================
     const RESERVE_COURS_PDF_PAR_UE = {
       /* RÉSERVE PDF ANATOMIE (10 places) */
-      anatomie: Array.from({ length: 10 }, (_, i) => ({ titre: `Leçon ${i + 1} : Anatomie`, lien: "assets/anatomie/Anatomie de la rate.pdf" })),
-      anatomie: Array.from({ length: 10 }, (_, i) => ({ titre: `Leçon ${i + 2} : Anatomie`, lien: "assets/anatomie/LE-CŒUR-5-Pr-RAVALISOA-Agnes.pdf" })),
+      anatomie: Array.from({ length: 1 }, (_, i) => ({ titre: `Leçon ${i + 1} : Anatomie`, lien: "assets/anatomie/Anatomie de la rate.pdf" })),
+      anatomie: Array.from({ length: 1 }, (_, i) => ({ titre: `Leçon ${i + 2} : Anatomie`, lien: "assets/anatomie/LE-CŒUR-5-Pr-RAVALISOA-Agnes.pdf" })),
 
       /* RÉSERVE PDF BIOMOLÉCULES (10 places) */
       biomolecules: Array.from({ length: 10 }, (_, i) => ({ titre: `Leçon ${i + 1} : Biomolécules`, lien: "" })),
       /* RÉSERVE PDF ICM (10 places) */
-      icm: Array.from({ length: 10 }, (_, i) => ({ titre: `Leçon ${i + 1} : ICM`, lien: "assets/anatomie/icm/1604323401_1-histoire_medicaments_&_pharmacie.pdf" })),
+      icm: Array.from({ length: 1 }, (_, i) => ({ titre: `Leçon ${i + 1} : ICM`, lien: "assets/anatomie/icm/1604323401_1-histoire_medicaments_&_pharmacie.pdf" })),
 
 
       /* RÉSERVE PDF PHYSIOLOGIE (10 places) */
