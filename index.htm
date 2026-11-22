@@ -648,7 +648,7 @@
        - Incrémentez APP_VERSION à chaque modification HTML (ex: "v1.4.1").
        - Pensez aussi à changer CACHE_NAME dans sw.js (ex: "medx-app-shell-v5").
        ========================================================================= */
-    const APP_VERSION = "v1.5.0";
+    const APP_VERSION = "v1.6.0";
 
     function triggerAutoUpdateCheck() {
       if (!('serviceWorker' in navigator)) return;
@@ -781,8 +781,26 @@
     // 1. ESPACE DE RÉSERVE COURS PDF (10 EMPLACEMENTS PAR UE : LEÇON 1 À 10)
     // =========================================================================
     const RESERVE_COURS_PDF_PAR_UE = {
-      /* RÉSERVE PDF ANATOMIE (10 places) */
-      anatomie: Array.from({ length: 1 }, (_, i) => ({ titre: `Leçon ${i + 1} : Anatomie`, lien: "assets/anatomie/Anatomie de la rate.pdf" })),
+      /* RÉSERVE PDF ANATOMIE  */
+      anatomie: [
+    {
+        titre: "Leçon 1 : Anatomie de la rate",
+        lien: "assets/anatomie/Anatomie de la rate.pdf"
+    },
+    {
+        titre: "Leçon 2 : Anatomie des nerfs",
+        lien: "assets/anatomie/anat de nerf paces.pdf"
+    },
+    {
+        titre: "Leçon 3 : Anatomie du cœur",
+        lien: "assets/anatomie/LE-CŒUR-5-Pr-RAVALISOA-Agnes.pdf"
+    },
+    {
+        titre: "Leçon 4 : Anatomie des nerfs",
+        lien: "assets/anatomie/anat de nerf paces.pdf"
+    }
+],
+      
       anatomie: Array.from({ length: 1 }, (_, i) => ({ titre: `Leçon ${i + 2} : Anatomie`, lien: "assets/anatomie/LE-CŒUR-5-Pr-RAVALISOA-Agnes.pdf" })),
 
       /* RÉSERVE PDF BIOMOLÉCULES (10 places) */
