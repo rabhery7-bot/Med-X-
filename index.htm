@@ -2,12 +2,8 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
   <title>MedX - Études de Santé</title>
-  <meta name="description" content="Application de révisions médicales, cours PDF, vidéos par UE, QCM, classement avec notes par UE et protection anti-capture.">
-
-  <link rel="manifest" href="./manifest.json">
-  <link rel="apple-touch-icon" href="./icon-192.png">
   <meta name="theme-color" content="#0284c7">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -15,69 +11,196 @@
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-  <script>
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
-  </script>
 
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-    body { background-color: #0b1120; color: #f1f5f9; display: flex; justify-content: center; min-height: 100vh; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      background-color: #0b1120;
+      color: #f1f5f9;
+      min-height: 100%;
+      width: 100%;
+      overflow-x: hidden;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+    }
 
     .app-container {
-      width: 100%; max-width: 480px; background-color: #0f172a; min-height: 100vh;
-      display: flex; flex-direction: column; position: relative; padding-bottom: 72px;
+      width: 100%;
+      max-width: 540px;
+      min-height: 100vh;
+      background-color: #0f172a;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      padding-bottom: 78px;
     }
 
     .app-header {
-      background-color: #1e293b; color: #ffffff; padding: 14px 16px; text-align: center;
+      background-color: #1e293b;
+      color: #ffffff;
+      padding: 12px 14px;
+      text-align: center;
       border-bottom: 1px solid #334155;
     }
-    .logo-container { font-size: 1.8rem; font-weight: 900; display: flex; align-items: center; justify-content: center; gap: 10px; }
-    .logo-medx { color: #38bdf8; }
-    .stethoscope-icon { color: #38bdf8; font-size: 1.45rem; }
-    .subtitle { font-size: 0.76rem; color: #94a3b8; margin-top: 2px; }
-    .version-pill {
-      display: inline-block; margin-top: 6px; font-size: 0.68rem; color: #38bdf8;
-      background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.3);
-      padding: 2px 8px; border-radius: 999px; cursor: pointer;
+
+    .logo-container {
+      font-size: clamp(1.45rem, 5vw, 1.8rem);
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
 
-    main { padding: 16px; flex: 1; }
-    .view-section { display: none; }
+    .logo-medx { color: #38bdf8; }
+    .stethoscope-icon { color: #38bdf8; font-size: 1.35rem; }
+    .subtitle { font-size: 0.74rem; color: #94a3b8; margin-top: 2px; }
+    .version-badge {
+      display: inline-block;
+      margin-top: 6px;
+      padding: 2px 9px;
+      border-radius: 999px;
+      background-color: rgba(56, 189, 248, 0.14);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      color: #38bdf8;
+      font-size: 0.68rem;
+      font-weight: 700;
+    }
+
+    main {
+      padding: 14px;
+      flex: 1;
+      width: 100%;
+    }
+
+    .view-section { display: none; width: 100%; }
     .view-section.active { display: block; }
+
+    .section-title {
+      font-size: clamp(1.05rem, 4vw, 1.25rem);
+      font-weight: 800;
+      color: #f8fafc;
+      margin-bottom: 10px;
+    }
 
     .welcome-card {
       background: linear-gradient(135deg, #0369a1, #0284c7);
-      color: white; padding: 18px; border-radius: 14px; margin-bottom: 16px;
+      color: #ffffff;
+      padding: 16px;
+      border-radius: 14px;
+      margin-bottom: 14px;
     }
-    .welcome-card h2 { font-size: 1.25rem; margin-bottom: 6px; }
-    .welcome-card p { font-size: 0.86rem; opacity: 0.95; line-height: 1.4; }
 
-    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
-    .stat-box { background-color: #1e293b; border: 1px solid #334155; padding: 14px; border-radius: 12px; text-align: center; }
-    .stat-box i { font-size: 1.35rem; color: #38bdf8; margin-bottom: 6px; }
-    .stat-box h3 { font-size: 1.2rem; color: #fff; }
-    .stat-box span { font-size: 0.76rem; color: #94a3b8; }
+    .welcome-card h2 {
+      font-size: clamp(1.08rem, 4.2vw, 1.25rem);
+      margin-bottom: 6px;
+    }
+
+    .welcome-card p {
+      font-size: 0.84rem;
+      line-height: 1.45;
+      opacity: 0.96;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .stat-box {
+      background-color: #1e293b;
+      border: 1px solid #334155;
+      padding: 12px;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .stat-box i {
+      font-size: 1.25rem;
+      color: #38bdf8;
+      margin-bottom: 5px;
+    }
+
+    .stat-box h3 { font-size: 1.05rem; color: #ffffff; }
+    .stat-box span { font-size: 0.72rem; color: #94a3b8; }
 
     .btn-primary {
-      width: 100%; background-color: #0284c7; color: white; border: none;
-      padding: 13px; border-radius: 10px; font-size: 0.95rem; font-weight: 600; cursor: pointer;
+      width: 100%;
+      background-color: #0284c7;
+      color: #ffffff;
+      border: none;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
     }
+
     .btn-primary:active { background-color: #0369a1; }
 
     .btn-secondary {
-      width: 100%; background-color: #1e293b; color: #f8fafc; border: 1px solid #475569;
-      padding: 12px; border-radius: 10px; font-size: 0.9rem; font-weight: 600; cursor: pointer; margin-top: 10px;
+      width: 100%;
+      background-color: #1e293b;
+      color: #f8fafc;
+      border: 1px solid #475569;
+      padding: 11px 14px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
 
-    .subjects-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+    .subjects-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    @media (max-width: 340px) {
+      .subjects-grid, .stats-grid, .ue-notes-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
     .subject-card {
-      background: #1e293b; border-radius: 12px; overflow: hidden; border: 1px solid #334155;
-      cursor: pointer; display: flex; flex-direction: column;
+      background-color: #1e293b;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #334155;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
     }
-    .subject-card:active { transform: scale(0.98); }
 
-    .subject-banner { height: 66px; display: flex; align-items: center; justify-content: center; color: #ffffff; font-size: 1.7rem; }
+    .subject-card:active { opacity: 0.92; }
+
+    .subject-banner {
+      height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-size: 1.5rem;
+    }
+
     .banner-anatomie { background: linear-gradient(135deg, #0284c7, #06b6d4); }
     .banner-biomolecules { background: linear-gradient(135deg, #7c3aed, #a855f7); }
     .banner-icm { background: linear-gradient(135deg, #059669, #10b981); }
@@ -87,231 +210,481 @@
     .banner-biocell { background: linear-gradient(135deg, #0891b2, #22d3ee); }
     .banner-uespecifique { background: linear-gradient(135deg, #475569, #64748b); }
 
-    .card-content { padding: 10px 12px; }
-    .card-content h3 { font-size: 0.9rem; margin-bottom: 3px; color: #f8fafc; font-weight: 700; }
-    .progress-text { font-size: 0.74rem; color: #94a3b8; }
+    .card-content { padding: 9px 10px; }
+    .card-content h3 { font-size: 0.86rem; margin-bottom: 2px; color: #f8fafc; font-weight: 700; }
+    .progress-text { font-size: 0.72rem; color: #94a3b8; }
 
-    .ue-view-section {
-      display: none; background-color: #0f172a; position: absolute; top: 0; left: 0;
-      width: 100%; height: 100%; z-index: 20; overflow-y: auto; padding-bottom: 82px;
+    .ue-detail-panel {
+      display: none;
+      background-color: #1e293b;
+      border: 1px solid #38bdf8;
+      border-radius: 14px;
+      padding: 12px;
+      margin-top: 14px;
     }
-    .ue-view-section.active { display: block; }
-    .ue-header { position: relative; width: 100%; height: 115px; display: flex; align-items: flex-end; padding: 16px; }
-    .back-btn {
-      position: absolute; top: 14px; left: 14px; background: rgba(15, 23, 42, 0.85);
-      border: 1px solid rgba(255,255,255,0.2); border-radius: 50%; width: 36px; height: 36px;
-      font-size: 1rem; color: #ffffff; cursor: pointer; z-index: 21;
-    }
-    .ue-header h2 { color: white; font-size: 1.25rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5); font-weight: 800; }
-    .ue-content { padding: 14px; }
 
-    .lesson-card {
-      padding: 12px; background-color: #1e293b; margin-bottom: 9px; border-radius: 12px;
-      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    .ue-detail-panel.active { display: block; }
+
+    .ue-detail-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #334155;
+    }
+
+    .ue-detail-header h3 {
+      font-size: 1rem;
+      font-weight: 800;
+      color: #f8fafc;
+    }
+
+    .back-inline-btn {
+      background-color: #0f172a;
+      color: #38bdf8;
       border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
     }
-    .lesson-main {
-      display: flex; align-items: center; gap: 11px; flex: 1; min-width: 0; cursor: pointer;
-    }
-    .lesson-details { display: flex; flex-direction: column; min-width: 0; }
-    .lesson-title { font-weight: 600; font-size: 0.88rem; color: #f8fafc; line-height: 1.3; }
-    .lesson-status { font-size: 0.72rem; margin-top: 3px; display: flex; align-items: center; gap: 5px; }
-    .status-online { color: #38bdf8; }
-    .status-offline { color: #4ade80; font-weight: 600; }
 
-    .lesson-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
-    .action-btn {
-      border: none; border-radius: 8px; padding: 7px 9px; font-size: 0.78rem; font-weight: 600;
-      cursor: pointer; display: flex; align-items: center; gap: 5px;
+    .item-card {
+      padding: 10px;
+      background-color: #0f172a;
+      margin-bottom: 8px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      border: 1px solid #283548;
+      flex-wrap: wrap;
     }
-    .btn-dl { background-color: #0284c7; color: #ffffff; }
-    .btn-dl:active { background-color: #0369a1; }
-    .btn-dl:disabled { background-color: #334155; color: #94a3b8; cursor: wait; }
-    .btn-saved { background-color: rgba(74, 222, 128, 0.15); color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.4); }
-    .btn-del { background-color: rgba(248, 113, 113, 0.15); color: #f87171; padding: 7px 8px; }
+
+    .item-main {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+      min-width: 170px;
+      cursor: pointer;
+    }
+
+    .item-title { font-weight: 600; font-size: 0.84rem; color: #f8fafc; line-height: 1.3; }
+    .item-sub { font-size: 0.7rem; color: #94a3b8; margin-top: 2px; }
+
+    .action-btn {
+      border: none;
+      border-radius: 8px;
+      padding: 7px 10px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background-color: #0284c7;
+      color: #ffffff;
+    }
 
     /* QCM */
     .qcm-top-bar {
-      display: flex; justify-content: space-between; align-items: center;
-      background: #1e293b; border: 1px solid #334155; border-radius: 12px;
-      padding: 11px 13px; margin-bottom: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      padding: 9px 11px;
+      margin-bottom: 10px;
     }
+
     .qcm-score-badge {
-      background: rgba(56, 189, 248, 0.15); color: #38bdf8;
-      padding: 5px 10px; border-radius: 8px; font-weight: 700; font-size: 0.83rem;
+      color: #38bdf8;
+      font-weight: 700;
+      font-size: 0.82rem;
     }
+
     .qcm-card {
-      background: #1e293b; border: 1px solid #334155; border-radius: 14px; padding: 15px; margin-bottom: 13px;
+      background-color: #0f172a;
+      border: 1px solid #283548;
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 10px;
     }
-    .qcm-meta {
-      display: flex; justify-content: space-between; align-items: center; margin-bottom: 9px;
-    }
-    .qcm-ue-tag {
-      background: #0f172a; color: #38bdf8; border: 1px solid #334155;
-      font-size: 0.72rem; font-weight: 600; padding: 3px 8px; border-radius: 6px;
-    }
+
     .qcm-question {
-      font-size: 0.94rem; font-weight: 600; color: #f8fafc; line-height: 1.42; margin-bottom: 12px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #f8fafc;
+      line-height: 1.4;
+      margin-bottom: 8px;
     }
-    .qcm-options { display: flex; flex-direction: column; gap: 8px; }
+
+    .qcm-options { display: flex; flex-direction: column; gap: 6px; }
+
     .qcm-opt-btn {
-      width: 100%; text-align: left; background: #0f172a; color: #e2e8f0;
-      border: 1px solid #334155; border-radius: 10px; padding: 10px 12px;
-      font-size: 0.86rem; line-height: 1.35; cursor: pointer;
+      width: 100%;
+      text-align: left;
+      background-color: #1e293b;
+      color: #e2e8f0;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 9px 10px;
+      font-size: 0.82rem;
+      cursor: pointer;
     }
-    .qcm-opt-btn:hover:not(:disabled) { border-color: #38bdf8; }
+
     .qcm-opt-btn.correct {
-      background: rgba(74, 222, 128, 0.18); border-color: #4ade80; color: #86efac; font-weight: 600;
+      background-color: rgba(74, 222, 128, 0.18);
+      border-color: #4ade80;
+      color: #86efac;
+      font-weight: 700;
     }
+
     .qcm-opt-btn.wrong {
-      background: rgba(248, 113, 113, 0.18); border-color: #f87171; color: #fca5a5;
+      background-color: rgba(248, 113, 113, 0.18);
+      border-color: #f87171;
+      color: #fca5a5;
     }
+
     .qcm-explanation {
-      margin-top: 11px; padding: 10px 12px; border-radius: 8px;
-      background: #0f172a; border-left: 3px solid #38bdf8;
-      font-size: 0.82rem; color: #cbd5e1; line-height: 1.4; display: none;
+      margin-top: 8px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      background-color: #1e293b;
+      border-left: 3px solid #38bdf8;
+      font-size: 0.78rem;
+      color: #cbd5e1;
+      display: none;
     }
 
-    /* FORMULAIRES */
-    .form-card { background: #1e293b; border: 1px solid #334155; border-radius: 14px; padding: 15px; margin-top: 14px; }
-    .form-group { margin-bottom: 10px; }
-    .form-group label { display: block; font-size: 0.78rem; color: #cbd5e1; margin-bottom: 4px; font-weight: 600; }
-    .form-control {
-      width: 100%; padding: 9px 10px; border: 1px solid #475569; border-radius: 8px;
-      font-size: 0.86rem; background-color: #0f172a; color: #f8fafc;
-    }
-    .grades-input-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;
-    }
-
-    /* CLASSEMENT COMPLET AVEC TOUTES LES NOTES /20 PAR UE + MOYENNE GÉNÉRALE */
+    /* CLASSEMENT & NOTES */
     .rank-student-card {
-      background: #1e293b; border: 1px solid #334155; border-radius: 13px;
-      padding: 13px; margin-bottom: 10px;
+      background-color: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 10px;
     }
+
     .rank-student-header {
-      display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 9px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
     }
-    .rank-student-left { display: flex; align-items: center; gap: 9px; min-width: 0; }
+
+    .rank-student-left { display: flex; align-items: center; gap: 8px; }
+
     .lb-pos {
-      width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-      font-weight: 800; font-size: 0.8rem; flex-shrink: 0; background: #0f172a; color: #cbd5e1;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.76rem;
+      background-color: #0f172a;
+      color: #cbd5e1;
     }
-    .pos-1 { background: #eab308; color: #0f172a; }
-    .pos-2 { background: #cbd5e1; color: #0f172a; }
-    .pos-3 { background: #d97706; color: #ffffff; }
+
     .moyenne-pill {
-      background: rgba(74, 222, 128, 0.15); color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.35);
-      padding: 4px 9px; border-radius: 8px; font-weight: 800; font-size: 0.82rem; flex-shrink: 0;
+      background-color: rgba(74, 222, 128, 0.16);
+      color: #4ade80;
+      border: 1px solid rgba(74, 222, 128, 0.35);
+      padding: 3px 8px;
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 0.78rem;
     }
+
     .ue-notes-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 5px; font-size: 0.74rem; color: #cbd5e1;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 5px;
+      font-size: 0.72rem;
+      color: #cbd5e1;
     }
+
     .ue-note-box {
-      background: #0f172a; border: 1px solid #283548; border-radius: 6px;
-      padding: 5px 7px; display: flex; justify-content: space-between; align-items: center;
+      background-color: #0f172a;
+      border: 1px solid #283548;
+      border-radius: 6px;
+      padding: 5px 7px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 4px;
     }
 
-    /* LECTEUR PDF INTÉGRÉ + ZOOM + FILIGRANE ANTI-CAPTURE */
+    .info-card {
+      background-color: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 14px;
+      padding: 15px;
+      margin-top: 10px;
+    }
+
+    .info-line {
+      font-size: 0.84rem;
+      color: #cbd5e1;
+      line-height: 1.5;
+      margin-bottom: 8px;
+    }
+
+    /* LECTEUR PDF + FILIGRANE */
     #pdf-viewer-modal {
-      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: #0b1120; z-index: 300; flex-direction: column;
-      user-select: none; -webkit-user-select: none;
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #0b1120;
+      z-index: 300;
+      flex-direction: column;
+      user-select: none;
+      -webkit-user-select: none;
     }
-    #pdf-viewer-modal.active { display: flex; }
-    .viewer-top-bar {
-      height: 54px; background: #1e293b; color: white; display: flex;
-      justify-content: space-between; align-items: center; padding: 0 14px; font-weight: 600;
-      border-bottom: 1px solid #334155; z-index: 305;
-    }
-    .viewer-close-btn { background: none; border: none; color: white; font-size: 1.3rem; cursor: pointer; padding: 5px; }
 
-    .viewer-toolbar {
-      height: 46px; background: #1e293b; color: white; display: flex;
-      justify-content: center; align-items: center; gap: 10px; font-size: 0.85rem; border-bottom: 1px solid #334155;
+    #pdf-viewer-modal.active { display: flex; }
+
+    .viewer-top-bar {
+      min-height: 50px;
+      background-color: #1e293b;
+      color: #ffffff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 12px;
+      font-weight: 700;
+      border-bottom: 1px solid #334155;
       z-index: 305;
     }
-    .tool-btn {
-      background: #0284c7; color: white; border: none; min-width: 34px; height: 32px; padding: 0 8px;
-      border-radius: 6px; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center;
+
+    .viewer-close-btn {
+      background: none;
+      border: none;
+      color: #ffffff;
+      font-size: 1.3rem;
+      cursor: pointer;
+      padding: 4px 8px;
     }
-    .tool-btn:active { background: #0369a1; }
+
+    .viewer-toolbar {
+      min-height: 42px;
+      background-color: #1e293b;
+      color: #ffffff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      border-bottom: 1px solid #334155;
+      z-index: 305;
+      flex-wrap: wrap;
+      padding: 4px 8px;
+    }
+
+    .tool-btn {
+      background-color: #0284c7;
+      color: #ffffff;
+      border: none;
+      min-width: 30px;
+      height: 28px;
+      padding: 0 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 700;
+    }
 
     .viewer-content-area {
-      position: relative; flex: 1; overflow: auto; background: #0f172a; display: flex; flex-direction: column;
-      align-items: center; padding: 14px; -webkit-overflow-scrolling: touch;
+      position: relative;
+      flex: 1;
+      overflow: auto;
+      background-color: #0f172a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 12px;
+      -webkit-overflow-scrolling: touch;
     }
-    .pdf-canvas-container { position: relative; background: white; box-shadow: 0 4px 16px rgba(0,0,0,0.6); border-radius: 4px; overflow: hidden; }
-    #pdf-canvas { display: block; }
+
+    .pdf-canvas-container {
+      background-color: #ffffff;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+      border-radius: 4px;
+      overflow: hidden;
+      max-width: 100%;
+    }
+
+    #pdf-canvas { display: block; max-width: 100%; height: auto; }
 
     .watermark-layer {
-      position: fixed; top: 100px; left: 0; right: 0; bottom: 0;
-      pointer-events: none; z-index: 304; overflow: hidden;
-      display: none; flex-wrap: wrap; justify-content: space-around; align-content: space-around;
+      position: fixed;
+      top: 94px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      pointer-events: none;
+      z-index: 304;
+      overflow: hidden;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      align-content: space-around;
       opacity: 0.22;
     }
-    .watermark-layer.active { display: flex; }
-    .watermark-tag {
-      color: #38bdf8; font-size: 0.85rem; font-weight: 800; letter-spacing: 1px;
-      transform: rotate(-28deg); padding: 18px 12px; white-space: nowrap;
-      text-shadow: 0 0 1px rgba(0,0,0,0.6);
-    }
-    .privacy-shield {
-      display: none; position: fixed; inset: 0; background: #0b1120; z-index: 400;
-      color: #f8fafc; flex-direction: column; align-items: center; justify-content: center;
-      text-align: center; padding: 24px;
-    }
-    .privacy-shield.active { display: flex; }
 
-    /* LECTEUR VIDÉO INTÉGRÉ + FILIGRANE */
+    .watermark-tag {
+      color: #38bdf8;
+      font-size: 0.8rem;
+      font-weight: 800;
+      transform: rotate(-28deg);
+      padding: 14px 10px;
+      white-space: nowrap;
+    }
+
+    /* LECTEUR VIDÉO + FILIGRANE */
     #video-viewer-modal {
-      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: #0b1120; z-index: 310; flex-direction: column;
-      user-select: none; -webkit-user-select: none;
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #0b1120;
+      z-index: 310;
+      flex-direction: column;
+      user-select: none;
+      -webkit-user-select: none;
     }
+
     #video-viewer-modal.active { display: flex; }
+
     .video-player-area {
-      position: relative; flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;
-      padding: 14px; background: #090e1a;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 12px;
+      background-color: #090e1a;
+      overflow-y: auto;
     }
+
     .video-box {
-      position: relative; width: 100%; max-width: 460px; aspect-ratio: 16 / 9; background: #000;
-      border-radius: 12px; overflow: hidden; border: 1px solid #334155;
+      position: relative;
+      width: 100%;
+      max-width: 500px;
+      aspect-ratio: 16 / 9;
+      background-color: #000000;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #334155;
     }
+
     .video-box iframe, .video-box video {
-      width: 100%; height: 100%; border: none; display: block;
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
     }
+
     .video-watermark-overlay {
-      position: absolute; inset: 0; pointer-events: none; z-index: 5;
-      display: flex; flex-wrap: wrap; justify-content: space-around; align-content: center;
-      background: rgba(15, 23, 42, 0.08);
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 5;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      align-content: center;
+      background-color: rgba(15, 23, 42, 0.08);
     }
+
     .video-watermark-item {
-      color: rgba(255, 255, 255, 0.34); font-size: 0.78rem; font-weight: 800;
-      transform: rotate(-24deg); padding: 10px 14px; white-space: nowrap;
+      color: rgba(255, 255, 255, 0.34);
+      font-size: 0.74rem;
+      font-weight: 800;
+      transform: rotate(-24deg);
+      padding: 8px 12px;
+      white-space: nowrap;
     }
 
     .fallback-box {
-      display: none; background: #1e293b; border: 1px solid #334155; border-radius: 12px;
-      padding: 18px; margin-top: 20px; max-width: 380px; text-align: center;
+      display: none;
+      background-color: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 14px;
+      max-width: 380px;
+      text-align: center;
     }
-    .fallback-box p { font-size: 0.86rem; color: #cbd5e1; margin-bottom: 14px; line-height: 1.45; }
+
+    .fallback-box p {
+      font-size: 0.84rem;
+      color: #cbd5e1;
+      margin-bottom: 12px;
+      line-height: 1.45;
+    }
+
     .fallback-link-btn {
-      display: inline-block; background: #0284c7; color: #fff; text-decoration: none;
-      padding: 11px 16px; border-radius: 8px; font-weight: 600; font-size: 0.9rem;
+      display: inline-block;
+      background-color: #0284c7;
+      color: #ffffff;
+      text-decoration: none;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.84rem;
     }
 
     .bottom-nav {
-      position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%;
-      max-width: 480px; height: 62px; background-color: #1e293b; border-top: 1px solid #334155;
-      display: flex; justify-content: space-around; align-items: center; z-index: 10;
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 540px;
+      min-height: 60px;
+      background-color: #1e293b;
+      border-top: 1px solid #334155;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 100;
+      padding: 4px 2px;
     }
+
     .nav-item {
-      background: none; border: none; display: flex; flex-direction: column; align-items: center;
-      color: #94a3b8; font-size: 0.56rem; cursor: pointer; gap: 3px;
+      background: none;
+      border: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #94a3b8;
+      font-size: clamp(0.54rem, 1.6vw, 0.62rem);
+      cursor: pointer;
+      gap: 2px;
+      flex: 1;
+      min-width: 0;
+      padding: 4px 2px;
     }
-    .nav-item i { font-size: 0.96rem; }
-    .nav-item.active { color: #38bdf8; font-weight: 600; }
+
+    .nav-item i { font-size: clamp(0.9rem, 2.8vw, 1.05rem); }
+    .nav-item span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+    .nav-item.active { color: #38bdf8; font-weight: 700; }
   </style>
 </head>
 <body>
@@ -322,291 +695,136 @@
         <i class="fa-solid fa-stethoscope stethoscope-icon"></i>
         <span class="logo-medx">MedX</span>
       </div>
-      <p class="subtitle">Révisions & Concours de Santé</p>
-      <span class="version-pill" id="app-version-pill" onclick="checkForUpdatesManual()" title="Vérifier les mises à jour">Auto-MAJ • v1.4.0</span>
+      <p class="subtitle">Révisions & Concours de Santé • Android 8–14+ & WebView</p>
+      <span class="version-badge" id="version-display">v1.0.0</span>
     </header>
 
     <main id="main-content">
       <!-- HOME -->
       <section id="sec-home" class="view-section active">
         <div class="welcome-card">
-          <h2>Bonjour, Étudiant (e)! </h2>
-          <p>10 leçons PDF par UE, 5 vidéos par UE, QCM, classement avec toutes les notes /20 et protection filigrane.</p>
+          <h2>Bonjour, Dr RABIBISOA ! 👋</h2>
+          <p>Accédez aux cours par UE, aux vidéos, aux QCM, au classement avec notes par UE et à la section À propos.</p>
         </div>
+
         <div class="stats-grid">
-          <div class="stat-box"><i class="fa-solid fa-cloud-arrow-down"></i><h3 id="offline-total-count">0</h3><span>PDF Hors-ligne</span></div>
-          <div class="stat-box"><i class="fa-solid fa-shield-halved"></i><h3 id="home-protection-status">ACTIF</h3><span>Filigrane PDF/Vidéo</span></div>
+          <div class="stat-box">
+            <i class="fa-solid fa-book-open"></i>
+            <h3 id="home-ue-count">8 UE</h3>
+            <span>Unités d'enseignement</span>
+          </div>
+          <div class="stat-box">
+            <i class="fa-solid fa-shield-halved"></i>
+            <h3>ACTIF</h3>
+            <span>Filigrane PDF & Vidéo</span>
+          </div>
         </div>
-        <button class="btn-primary" onclick="switchTab('cours')">Accéder aux Cours (UE)</button>
-        <button class="btn-secondary" onclick="switchTab('classement')"><i class="fa-solid fa-trophy"></i> Voir le Classement & Notes /20</button>
+
+        <button class="btn-primary" onclick="switchTab('cours')">Accéder aux Cours</button>
+        <button class="btn-secondary" onclick="switchTab('videos')"><i class="fa-solid fa-circle-play"></i> Voir les Vidéos</button>
+        <button class="btn-secondary" onclick="switchTab('classement')"><i class="fa-solid fa-trophy"></i> Classement & Notes /20</button>
+        <button class="btn-secondary" onclick="switchTab('apropos')"><i class="fa-solid fa-circle-info"></i> À propos</button>
       </section>
 
-      <!-- COURS (LES 8 UE - 10 ESPACES PDF CHACUNE + FORMULAIRE AJOUT PDF) -->
+      <!-- COURS (5 LEÇONS PAR UE) -->
       <section id="sec-cours" class="view-section">
-        <h2>Cours par UE (10 leçons / UE)</h2>
+        <h2 class="section-title">Cours par UE</h2>
         <div class="subjects-grid" id="cours-ue-grid"></div>
 
-        <!-- ESPACE RÉSERVE AJOUT LEÇON PDF (1 À 10 PAR UE) -->
-        <div class="form-card">
-          <h3 style="font-size:0.98rem; margin-bottom:10px; color:#f8fafc;"><i class="fa-solid fa-file-pdf" style="color:#38bdf8;"></i> Espace de réserve : Ajouter une leçon PDF (1 à 10)</h3>
-          <div class="form-group">
-            <label>Unité d'Enseignement (UE) :</label>
-            <select id="new-pdf-ue" class="form-control">
-              <option value="anatomie">Anatomie</option>
-              <option value="biomolecules">Biomolécules</option>
-              <option value="icm">ICM</option>
-              <option value="physiologie">Physiologie</option>
-              <option value="biomath">Biomath</option>
-              <option value="francais">Français Médical</option>
-              <option value="biocell">Biocell & Tissu</option>
-              <option value="uespecifique">UE Spécifique</option>
-            </select>
+        <div class="ue-detail-panel" id="cours-ue-panel">
+          <div class="ue-detail-header">
+            <h3 id="cours-panel-title">Leçons PDF</h3>
+            <button class="back-inline-btn" onclick="closePanel('cours-ue-panel')">Fermer</button>
           </div>
-          <div class="form-group">
-            <label>Emplacement de la leçon PDF (1 à 10) :</label>
-            <select id="new-pdf-slot" class="form-control">
-              <option value="0">Leçon 1</option>
-              <option value="1">Leçon 2</option>
-              <option value="2">Leçon 3</option>
-              <option value="3">Leçon 4</option>
-              <option value="4">Leçon 5</option>
-              <option value="5">Leçon 6</option>
-              <option value="6">Leçon 7</option>
-              <option value="7">Leçon 8</option>
-              <option value="8">Leçon 9</option>
-              <option value="9">Leçon 10</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Titre de la leçon PDF :</label>
-            <input type="text" id="new-pdf-title" class="form-control" placeholder="Ex : Leçon 1 : Ostéologie du crâne">
-          </div>
-          <div class="form-group">
-            <label>Lien du fichier PDF (URL directe / Drive / Dropbox) :</label>
-            <input type="text" id="new-pdf-url" class="form-control" placeholder="https://.../cours.pdf">
-          </div>
-          <button class="btn-primary" onclick="addPdfToSlot()">Enregistrer la leçon PDF dans l'UE</button>
-          <div id="new-pdf-status" style="margin-top:8px; font-size:0.83rem; text-align:center; font-weight:600;"></div>
+          <div id="cours-lessons-list"></div>
         </div>
       </section>
 
-      <!-- VUE DÉTAILLÉE D'UNE UE DE COURS -->
-      <section id="sec-ue-cours-detail" class="ue-view-section">
-        <header id="cours-ue-header" class="ue-header banner-anatomie">
-          <button class="back-btn" onclick="switchTab('cours')"><i class="fa-solid fa-arrow-left"></i></button>
-          <h2 id="cours-ue-title">Anatomie</h2>
-        </header>
-        <div class="ue-content"><div id="cours-lessons-list"></div></div>
-      </section>
-
-      <!-- SECTION VIDÉOS (LES 8 UE - 5 VIDÉOS + ESPACE AJOUT VIDÉO) -->
+      <!-- VIDÉOS (5 VIDÉOS PAR UE) -->
       <section id="sec-videos" class="view-section">
-        <h2>Vidéos par UE</h2>
-        <p style="font-size:0.84rem; color:#94a3b8; margin-top:4px;">5 espaces vidéo par UE + ajout rapide.</p>
+        <h2 class="section-title">Vidéos par UE</h2>
         <div class="subjects-grid" id="videos-ue-grid"></div>
 
-        <div class="form-card">
-          <h3 style="font-size:0.98rem; margin-bottom:10px; color:#f8fafc;"><i class="fa-solid fa-video" style="color:#38bdf8;"></i> Espace de réserve : Ajouter une vidéo</h3>
-          <div class="form-group">
-            <label>Unité d'Enseignement (UE) :</label>
-            <select id="new-video-ue" class="form-control">
-              <option value="anatomie">Anatomie</option>
-              <option value="biomolecules">Biomolécules</option>
-              <option value="icm">ICM</option>
-              <option value="physiologie">Physiologie</option>
-              <option value="biomath">Biomath</option>
-              <option value="francais">Français Médical</option>
-              <option value="biocell">Biocell & Tissu</option>
-              <option value="uespecifique">UE Spécifique</option>
-            </select>
+        <div class="ue-detail-panel" id="videos-ue-panel">
+          <div class="ue-detail-header">
+            <h3 id="videos-panel-title">Vidéos</h3>
+            <button class="back-inline-btn" onclick="closePanel('videos-ue-panel')">Fermer</button>
           </div>
-          <div class="form-group">
-            <label>Emplacement (1 à 5) :</label>
-            <select id="new-video-slot" class="form-control">
-              <option value="0">Vidéo 1</option>
-              <option value="1">Vidéo 2</option>
-              <option value="2">Vidéo 3</option>
-              <option value="3">Vidéo 4</option>
-              <option value="4">Vidéo 5</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Titre de la vidéo :</label>
-            <input type="text" id="new-video-title" class="form-control" placeholder="Ex : Vidéo 1 : Ostéologie">
-          </div>
-          <div class="form-group">
-            <label>Lien YouTube ou MP4 :</label>
-            <input type="text" id="new-video-url" class="form-control" placeholder="https://www.youtube.com/watch?v=... ou .../video.mp4">
-          </div>
-          <button class="btn-primary" onclick="addVideoToSlot()">Enregistrer la vidéo</button>
-          <div id="new-video-status" style="margin-top:8px; font-size:0.83rem; text-align:center; font-weight:600;"></div>
+          <div id="videos-lessons-list"></div>
         </div>
       </section>
 
-      <!-- VUE DÉTAILLÉE D'UNE UE DE VIDÉOS -->
-      <section id="sec-ue-videos-detail" class="ue-view-section">
-        <header id="videos-ue-header" class="ue-header banner-anatomie">
-          <button class="back-btn" onclick="switchTab('videos')"><i class="fa-solid fa-arrow-left"></i></button>
-          <h2 id="videos-ue-title">Vidéos • Anatomie</h2>
-        </header>
-        <div class="ue-content"><div id="videos-lessons-list"></div></div>
-      </section>
-
-      <!-- QCM (ORGANISÉ PAR UE + ESPACE RÉSERVE AJOUT QCM) -->
+      <!-- QCM -->
       <section id="sec-qcm" class="view-section">
-        <h2>QCM par UE</h2>
-        <p style="font-size:0.84rem; color:#94a3b8; margin-top:4px;">Choisissez une UE pour répondre instantanément.</p>
+        <h2 class="section-title">QCM par UE</h2>
         <div class="subjects-grid" id="qcm-ue-grid"></div>
 
-        <div class="form-card">
-          <h3 style="font-size:0.98rem; margin-bottom:10px; color:#f8fafc;"><i class="fa-solid fa-plus-circle" style="color:#38bdf8;"></i> Espace de réserve : Ajouter un QCM</h3>
-          <div class="form-group">
-            <label>Unité d'Enseignement (UE) :</label>
-            <select id="new-qcm-ue" class="form-control">
-              <option value="anatomie">Anatomie</option>
-              <option value="biomolecules">Biomolécules</option>
-              <option value="icm">ICM</option>
-              <option value="physiologie">Physiologie</option>
-              <option value="biomath">Biomath</option>
-              <option value="francais">Français Médical</option>
-              <option value="biocell">Biocell & Tissu</option>
-              <option value="uespecifique">UE Spécifique</option>
-            </select>
+        <div class="ue-detail-panel" id="qcm-ue-panel">
+          <div class="ue-detail-header">
+            <h3 id="qcm-panel-title">QCM</h3>
+            <button class="back-inline-btn" onclick="closePanel('qcm-ue-panel')">Fermer</button>
           </div>
-          <div class="form-group">
-            <label>Question :</label>
-            <input type="text" id="new-qcm-question" class="form-control" placeholder="Ex : Quel os forme la pommette ?">
-          </div>
-          <div class="form-group">
-            <label>Option A :</label>
-            <input type="text" id="new-qcm-opt0" class="form-control" placeholder="Proposition A">
-          </div>
-          <div class="form-group">
-            <label>Option B :</label>
-            <input type="text" id="new-qcm-opt1" class="form-control" placeholder="Proposition B">
-          </div>
-          <div class="form-group">
-            <label>Option C :</label>
-            <input type="text" id="new-qcm-opt2" class="form-control" placeholder="Proposition C">
-          </div>
-          <div class="form-group">
-            <label>Option D :</label>
-            <input type="text" id="new-qcm-opt3" class="form-control" placeholder="Proposition D">
-          </div>
-          <div class="form-group">
-            <label>Bonne réponse :</label>
-            <select id="new-qcm-correct" class="form-control">
-              <option value="0">Option A</option>
-              <option value="1">Option B</option>
-              <option value="2">Option C</option>
-              <option value="3">Option D</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Explication :</label>
-            <input type="text" id="new-qcm-exp" class="form-control" placeholder="Explication après réponse...">
-          </div>
-          <button class="btn-primary" onclick="addCustomQcm()">Enregistrer le QCM</button>
-          <div id="new-qcm-status" style="margin-top:8px; font-size:0.83rem; text-align:center; font-weight:600;"></div>
-        </div>
-      </section>
-
-      <!-- VUE DÉTAILLÉE DES QCM D'UNE UE -->
-      <section id="sec-ue-qcm-detail" class="ue-view-section">
-        <header id="qcm-ue-header" class="ue-header banner-anatomie">
-          <button class="back-btn" onclick="switchTab('qcm')"><i class="fa-solid fa-arrow-left"></i></button>
-          <h2 id="qcm-ue-title">QCM - Anatomie</h2>
-        </header>
-        <div class="ue-content">
           <div class="qcm-top-bar">
-            <span class="qcm-score-badge" id="qcm-ue-score-display">Score UE : 0 / 0</span>
-            <button class="action-btn btn-dl" onclick="resetCurrentUeQcm()"><i class="fa-solid fa-rotate-right"></i> Refaire</button>
+            <span class="qcm-score-badge" id="qcm-score-display">Score : 0 / 0</span>
+            <button class="action-btn" onclick="resetCurrentQcm()">Refaire</button>
           </div>
-          <div id="qcm-ue-questions-list"></div>
+          <div id="qcm-questions-list"></div>
         </div>
       </section>
 
-      <!-- CLASSEMENT AVEC TOUTES LES NOTES /20 PAR UE + MOYENNE GÉNÉRALE -->
+      <!-- CLASSEMENT (NOTES PAR UE /20 + MOYENNE GÉNÉRALE) -->
       <section id="sec-classement" class="view-section">
-        <h2>Classement & Notes (/20)</h2>
-        <p style="font-size:0.82rem; color:#94a3b8; margin-top:4px; margin-bottom:10px;">
-          Chaque étudiant affiche toutes ses notes sur 20 par UE ainsi que sa moyenne générale.
-        </p>
-
+        <h2 class="section-title">Classement & Notes (/20)</h2>
         <div id="leaderboard-container"></div>
-
-        <div class="form-card">
-          <h3 style="font-size:0.98rem; margin-bottom:10px; color:#f8fafc;"><i class="fa-solid fa-user-plus" style="color:#38bdf8;"></i> Ajouter une personne & ses notes (/20)</h3>
-          <div class="form-group">
-            <label>Nom ou prénom :</label>
-            <input type="text" id="new-person-name" class="form-control" placeholder="Ex : Rakoto Jean">
-          </div>
-          <div class="grades-input-grid" id="rank-grades-inputs"></div>
-          <button class="btn-primary" onclick="addPersonWithGradesToRanking()">Ajouter au classement (Moyenne auto)</button>
-          <div id="new-person-status" style="margin-top:8px; font-size:0.83rem; text-align:center; font-weight:600;"></div>
-        </div>
-
-        <button class="btn-secondary" onclick="resetGlobalRanking()"><i class="fa-solid fa-rotate-left"></i> Réinitialiser les ajouts</button>
       </section>
 
-      <!-- ESPACE PROTECTION DES CONTENUS (FILIGRANE PDF & VIDÉO) -->
-      <section id="sec-protection" class="view-section">
-        <h2>Protection des Contenus</h2>
-        <div class="form-card">
-          <p style="font-size:0.85rem; color:#cbd5e1; line-height:1.45; margin-bottom:12px;">
-            Active un filigrane anti-capture d'écran sur le <strong>lecteur PDF</strong> et le <strong>lecteur vidéo</strong>, bloque la copie/clic droit dans les lecteurs et masque l'écran si l'application perd le focus.
-          </p>
-          <div class="form-group">
-            <label>Activer la protection filigrane :</label>
-            <select id="protection-enabled-select" class="form-control" onchange="saveProtectionSettings()">
-              <option value="true">Activée (Recommandé)</option>
-              <option value="false">Désactivée</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Texte du filigrane (watermark) :</label>
-            <input type="text" id="watermark-text-input" class="form-control" value="MedX • Dr RABIBISOA • 0342002623" onchange="saveProtectionSettings()">
-          </div>
-          <button class="btn-primary" onclick="saveProtectionSettings()">Enregistrer la protection</button>
-          <div id="protection-status" style="margin-top:8px; font-size:0.83rem; color:#4ade80; text-align:center; font-weight:600;"></div>
+      <!-- À PROPOS -->
+      <section id="sec-apropos" class="view-section">
+        <h2 class="section-title">À propos de MedX</h2>
+        <div class="info-card">
+          <p class="info-line"><strong>Application :</strong> MedX — Révisions & Concours de Santé</p>
+          <p class="info-line"><strong>Version :</strong> <span id="about-version-text">v1.0.0</span></p>
+          <p class="info-line"><strong>Auteur :</strong> Dr RABIBISOA Herilala Nantenaina Pierre</p>
+          <p class="info-line"><strong>Contact :</strong> 0342002623 • rabherilala@gmail.com</p>
+          <p class="info-line"><strong>Compatibilité :</strong> Android 8, 9, 10, 11, 12, 13, 14+, WebView Android et différentes tailles d'écran.</p>
+          <button class="btn-primary" style="margin-top:8px;" onclick="switchTab('home')">Retour à Home</button>
         </div>
       </section>
     </main>
 
-    <!-- LECTEUR PDF INTÉGRÉ AVEC ZOOM (+ / -) ET FILIGRANE -->
+    <!-- LECTEUR PDF AVEC FILIGRANE -->
     <div id="pdf-viewer-modal">
       <div class="viewer-top-bar">
-        <span id="viewer-title-text" style="font-size:0.95rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:75%;">Leçon PDF</span>
+        <span id="viewer-title-text" style="font-size:0.88rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:82%;">Leçon PDF</span>
         <button class="viewer-close-btn" onclick="closePdfViewer()"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div class="viewer-toolbar">
-        <button class="tool-btn" onclick="changePage(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+        <button class="tool-btn" onclick="changePage(-1)">Préc.</button>
         <span id="page-num-display">1 / 1</span>
-        <button class="tool-btn" onclick="changePage(1)"><i class="fa-solid fa-chevron-right"></i></button>
-        <span style="border-left:1px solid #475569; height:20px; margin:0 4px;"></span>
+        <button class="tool-btn" onclick="changePage(1)">Suiv.</button>
         <button class="tool-btn" onclick="adjustZoom(-0.25)">-</button>
         <span id="zoom-level-display">100%</span>
         <button class="tool-btn" onclick="adjustZoom(0.25)">+</button>
       </div>
       <div id="viewer-container" class="viewer-content-area">
-        <div id="pdf-loading" style="color:#94a3b8; margin-top:30px; font-size:0.95rem;">Chargement de la leçon...</div>
+        <div id="pdf-loading" style="color:#94a3b8; margin-top:24px; font-size:0.9rem;">Chargement du PDF...</div>
         <div class="pdf-canvas-container" id="canvas-wrapper" style="display:none;">
           <canvas id="pdf-canvas"></canvas>
         </div>
         <div class="fallback-box" id="fallback-box">
-          <p>Ce serveur externe bloque le téléchargement ou la lecture directe dans le lecteur intégré. Vous pouvez l'ouvrir directement ci-dessous :</p>
+          <p>L'affichage intégré est limité par ce lien ou cette WebView. Ouvrez le fichier PDF directement :</p>
           <a id="fallback-external-link" href="#" target="_blank" rel="noopener noreferrer" class="fallback-link-btn">
-            <i class="fa-solid fa-arrow-up-right-from-square"></i> Ouvrir le lien PDF
+            Ouvrir le PDF
           </a>
         </div>
       </div>
       <div class="watermark-layer" id="pdf-watermark-layer"></div>
     </div>
 
-    <!-- LECTEUR VIDÉO INTÉGRÉ AVEC FILIGRANE -->
+    <!-- LECTEUR VIDÉO AVEC FILIGRANE -->
     <div id="video-viewer-modal">
       <div class="viewer-top-bar">
-        <span id="video-viewer-title" style="font-size:0.95rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:75%;">Vidéo</span>
+        <span id="video-viewer-title" style="font-size:0.88rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:82%;">Vidéo</span>
         <button class="viewer-close-btn" onclick="closeVideoViewer()"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div class="video-player-area">
@@ -614,96 +832,109 @@
           <div id="video-player-container" style="width:100%; height:100%;"></div>
           <div class="video-watermark-overlay" id="video-watermark-layer"></div>
         </div>
-        <div style="margin-top:14px;">
+        <div style="margin-top:12px;">
           <a id="video-external-link" href="#" target="_blank" rel="noopener noreferrer" class="fallback-link-btn">
-            <i class="fa-solid fa-arrow-up-right-from-square"></i> Ouvrir dans le navigateur / application
+            Ouvrir la vidéo externe
           </a>
         </div>
       </div>
     </div>
 
-    <!-- BOUCLIER ANTI-CAPTURE AU CHANGEMENT D'ONGLET / ARRIÈRE-PLAN -->
-    <div class="privacy-shield" id="privacy-shield">
-      <i class="fa-solid fa-shield-halved" style="font-size:2.4rem; color:#38bdf8; margin-bottom:12px;"></i>
-      <h3 style="margin-bottom:8px;">Contenu Protégé MedX</h3>
-      <p style="font-size:0.88rem; color:#94a3b8; max-width:300px; margin-bottom:16px;">
-        La lecture est masquée lorsque la fenêtre perd le focus.
-      </p>
-      <button class="btn-primary" style="max-width:220px;" onclick="hidePrivacyShield()">Reprendre la lecture</button>
-    </div>
-
+    <!-- NAVIGATION BASSE -->
     <nav class="bottom-nav">
-      <button class="nav-item active" onclick="switchTab('home')"><i class="fa-solid fa-house"></i><span>Home</span></button>
-      <button class="nav-item" onclick="switchTab('cours')"><i class="fa-solid fa-book"></i><span>Cours</span></button>
-      <button class="nav-item" onclick="switchTab('videos')"><i class="fa-solid fa-circle-play"></i><span>Vidéos</span></button>
-      <button class="nav-item" onclick="switchTab('qcm')"><i class="fa-solid fa-file-pen"></i><span>QCM</span></button>
-      <button class="nav-item" onclick="switchTab('classement')"><i class="fa-solid fa-trophy"></i><span>Classement</span></button>
-      <button class="nav-item" onclick="switchTab('protection')"><i class="fa-solid fa-shield-halved"></i><span>Protection</span></button>
+      <button class="nav-item active" data-tab="home" onclick="switchTab('home')"><i class="fa-solid fa-house"></i><span>Home</span></button>
+      <button class="nav-item" data-tab="cours" onclick="switchTab('cours')"><i class="fa-solid fa-book"></i><span>Cours</span></button>
+      <button class="nav-item" data-tab="videos" onclick="switchTab('videos')"><i class="fa-solid fa-circle-play"></i><span>Vidéos</span></button>
+      <button class="nav-item" data-tab="qcm" onclick="switchTab('qcm')"><i class="fa-solid fa-file-pen"></i><span>QCM</span></button>
+      <button class="nav-item" data-tab="classement" onclick="switchTab('classement')"><i class="fa-solid fa-trophy"></i><span>Classement</span></button>
+      <button class="nav-item" data-tab="apropos" onclick="switchTab('apropos')"><i class="fa-solid fa-circle-info"></i><span>À propos</span></button>
     </nav>
   </div>
-  <script src="webview-compat.js"></script>
+
+  <!-- =========================================================================
+       EMPLACEMENT DÉDIÉ : COLLER ICI VOTRE CODE / LIEN WEBVIEW & COMPATIBILITÉ ANDROID
+       Exemple : <script src="webview-compat.js"></script>
+       ========================================================================= -->
+
+  <!-- ========================================================================= -->
+
   <script>
     /* =========================================================================
-       ESPACE MISE À JOUR AUTOMATIQUE DU SITE & DE L'APPLICATION
-       - Incrémentez APP_VERSION à chaque modification HTML (ex: "v1.4.1").
-       - Pensez aussi à changer CACHE_NAME dans sw.js (ex: "medx-app-shell-v5").
+       VERSION DE L'APPLICATION / DES CONTENUS
+       Modifiez uniquement "APP_VERSION" à chaque mise à jour ou ajout de contenu.
        ========================================================================= */
-    const APP_VERSION = "v1.6.0";
+    var APP_VERSION = "1.0.0";
+    var VERSION_STORAGE_KEY = "MedX_Current_Version";
+    var memoryStore = {};
 
-    function triggerAutoUpdateCheck() {
-      if (!('serviceWorker' in navigator)) return;
-      navigator.serviceWorker.getRegistration().then((reg) => {
-        if (!reg) return;
-        reg.update();
-        if (reg.waiting) {
-          reg.waiting.postMessage({ type: 'SKIP_WAITING' });
-        }
-      }).catch(() => {});
+    function safeGet(key) {
+      try {
+        if (window.localStorage) return window.localStorage.getItem(key);
+      } catch (e) {}
+      return Object.prototype.hasOwnProperty.call(memoryStore, key) ? memoryStore[key] : null;
+    }
 
-      const savedVer = localStorage.getItem("MedX_Last_Seen_Version");
-      if (savedVer && savedVer !== APP_VERSION) {
-        localStorage.setItem("MedX_Last_Seen_Version", APP_VERSION);
-        window.location.reload();
-      } else {
-        localStorage.setItem("MedX_Last_Seen_Version", APP_VERSION);
+    function safeSet(key, value) {
+      var strVal = String(value);
+      memoryStore[key] = strVal;
+      try {
+        if (window.localStorage) window.localStorage.setItem(key, strVal);
+      } catch (e) {}
+    }
+
+    function applyVersionUpdateState() {
+      var formattedVersion = APP_VERSION.indexOf("v") === 0 ? APP_VERSION : ("v" + APP_VERSION);
+      var badge = document.getElementById("version-display");
+      var aboutVer = document.getElementById("about-version-text");
+      if (badge) badge.innerText = formattedVersion;
+      if (aboutVer) aboutVer.innerText = formattedVersion;
+
+      var previousVersion = safeGet(VERSION_STORAGE_KEY);
+      if (previousVersion !== APP_VERSION) {
+        safeSet(VERSION_STORAGE_KEY, APP_VERSION);
+        try {
+          if ("serviceWorker" in navigator && navigator.serviceWorker.getRegistration) {
+            navigator.serviceWorker.getRegistration().then(function (reg) {
+              if (reg && reg.update) reg.update();
+              if (reg && reg.waiting && reg.waiting.postMessage) {
+                reg.waiting.postMessage({ type: "SKIP_WAITING" });
+              }
+            })["catch"](function () {});
+          }
+        } catch (e) {}
       }
     }
 
-    function checkForUpdatesManual() {
-      triggerAutoUpdateCheck();
-      alert(`Version actuelle : ${APP_VERSION}. Vérification de mise à jour lancée.`);
-    }
+    document.addEventListener("visibilitychange", function () {
+      if (document.visibilityState === "visible") {
+        applyVersionUpdateState();
+      }
+    });
 
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js').then((reg) => {
-          reg.update();
-          reg.addEventListener('updatefound', () => {
-            const newWorker = reg.installing;
-            if (newWorker) {
-              newWorker.addEventListener('statechange', () => {
-                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                  window.location.reload();
-                }
-              });
-            }
-          });
-        }).catch((err) => {
-          console.warn('Service Worker non enregistré :', err);
-        });
-        triggerAutoUpdateCheck();
-      });
-
-      document.addEventListener('visibilitychange', () => {
-        if (document.visibilityState === 'visible') {
-          triggerAutoUpdateCheck();
-        } else if (isReadingProtectedContent() && getProtectionSettings().enabled) {
-          document.getElementById("privacy-shield").classList.add("active");
+    /* Garde de compatibilité Android 8+ (WebView Chromium 61+) */
+    if (!Array.prototype.find) {
+      Array.prototype.find = function (predicate) {
+        if (this == null) throw new TypeError("Array.prototype.find called on null or undefined");
+        var list = Object(this);
+        var length = list.length >>> 0;
+        var thisArg = arguments[1];
+        for (var i = 0; i < length; i++) {
+          var element = list[i];
+          if (predicate.call(thisArg, element, i, list)) return element;
         }
+        return undefined;
+      };
+    }
+
+    var WATERMARK_TEXT = "MedX • Dr RABIBISOA • 0342002623";
+
+    function escapeHtml(str) {
+      return String(str || "").replace(/[&<>"']/g, function (m) {
+        return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[m];
       });
     }
 
-    const UE_META = [
+    var UE_META = [
       { key: "anatomie", label: "Anatomie", banner: "banner-anatomie", icon: "fa-bone" },
       { key: "biomolecules", label: "Biomolécules", banner: "banner-biomolecules", icon: "fa-dna" },
       { key: "icm", label: "ICM", banner: "banner-icm", icon: "fa-pills" },
@@ -714,261 +945,164 @@
       { key: "uespecifique", label: "UE Spécifique", banner: "banner-uespecifique", icon: "fa-user-doctor" }
     ];
 
-    // =========================================================================
-    // PROTECTION DES CONTENUS (FILIGRANE PDF & VIDÉO + ANTI-COPIE)
-    // =========================================================================
-    const PROTECTION_KEY = "MedX_Protection_Settings_v1";
-
-    function getProtectionSettings() {
-      try {
-        return JSON.parse(localStorage.getItem(PROTECTION_KEY)) || {
-          enabled: true,
-          watermarkText: "MedX • Dr RABIBISOA • 0342002623"
-        };
-      } catch {
-        return { enabled: true, watermarkText: "MedX • Dr RABIBISOA • 0342002623" };
-      }
-    }
-
-    function saveProtectionSettings() {
-      const enabled = document.getElementById("protection-enabled-select").value === "true";
-      const watermarkText = document.getElementById("watermark-text-input").value.trim() || "MedX • Protégé";
-      localStorage.setItem(PROTECTION_KEY, JSON.stringify({ enabled, watermarkText }));
-
-      const homeStatus = document.getElementById("home-protection-status");
-      if (homeStatus) homeStatus.innerText = enabled ? "ACTIF" : "INACTIF";
-
-      const st = document.getElementById("protection-status");
-      if (st) st.innerText = "✅ Paramètres de protection enregistrés.";
-      applyWatermarks();
-    }
-
-    function applyWatermarks() {
-      const cfg = getProtectionSettings();
-      const pdfLayer = document.getElementById("pdf-watermark-layer");
-      const vidLayer = document.getElementById("video-watermark-layer");
-
-      if (!cfg.enabled) {
-        pdfLayer.classList.remove("active");
-        pdfLayer.innerHTML = "";
-        vidLayer.innerHTML = "";
-        return;
-      }
-
-      const txt = escapeHtml(cfg.watermarkText);
-      pdfLayer.innerHTML = Array.from({ length: 18 }, () => `<div class="watermark-tag">${txt}</div>`).join("");
-      pdfLayer.classList.add("active");
-
-      vidLayer.innerHTML = Array.from({ length: 6 }, () => `<div class="video-watermark-item">${txt}</div>`).join("");
-    }
-
-    function isReadingProtectedContent() {
-      return document.getElementById("pdf-viewer-modal").classList.contains("active") ||
-             document.getElementById("video-viewer-modal").classList.contains("active");
-    }
-
-    function hidePrivacyShield() {
-      document.getElementById("privacy-shield").classList.remove("active");
-    }
-
-    document.addEventListener("contextmenu", (e) => {
-      if (isReadingProtectedContent() && getProtectionSettings().enabled) {
-        e.preventDefault();
-      }
-    });
-
-    // =========================================================================
-    // 1. ESPACE DE RÉSERVE COURS PDF (10 EMPLACEMENTS PAR UE : LEÇON 1 À 10)
-    // =========================================================================
-    const RESERVE_COURS_PDF_PAR_UE = {
-      /* RÉSERVE PDF ANATOMIE  */
+    /* =========================================================================
+       1. COURS PAR UE (5 LEÇONS PAR UE)
+       Changez simplement "titre" et "lien" dans chaque leçon.
+       ========================================================================= */
+    var CATALOGUE_COURS = {
       anatomie: [
-    {
-        titre: "Leçon 1 : Anatomie de la rate",
-        lien: "assets/anatomie/Anatomie de la rate.pdf"
-    },
-    {
-        titre: "Leçon 2 : Anatomie des nerfs",
-        lien: "assets/anatomie/anat de nerf paces.pdf"
-    },
-    {
-        titre: "Leçon 3 : Anatomie du cœur",
-        lien: "assets/anatomie/LE-CŒUR-5-Pr-RAVALISOA-Agnes.pdf"
-    },
-    {
-        titre: "Leçon 4 : Anatomie des nerfs",
-        lien: "assets/anatomie/anat de nerf paces.pdf"
-    }
-],
-      
-      anatomie: Array.from({ length: 1 }, (_, i) => ({ titre: `Leçon ${i + 2} : Anatomie`, lien: "assets/anatomie/LE-CŒUR-5-Pr-RAVALISOA-Agnes.pdf" })),
-
-      /* RÉSERVE PDF BIOMOLÉCULES (10 places) */
-      biomolecules: Array.from({ length: 10 }, (_, i) => ({ titre: `Leçon ${i + 1} : Biomolécules`, lien: "" })),
-      /* RÉSERVE PDF ICM (10 places) */
-      icm: Array.from({ length: 1 }, (_, i) => ({ titre: `Leçon ${i + 1} : ICM`, lien: "assets/anatomie/icm/1604323401_1-histoire_medicaments_&_pharmacie.pdf" })),
-
-
-      /* RÉSERVE PDF PHYSIOLOGIE (10 places) */
-      physiologie: Array.from({ length: 10 }, (_, i) => ({ titre: `Leçon ${i + 1} : Physiologie`, lien: "" })),
-      /* RÉSERVE PDF BIOMATH (10 places) */
-      biomath: Array.from({ length: 10 }, (_, i) => ({ titre: `Leçon ${i + 1} : Biomath`, lien: "" })),
-      /* RÉSERVE PDF FRANÇAIS MÉDICAL (10 places) */
-      francais: Array.from({ length: 10 }, (_, i) => ({ titre: `Leçon ${i + 1} : Français Médical`, lien: "" })),
-      /* RÉSERVE PDF BIOCELL & TISSU (10 places) */
-      biocell: Array.from({ length: 10 }, (_, i) => ({ titre: `Leçon ${i + 1} : Biocell & Tissu`, lien: "assets/anatomie/biocell et tissu/BIOCELL.pdf" })),
-      /* RÉSERVE PDF UE SPÉCIFIQUE (10 places) */
-      uespecifique: Array.from({ length: 10 }, (_, i) => ({ titre: `Leçon ${i + 1} : UE Spécifique`, lien: "" }))
+        { titre: "Leçon 1 : Anatomie", lien: "" },
+        { titre: "Leçon 2 : Anatomie", lien: "" },
+        { titre: "Leçon 3 : Anatomie", lien: "" },
+        { titre: "Leçon 4 : Anatomie", lien: "" },
+        { titre: "Leçon 5 : Anatomie", lien: "" }
+      ],
+      biomolecules: [
+        { titre: "Leçon 1 : Biomolécules", lien: "" },
+        { titre: "Leçon 2 : Biomolécules", lien: "" },
+        { titre: "Leçon 3 : Biomolécules", lien: "" },
+        { titre: "Leçon 4 : Biomolécules", lien: "" },
+        { titre: "Leçon 5 : Biomolécules", lien: "" }
+      ],
+      icm: [
+        { titre: "Leçon 1 : ICM", lien: "" },
+        { titre: "Leçon 2 : ICM", lien: "" },
+        { titre: "Leçon 3 : ICM", lien: "" },
+        { titre: "Leçon 4 : ICM", lien: "" },
+        { titre: "Leçon 5 : ICM", lien: "" }
+      ],
+      physiologie: [
+        { titre: "Leçon 1 : Physiologie", lien: "" },
+        { titre: "Leçon 2 : Physiologie", lien: "" },
+        { titre: "Leçon 3 : Physiologie", lien: "" },
+        { titre: "Leçon 4 : Physiologie", lien: "" },
+        { titre: "Leçon 5 : Physiologie", lien: "" }
+      ],
+      biomath: [
+        { titre: "Leçon 1 : Biomath", lien: "" },
+        { titre: "Leçon 2 : Biomath", lien: "" },
+        { titre: "Leçon 3 : Biomath", lien: "" },
+        { titre: "Leçon 4 : Biomath", lien: "" },
+        { titre: "Leçon 5 : Biomath", lien: "" }
+      ],
+      francais: [
+        { titre: "Leçon 1 : Français Médical", lien: "" },
+        { titre: "Leçon 2 : Français Médical", lien: "" },
+        { titre: "Leçon 3 : Français Médical", lien: "" },
+        { titre: "Leçon 4 : Français Médical", lien: "" },
+        { titre: "Leçon 5 : Français Médical", lien: "" }
+      ],
+      biocell: [
+        { titre: "Leçon 1 : Biocell & Tissu", lien: "" },
+        { titre: "Leçon 2 : Biocell & Tissu", lien: "" },
+        { titre: "Leçon 3 : Biocell & Tissu", lien: "" },
+        { titre: "Leçon 4 : Biocell & Tissu", lien: "" },
+        { titre: "Leçon 5 : Biocell & Tissu", lien: "" }
+      ],
+      uespecifique: [
+        { titre: "Leçon 1 : UE Spécifique", lien: "" },
+        { titre: "Leçon 2 : UE Spécifique", lien: "" },
+        { titre: "Leçon 3 : UE Spécifique", lien: "" },
+        { titre: "Leçon 4 : UE Spécifique", lien: "" },
+        { titre: "Leçon 5 : UE Spécifique", lien: "" }
+      ]
     };
 
-    const CUSTOM_PDF_KEY = "MedX_Custom_PDF_Lessons_v1";
-
-    function getCoursCatalogue() {
-      const cat = JSON.parse(JSON.stringify(RESERVE_COURS_PDF_PAR_UE));
-      try {
-        const saved = JSON.parse(localStorage.getItem(CUSTOM_PDF_KEY)) || {};
-        Object.keys(saved).forEach(ueKey => {
-          if (!cat[ueKey]) return;
-          Object.keys(saved[ueKey]).forEach(slotIdx => {
-            const idx = parseInt(slotIdx, 10);
-            if (cat[ueKey][idx] && saved[ueKey][slotIdx]) {
-              cat[ueKey][idx] = saved[ueKey][slotIdx];
-            }
-          });
-        });
-      } catch {}
-      return cat;
-    }
-
-    function addPdfToSlot() {
-      const ueKey = document.getElementById("new-pdf-ue").value;
-      const slotIdx = parseInt(document.getElementById("new-pdf-slot").value, 10);
-      const titreInput = document.getElementById("new-pdf-title");
-      const urlInput = document.getElementById("new-pdf-url");
-      const status = document.getElementById("new-pdf-status");
-
-      const titre = titreInput.value.trim() || `Leçon ${slotIdx + 1}`;
-      const lien = urlInput.value.trim();
-
-      if (!lien) {
-        status.style.color = "#f87171";
-        status.innerText = "❌ Collez un lien PDF valide.";
-        return;
-      }
-
-      let saved = {};
-      try { saved = JSON.parse(localStorage.getItem(CUSTOM_PDF_KEY)) || {}; } catch {}
-      if (!saved[ueKey]) saved[ueKey] = {};
-      saved[ueKey][slotIdx] = { titre, lien };
-      localStorage.setItem(CUSTOM_PDF_KEY, JSON.stringify(saved));
-
-      titreInput.value = "";
-      urlInput.value = "";
-      status.style.color = "#4ade80";
-      status.innerText = `✅ Leçon PDF enregistrée dans l'emplacement ${slotIdx + 1}/10 !`;
-      renderCoursUeGrid();
-      if (document.getElementById("sec-ue-cours-detail").classList.contains("active") && activeCoursUeKey === ueKey) {
-        renderCoursLessons(ueKey);
-      }
-    }
-
-    // =========================================================================
-    // 2. ESPACE DE RÉSERVE VIDÉOS (5 EMPLACEMENTS PAR UE)
-    // =========================================================================
-    const RESERVE_VIDEOS_PAR_UE = {
-      anatomie: Array.from({ length: 5 }, (_, i) => ({ titre: `Vidéo ${i + 1} : Anatomie`, lien: "" })),
-      biomolecules: Array.from({ length: 5 }, (_, i) => ({ titre: `Vidéo ${i + 1} : Biomolécules`, lien: "" })),
-      icm: Array.from({ length: 5 }, (_, i) => ({ titre: `Vidéo ${i + 1} : ICM`, lien: "" })),
-      physiologie: Array.from({ length: 5 }, (_, i) => ({ titre: `Vidéo ${i + 1} : Physiologie`, lien: "" })),
-      biomath: Array.from({ length: 5 }, (_, i) => ({ titre: `Vidéo ${i + 1} : Biomath`, lien: "" })),
-      francais: Array.from({ length: 5 }, (_, i) => ({ titre: `Vidéo ${i + 1} : Français Médical`, lien: "" })),
-      biocell: Array.from({ length: 5 }, (_, i) => ({ titre: `Vidéo ${i + 1} : Biocell & Tissu`, lien: "" })),
-      uespecifique: Array.from({ length: 5 }, (_, i) => ({ titre: `Vidéo ${i + 1} : UE Spécifique`, lien: "" }))
+    /* =========================================================================
+       2. VIDÉOS PAR UE (5 VIDÉOS PAR UE)
+       Changez simplement "titre" et "lien" dans chaque vidéo.
+       ========================================================================= */
+    var CATALOGUE_VIDEOS = {
+      anatomie: [
+        { titre: "Vidéo 1 : Anatomie", lien: "" },
+        { titre: "Vidéo 2 : Anatomie", lien: "" },
+        { titre: "Vidéo 3 : Anatomie", lien: "" },
+        { titre: "Vidéo 4 : Anatomie", lien: "" },
+        { titre: "Vidéo 5 : Anatomie", lien: "" }
+      ],
+      biomolecules: [
+        { titre: "Vidéo 1 : Biomolécules", lien: "" },
+        { titre: "Vidéo 2 : Biomolécules", lien: "" },
+        { titre: "Vidéo 3 : Biomolécules", lien: "" },
+        { titre: "Vidéo 4 : Biomolécules", lien: "" },
+        { titre: "Vidéo 5 : Biomolécules", lien: "" }
+      ],
+      icm: [
+        { titre: "Vidéo 1 : ICM", lien: "" },
+        { titre: "Vidéo 2 : ICM", lien: "" },
+        { titre: "Vidéo 3 : ICM", lien: "" },
+        { titre: "Vidéo 4 : ICM", lien: "" },
+        { titre: "Vidéo 5 : ICM", lien: "" }
+      ],
+      physiologie: [
+        { titre: "Vidéo 1 : Physiologie", lien: "" },
+        { titre: "Vidéo 2 : Physiologie", lien: "" },
+        { titre: "Vidéo 3 : Physiologie", lien: "" },
+        { titre: "Vidéo 4 : Physiologie", lien: "" },
+        { titre: "Vidéo 5 : Physiologie", lien: "" }
+      ],
+      biomath: [
+        { titre: "Vidéo 1 : Biomath", lien: "" },
+        { titre: "Vidéo 2 : Biomath", lien: "" },
+        { titre: "Vidéo 3 : Biomath", lien: "" },
+        { titre: "Vidéo 4 : Biomath", lien: "" },
+        { titre: "Vidéo 5 : Biomath", lien: "" }
+      ],
+      francais: [
+        { titre: "Vidéo 1 : Français Médical", lien: "" },
+        { titre: "Vidéo 2 : Français Médical", lien: "" },
+        { titre: "Vidéo 3 : Français Médical", lien: "" },
+        { titre: "Vidéo 4 : Français Médical", lien: "" },
+        { titre: "Vidéo 5 : Français Médical", lien: "" }
+      ],
+      biocell: [
+        { titre: "Vidéo 1 : Biocell & Tissu", lien: "" },
+        { titre: "Vidéo 2 : Biocell & Tissu", lien: "" },
+        { titre: "Vidéo 3 : Biocell & Tissu", lien: "" },
+        { titre: "Vidéo 4 : Biocell & Tissu", lien: "" },
+        { titre: "Vidéo 5 : Biocell & Tissu", lien: "" }
+      ],
+      uespecifique: [
+        { titre: "Vidéo 1 : UE Spécifique", lien: "" },
+        { titre: "Vidéo 2 : UE Spécifique", lien: "" },
+        { titre: "Vidéo 3 : UE Spécifique", lien: "" },
+        { titre: "Vidéo 4 : UE Spécifique", lien: "" },
+        { titre: "Vidéo 5 : UE Spécifique", lien: "" }
+      ]
     };
 
-    const CUSTOM_VIDEOS_KEY = "MedX_Custom_Videos_v1";
-
-    function getVideosCatalogue() {
-      const cat = JSON.parse(JSON.stringify(RESERVE_VIDEOS_PAR_UE));
-      try {
-        const saved = JSON.parse(localStorage.getItem(CUSTOM_VIDEOS_KEY)) || {};
-        Object.keys(saved).forEach(ueKey => {
-          if (!cat[ueKey]) return;
-          Object.keys(saved[ueKey]).forEach(slotIdx => {
-            const idx = parseInt(slotIdx, 10);
-            if (cat[ueKey][idx] && saved[ueKey][slotIdx]) {
-              cat[ueKey][idx] = saved[ueKey][slotIdx];
-            }
-          });
-        });
-      } catch {}
-      return cat;
-    }
-
-    function addVideoToSlot() {
-      const ueKey = document.getElementById("new-video-ue").value;
-      const slotIdx = parseInt(document.getElementById("new-video-slot").value, 10);
-      const titreInput = document.getElementById("new-video-title");
-      const urlInput = document.getElementById("new-video-url");
-      const status = document.getElementById("new-video-status");
-
-      const titre = titreInput.value.trim() || `Vidéo ${slotIdx + 1}`;
-      const lien = urlInput.value.trim();
-
-      if (!lien) {
-        status.style.color = "#f87171";
-        status.innerText = "❌ Collez un lien vidéo (YouTube, MP4, etc.).";
-        return;
-      }
-
-      let saved = {};
-      try { saved = JSON.parse(localStorage.getItem(CUSTOM_VIDEOS_KEY)) || {}; } catch {}
-      if (!saved[ueKey]) saved[ueKey] = {};
-      saved[ueKey][slotIdx] = { titre, lien };
-      localStorage.setItem(CUSTOM_VIDEOS_KEY, JSON.stringify(saved));
-
-      titreInput.value = "";
-      urlInput.value = "";
-      status.style.color = "#4ade80";
-      status.innerText = `✅ Vidéo enregistrée dans l'emplacement ${slotIdx + 1}/5 !`;
-      renderVideosUeGrid();
-      if (document.getElementById("sec-ue-videos-detail").classList.contains("active") && activeVideosUeKey === ueKey) {
-        renderVideosList(ueKey);
-      }
-    }
-
-    // =========================================================================
-    // 3. ESPACE DE RÉSERVE QCM PAR UE
-    // =========================================================================
-    const RESERVE_QCM_PAR_UE = {
+    /* =========================================================================
+       3. QCM PAR UE (AJOUTEZ VOS NOUVELLES QUESTIONS DIRECTEMENT ICI)
+       ========================================================================= */
+    var QCM_PAR_UE = {
       anatomie: [
         {
           question: "Par quel orifice de la base du crâne passe le nerf mandibulaire (V3) ?",
           options: ["Le foramen ovale", "Le canal optique", "Le foramen stylomastoïdien", "La lame criblée de l'ethmoïde"],
           correctIndex: 0,
-          explanation: "Le nerf mandibulaire (V3) traverse le foramen ovale dans la fosse crânienne moyenne."
+          explanation: "Le nerf mandibulaire (V3) traverse le foramen ovale."
         }
       ],
       biomolecules: [
         {
           question: "Quelle liaison relie deux acides aminés au sein d'une chaîne polypeptidique ?",
-          options: ["Une liaison glycosidique", "Une liaison peptidique", "Une liaison phosphodiester", "Une liaison ester"],
+          options: ["Liaison glycosidique", "Liaison peptidique", "Liaison phosphodiester", "Liaison ester"],
           correctIndex: 1,
-          explanation: "La liaison peptidique est une liaison amide covalente entre le groupe carboxyle et le groupe amine."
+          explanation: "La liaison peptidique relie deux acides aminés."
         }
       ],
       icm: [
         {
           question: "Quelle voie d'administration offre une biodisponibilité de 100 % ?",
-          options: ["La voie orale", "La voie intraveineuse (IV)", "La voie sous-cutanée", "La voie rectale"],
+          options: ["Voie orale", "Voie intraveineuse (IV)", "Voie sous-cutanée", "Voie rectale"],
           correctIndex: 1,
-          explanation: "La voie intraveineuse délivre le principe actif directement dans la circulation systémique."
+          explanation: "La voie intraveineuse offre une biodisponibilité de 100 %."
         }
       ],
       physiologie: [
         {
           question: "Quelle structure constitue le pacemaker physiologique principal du cœur ?",
-          options: ["Le nœud atrio-ventriculaire", "Le faisceau de His", "Le nœud sino-atrial", "Les fibres de Purkinje"],
+          options: ["Nœud atrio-ventriculaire", "Faisceau de His", "Nœud sino-atrial", "Fibres de Purkinje"],
           correctIndex: 2,
           explanation: "Le nœud sino-atrial impose le rythme sinusal normal."
         }
@@ -976,12 +1110,7 @@
       biomath: [
         {
           question: "Que mesure la sensibilité d'un test diagnostique ?",
-          options: [
-            "La probabilité que le test soit positif chez un sujet malade",
-            "La probabilité que le test soit négatif chez un sujet sain",
-            "La prévalence de la maladie",
-            "La valeur prédictive négative"
-          ],
+          options: ["P(T+ | M+)", "P(T- | S+)", "La prévalence", "La VPN"],
           correctIndex: 0,
           explanation: "La sensibilité correspond à P(T+ | M+)."
         }
@@ -991,391 +1120,335 @@
           question: "Que signifie le préfixe médical « brady- » ?",
           options: ["Rapide", "Lent", "Douloureux", "Absent"],
           correctIndex: 1,
-          explanation: "Du grec bradys signifiant lent."
+          explanation: "Brady- signifie lent."
         }
       ],
       biocell: [
         {
           question: "Quel organite cellulaire produit l'ATP par phosphorylation oxydative ?",
-          options: ["L'appareil de Golgi", "Le lysosome", "La mitochondrie", "Le peroxysome"],
+          options: ["Appareil de Golgi", "Lysosome", "Mitochondrie", "Peroxysome"],
           correctIndex: 2,
-          explanation: "La mitochondrie assure la phosphorylation oxydative."
+          explanation: "La mitochondrie produit l'ATP."
         }
       ],
       uespecifique: [
         {
           question: "Quel signe clinique évoque une hémorragie digestive haute ?",
-          options: ["Une hématémèse", "Une hématurie", "Une hémoptysie", "Une épistaxis"],
+          options: ["Hématémèse", "Hématurie", "Hémoptysie", "Épistaxis"],
           correctIndex: 0,
-          explanation: "L'hématémèse correspond à un vomissement de sang d'origine digestive haute."
+          explanation: "L'hématémèse est un vomissement de sang d'origine digestive haute."
         }
       ]
     };
 
-    const CUSTOM_QCM_KEY = "MedX_Custom_QCM_v1";
-    const CUSTOM_RANKING_KEY = "MedX_Custom_Ranking_Students_v1";
-
-    const DEFAULT_10_STUDENTS = [
-      { id: "s1", name: "Andrianina R.", notes: { anatomie: 17, biomolecules: 16, icm: 15, physiologie: 16.5, biomath: 15.5, francais: 16, biocell: 17, uespecifique: 16 }, custom: false },
-      { id: "s2", name: "Rakotoarisoa M.", notes: { anatomie: 15.5, biomolecules: 15, icm: 14.5, physiologie: 16, biomath: 14, francais: 15, biocell: 15.5, uespecifique: 15 }, custom: false },
-      { id: "s3", name: "Rasoanaivo T.", notes: { anatomie: 14.5, biomolecules: 14, icm: 14, physiologie: 15, biomath: 13.5, francais: 14.5, biocell: 14, uespecifique: 14.5 }, custom: false },
-      { id: "s4", name: "Randrianasolo K.", notes: { anatomie: 13.5, biomolecules: 14, icm: 13, physiologie: 13.5, biomath: 13, francais: 14, biocell: 13.5, uespecifique: 13 }, custom: false },
-      { id: "s5", name: "Ravelomanana S.", notes: { anatomie: 13, biomolecules: 12.5, icm: 12.5, physiologie: 13, biomath: 12, francais: 13, biocell: 12.5, uespecifique: 12.5 }, custom: false },
-      { id: "s6", name: "Razafindrakoto H.", notes: { anatomie: 12, biomolecules: 12, icm: 11.5, physiologie: 12.5, biomath: 11.5, francais: 12, biocell: 12, uespecifique: 11.5 }, custom: false },
-      { id: "s7", name: "Ramanantsoa L.", notes: { anatomie: 11.5, biomolecules: 11, icm: 11, physiologie: 11.5, biomath: 10.5, francais: 11.5, biocell: 11, uespecifique: 11 }, custom: false },
-      { id: "s8", name: "Rafalimanana N.", notes: { anatomie: 10.5, biomolecules: 10.5, icm: 10, physiologie: 11, biomath: 10, francais: 10.5, biocell: 10.5, uespecifique: 10 }, custom: false },
-      { id: "s9", name: "Raharison V.", notes: { anatomie: 10, biomolecules: 9.5, icm: 10, physiologie: 10, biomath: 9.5, francais: 10, biocell: 9.5, uespecifique: 10 }, custom: false },
-      { id: "s10", name: "Rajaonarison E.", notes: { anatomie: 9, biomolecules: 9, icm: 8.5, physiologie: 9.5, biomath: 8.5, francais: 9, biocell: 9, uespecifique: 9 }, custom: false }
+    /* =========================================================================
+       4. MEMBRES & NOTES /20 (AJOUTEZ / MODIFIEZ VOS ÉTUDIANTS ET NOTES ICI)
+       ========================================================================= */
+    var ETUDIANTS_NOTES = [
+      { name: "Andrianina R.", notes: { anatomie: 17, biomolecules: 16, icm: 15, physiologie: 16.5, biomath: 15.5, francais: 16, biocell: 17, uespecifique: 16 } },
+      { name: "Rakotoarisoa M.", notes: { anatomie: 15.5, biomolecules: 15, icm: 14.5, physiologie: 16, biomath: 14, francais: 15, biocell: 15.5, uespecifique: 15 } },
+      { name: "Rasoanaivo T.", notes: { anatomie: 14.5, biomolecules: 14, icm: 14, physiologie: 15, biomath: 13.5, francais: 14.5, biocell: 14, uespecifique: 14.5 } },
+      { name: "Randrianasolo K.", notes: { anatomie: 13.5, biomolecules: 14, icm: 13, physiologie: 13.5, biomath: 13, francais: 14, biocell: 13.5, uespecifique: 13 } },
+      { name: "Ravelomanana S.", notes: { anatomie: 13, biomolecules: 12.5, icm: 12.5, physiologie: 13, biomath: 12, francais: 13, biocell: 12.5, uespecifique: 12.5 } },
+      { name: "Razafindrakoto H.", notes: { anatomie: 12, biomolecules: 12, icm: 11.5, physiologie: 12.5, biomath: 11.5, francais: 12, biocell: 12, uespecifique: 11.5 } },
+      { name: "Ramanantsoa L.", notes: { anatomie: 11.5, biomolecules: 11, icm: 11, physiologie: 11.5, biomath: 10.5, francais: 11.5, biocell: 11, uespecifique: 11 } },
+      { name: "Rafalimanana N.", notes: { anatomie: 10.5, biomolecules: 10.5, icm: 10, physiologie: 11, biomath: 10, francais: 10.5, biocell: 10.5, uespecifique: 10 } },
+      { name: "Raharison V.", notes: { anatomie: 10, biomolecules: 9.5, icm: 10, physiologie: 10, biomath: 9.5, francais: 10, biocell: 9.5, uespecifique: 10 } },
+      { name: "Rajaonarison E.", notes: { anatomie: 9, biomolecules: 9, icm: 8.5, physiologie: 9.5, biomath: 8.5, francais: 9, biocell: 9, uespecifique: 9 } }
     ];
 
-    function getFullQcmBank() {
-      const bank = JSON.parse(JSON.stringify(RESERVE_QCM_PAR_UE));
-      try {
-        const custom = JSON.parse(localStorage.getItem(CUSTOM_QCM_KEY)) || {};
-        Object.keys(custom).forEach(ue => {
-          if (bank[ue]) bank[ue] = bank[ue].concat(custom[ue]);
-        });
-      } catch {}
-      return bank;
+    function renderGrid(containerId, onSelectUe, countLabelFn) {
+      var grid = document.getElementById(containerId);
+      if (!grid) return;
+      var html = "";
+      for (var i = 0; i < UE_META.length; i++) {
+        var ue = UE_META[i];
+        html += '<div class="subject-card" onclick="' + onSelectUe + '(\'' + ue.key + '\')">' +
+          '<div class="subject-banner ' + ue.banner + '"><i class="fa-solid ' + ue.icon + '"></i></div>' +
+          '<div class="card-content"><h3>' + escapeHtml(ue.label) + '</h3><span class="progress-text">' + escapeHtml(countLabelFn(ue.key)) + '</span></div>' +
+          '</div>';
+      }
+      grid.innerHTML = html;
     }
 
-    function addCustomQcm() {
-      const ue = document.getElementById("new-qcm-ue").value;
-      const question = document.getElementById("new-qcm-question").value.trim();
-      const opt0 = document.getElementById("new-qcm-opt0").value.trim();
-      const opt1 = document.getElementById("new-qcm-opt1").value.trim();
-      const opt2 = document.getElementById("new-qcm-opt2").value.trim();
-      const opt3 = document.getElementById("new-qcm-opt3").value.trim();
-      const correctIndex = parseInt(document.getElementById("new-qcm-correct").value, 10);
-      const explanation = document.getElementById("new-qcm-exp").value.trim() || "Bonne réponse enregistrée.";
-      const status = document.getElementById("new-qcm-status");
+    function openCoursUe(ueKey) {
+      var meta = UE_META.find(function (u) { return u.key === ueKey; }) || UE_META[0];
+      var lessons = CATALOGUE_COURS[ueKey] || [];
+      document.getElementById("cours-panel-title").innerText = "Cours • " + meta.label;
+      var listEl = document.getElementById("cours-lessons-list");
+      var html = "";
 
-      if (!question || !opt0 || !opt1 || !opt2 || !opt3) {
-        status.style.color = "#f87171";
-        status.innerText = "❌ Remplissez la question et les 4 propositions (A, B, C, D).";
-        return;
+      for (var i = 0; i < lessons.length; i++) {
+        var l = lessons[i];
+        var hasLink = l.lien && l.lien.trim() !== "";
+        html += '<div class="item-card">' +
+          '<div class="item-main" onclick="openPdfLesson(\'' + ueKey + '\', ' + i + ')">' +
+          '<i class="fa-solid fa-file-pdf" style="color:' + (hasLink ? '#f87171' : '#64748b') + '; font-size:1.2rem;"></i>' +
+          '<div><div class="item-title">' + escapeHtml(l.titre) + '</div>' +
+          '<div class="item-sub">' + (hasLink ? 'PDF disponible' : 'Leçon ' + (i + 1) + '/5 (lien à renseigner)') + '</div></div>' +
+          '</div>' +
+          (hasLink ? '<button class="action-btn" onclick="openPdfLesson(\'' + ueKey + '\', ' + i + ')">Lire</button>' : '') +
+          '</div>';
       }
 
-      let custom = {};
-      try { custom = JSON.parse(localStorage.getItem(CUSTOM_QCM_KEY)) || {}; } catch {}
-      if (!custom[ue]) custom[ue] = [];
-      custom[ue].push({ question, options: [opt0, opt1, opt2, opt3], correctIndex, explanation });
-      localStorage.setItem(CUSTOM_QCM_KEY, JSON.stringify(custom));
-
-      ["new-qcm-question", "new-qcm-opt0", "new-qcm-opt1", "new-qcm-opt2", "new-qcm-opt3", "new-qcm-exp"].forEach(id => {
-        document.getElementById(id).value = "";
-      });
-
-      status.style.color = "#4ade80";
-      status.innerText = "✅ QCM ajouté dans l'UE sélectionnée !";
-      renderQcmUeGrid();
+      listEl.innerHTML = html;
+      var panel = document.getElementById("cours-ue-panel");
+      panel.classList.add("active");
+      try { panel.scrollIntoView({ behavior: "smooth", block: "nearest" }); } catch (e) {}
     }
 
-    function renderRankGradeInputs() {
-      const container = document.getElementById("rank-grades-inputs");
-      if (!container) return;
-      container.innerHTML = UE_META.map(ue => `
-        <div class="form-group" style="margin-bottom:0;">
-          <label>${escapeHtml(ue.label)} (/20) :</label>
-          <input type="number" step="0.25" min="0" max="20" id="rank-grade-${ue.key}" class="form-control" placeholder="0 - 20">
-        </div>
-      `).join("");
-    }
+    function openVideosUe(ueKey) {
+      var meta = UE_META.find(function (u) { return u.key === ueKey; }) || UE_META[0];
+      var vids = CATALOGUE_VIDEOS[ueKey] || [];
+      document.getElementById("videos-panel-title").innerText = "Vidéos • " + meta.label;
+      var listEl = document.getElementById("videos-lessons-list");
+      var html = "";
 
-    function getCustomRankingStudents() {
-      try {
-        return JSON.parse(localStorage.getItem(CUSTOM_RANKING_KEY)) || [];
-      } catch {
-        return [];
-      }
-    }
-
-    function computeAverageFromNotes(notesObj) {
-      const vals = UE_META
-        .map(ue => notesObj ? notesObj[ue.key] : null)
-        .filter(v => typeof v === "number" && !isNaN(v));
-      if (vals.length === 0) return 0;
-      return Number((vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(2));
-    }
-
-    function addPersonWithGradesToRanking() {
-      const nameInput = document.getElementById("new-person-name");
-      const status = document.getElementById("new-person-status");
-      const name = nameInput.value.trim();
-
-      if (!name) {
-        status.style.color = "#f87171";
-        status.innerText = "❌ Entrez le nom de la personne.";
-        return;
+      for (var i = 0; i < vids.length; i++) {
+        var v = vids[i];
+        var hasLink = v.lien && v.lien.trim() !== "";
+        html += '<div class="item-card">' +
+          '<div class="item-main" onclick="openVideoLesson(\'' + ueKey + '\', ' + i + ')">' +
+          '<i class="fa-solid fa-circle-play" style="color:' + (hasLink ? '#38bdf8' : '#64748b') + '; font-size:1.2rem;"></i>' +
+          '<div><div class="item-title">' + escapeHtml(v.titre) + '</div>' +
+          '<div class="item-sub">' + (hasLink ? 'Vidéo prête' : 'Vidéo ' + (i + 1) + '/5 (lien à renseigner)') + '</div></div>' +
+          '</div>' +
+          (hasLink ? '<button class="action-btn" onclick="openVideoLesson(\'' + ueKey + '\', ' + i + ')">Lire</button>' : '') +
+          '</div>';
       }
 
-      const notes = {};
-      UE_META.forEach(ue => {
-        const raw = document.getElementById(`rank-grade-${ue.key}`).value.trim();
-        const num = parseFloat(raw);
-        notes[ue.key] = (raw !== "" && !isNaN(num) && num >= 0 && num <= 20) ? num : 0;
-      });
-
-      const list = getCustomRankingStudents();
-      list.push({ id: "rk_" + Date.now(), name, notes, custom: true });
-      localStorage.setItem(CUSTOM_RANKING_KEY, JSON.stringify(list));
-
-      nameInput.value = "";
-      UE_META.forEach(ue => {
-        document.getElementById(`rank-grade-${ue.key}`).value = "";
-      });
-
-      const avg = computeAverageFromNotes(notes);
-      status.style.color = "#4ade80";
-      status.innerText = `✅ Ajouté au classement • Moyenne générale : ${avg.toFixed(2)} / 20`;
-      renderLeaderboard();
+      listEl.innerHTML = html;
+      var panel = document.getElementById("videos-ue-panel");
+      panel.classList.add("active");
+      try { panel.scrollIntoView({ behavior: "smooth", block: "nearest" }); } catch (e) {}
     }
 
-    function deleteCustomRankingStudent(id) {
-      const updated = getCustomRankingStudents().filter(s => s.id !== id);
-      localStorage.setItem(CUSTOM_RANKING_KEY, JSON.stringify(updated));
-      renderLeaderboard();
+    var currentQcmKey = "anatomie";
+    var qcmCorrectCount = 0;
+
+    function openQcmUe(ueKey) {
+      currentQcmKey = ueKey;
+      var meta = UE_META.find(function (u) { return u.key === ueKey; }) || UE_META[0];
+      document.getElementById("qcm-panel-title").innerText = "QCM • " + meta.label;
+      resetCurrentQcm();
+      var panel = document.getElementById("qcm-ue-panel");
+      panel.classList.add("active");
+      try { panel.scrollIntoView({ behavior: "smooth", block: "nearest" }); } catch (e) {}
     }
 
-    function resetGlobalRanking() {
-      if (!confirm("Réinitialiser les personnes ajoutées ?")) return;
-      localStorage.removeItem(CUSTOM_RANKING_KEY);
-      renderLeaderboard();
+    function resetCurrentQcm() {
+      var questions = QCM_PAR_UE[currentQcmKey] || [];
+      qcmCorrectCount = 0;
+      document.getElementById("qcm-score-display").innerText = "Score : 0 / " + questions.length;
+      var listEl = document.getElementById("qcm-questions-list");
+      var html = "";
+
+      for (var qIdx = 0; qIdx < questions.length; qIdx++) {
+        var q = questions[qIdx];
+        var optsHtml = "";
+        for (var oIdx = 0; oIdx < q.options.length; oIdx++) {
+          optsHtml += '<button class="qcm-opt-btn" id="q-' + qIdx + '-o-' + oIdx + '" onclick="checkQcmAnswer(' + qIdx + ', ' + oIdx + ')">' +
+            String.fromCharCode(65 + oIdx) + ". " + escapeHtml(q.options[oIdx]) + '</button>';
+        }
+        html += '<div class="qcm-card"><div class="qcm-question">' + escapeHtml(q.question) + '</div>' +
+          '<div class="qcm-options">' + optsHtml + '</div>' +
+          '<div class="qcm-explanation" id="q-exp-' + qIdx + '">' + escapeHtml(q.explanation) + '</div></div>';
+      }
+      listEl.innerHTML = html;
+    }
+
+    function checkQcmAnswer(qIdx, chosenIdx) {
+      var questions = QCM_PAR_UE[currentQcmKey] || [];
+      var q = questions[qIdx];
+      if (!q) return;
+
+      for (var i = 0; i < q.options.length; i++) {
+        var btn = document.getElementById("q-" + qIdx + "-o-" + i);
+        if (!btn) continue;
+        if (btn.disabled) return;
+        btn.disabled = true;
+      }
+
+      var chosenBtn = document.getElementById("q-" + qIdx + "-o-" + chosenIdx);
+      var rightBtn = document.getElementById("q-" + qIdx + "-o-" + q.correctIndex);
+
+      if (chosenIdx === q.correctIndex) {
+        qcmCorrectCount++;
+        if (chosenBtn) chosenBtn.classList.add("correct");
+      } else {
+        if (chosenBtn) chosenBtn.classList.add("wrong");
+        if (rightBtn) rightBtn.classList.add("correct");
+      }
+
+      var exp = document.getElementById("q-exp-" + qIdx);
+      if (exp) exp.style.display = "block";
+      document.getElementById("qcm-score-display").innerText = "Score : " + qcmCorrectCount + " / " + questions.length;
+    }
+
+    function closePanel(panelId) {
+      var panel = document.getElementById(panelId);
+      if (panel) panel.classList.remove("active");
+    }
+
+    function computeAverage(notes) {
+      var total = 0;
+      var count = 0;
+      for (var i = 0; i < UE_META.length; i++) {
+        var v = notes[UE_META[i].key];
+        if (typeof v === "number") {
+          total += v;
+          count++;
+        }
+      }
+      return count > 0 ? Number((total / count).toFixed(2)) : 0;
     }
 
     function renderLeaderboard() {
-      const lbContainer = document.getElementById("leaderboard-container");
-      if (!lbContainer) return;
+      var container = document.getElementById("leaderboard-container");
+      if (!container) return;
 
-      const allStudents = [
-        ...DEFAULT_10_STUDENTS,
-        ...getCustomRankingStudents()
-      ].map(st => ({
-        ...st,
-        moyenne: computeAverageFromNotes(st.notes)
-      }));
+      var ranked = ETUDIANTS_NOTES.map(function (st) {
+        return { name: st.name, notes: st.notes, moyenne: computeAverage(st.notes) };
+      }).sort(function (a, b) { return b.moyenne - a.moyenne; });
 
-      allStudents.sort((a, b) => b.moyenne - a.moyenne);
-
-      lbContainer.innerHTML = allStudents.map((st, idx) => {
-        const pos = idx + 1;
-        const posClass = pos === 1 ? "pos-1" : pos === 2 ? "pos-2" : pos === 3 ? "pos-3" : "";
-        const delBtn = st.custom
-          ? `<button class="action-btn btn-del" onclick="deleteCustomRankingStudent('${st.id}')" title="Supprimer"><i class="fa-solid fa-trash"></i></button>`
-          : "";
-
-        const ueBoxes = UE_META.map(ue => {
-          const noteVal = (st.notes && typeof st.notes[ue.key] === "number") ? `${st.notes[ue.key]}/20` : "—";
-          return `
-            <div class="ue-note-box">
-              <span>${escapeHtml(ue.label)}</span>
-              <strong>${escapeHtml(noteVal)}</strong>
-            </div>
-          `;
-        }).join("");
-
-        return `
-          <div class="rank-student-card">
-            <div class="rank-student-header">
-              <div class="rank-student-left">
-                <div class="lb-pos ${posClass}">${pos}</div>
-                <div style="font-weight:700; font-size:0.92rem; color:#f8fafc;">${escapeHtml(st.name)}</div>
-              </div>
-              <div style="display:flex; align-items:center; gap:7px;">
-                <span class="moyenne-pill">Moy : ${st.moyenne.toFixed(2)}/20</span>
-                ${delBtn}
-              </div>
-            </div>
-            <div class="ue-notes-grid">${ueBoxes}</div>
-          </div>
-        `;
-      }).join("");
+      var html = "";
+      for (var i = 0; i < ranked.length; i++) {
+        var st = ranked[i];
+        var ueBoxes = "";
+        for (var j = 0; j < UE_META.length; j++) {
+          var ue = UE_META[j];
+          var noteVal = typeof st.notes[ue.key] === "number" ? (st.notes[ue.key] + "/20") : "—";
+          ueBoxes += '<div class="ue-note-box"><span>' + escapeHtml(ue.label) + '</span><strong>' + escapeHtml(noteVal) + '</strong></div>';
+        }
+        html += '<div class="rank-student-card"><div class="rank-student-header">' +
+          '<div class="rank-student-left"><div class="lb-pos">' + (i + 1) + '</div>' +
+          '<div style="font-weight:700; font-size:0.88rem; color:#f8fafc;">' + escapeHtml(st.name) + '</div></div>' +
+          '<div class="moyenne-pill">Moy : ' + st.moyenne.toFixed(2) + '/20</div></div>' +
+          '<div class="ue-notes-grid">' + ueBoxes + '</div></div>';
+      }
+      container.innerHTML = html;
     }
 
-    let activeCoursUeKey = "anatomie";
-    let activeVideosUeKey = "anatomie";
-    let activeQcmUeKey = "anatomie";
-    let ueQcmCorrect = 0;
-    let ueQcmAnswered = 0;
-
-    function renderCoursUeGrid() {
-      const grid = document.getElementById("cours-ue-grid");
-      const cat = getCoursCatalogue();
-      if (!grid) return;
-      grid.innerHTML = "";
-
-      UE_META.forEach(ue => {
-        const lessons = cat[ue.key] || [];
-        const activePdf = lessons.filter(l => l.lien && l.lien.trim() !== "").length;
-        const card = document.createElement("div");
-        card.className = "subject-card";
-        card.onclick = () => openCoursUE(ue.key);
-        card.innerHTML = `
-          <div class="subject-banner ${ue.banner}"><i class="fa-solid ${ue.icon}"></i></div>
-          <div class="card-content">
-            <h3>${escapeHtml(ue.label)}</h3>
-            <span class="progress-text">${activePdf} / ${lessons.length} PDF</span>
-          </div>
-        `;
-        grid.appendChild(card);
-      });
+    function applyWatermarkNodes(containerId, itemClass, count) {
+      var box = document.getElementById(containerId);
+      if (!box) return;
+      var html = "";
+      for (var i = 0; i < count; i++) {
+        html += '<div class="' + itemClass + '">' + escapeHtml(WATERMARK_TEXT) + '</div>';
+      }
+      box.innerHTML = html;
     }
 
-    function openCoursUE(ueKey) {
-      activeCoursUeKey = ueKey;
-      const meta = UE_META.find(u => u.key === ueKey) || UE_META[0];
-      const header = document.getElementById("cours-ue-header");
-      header.className = `ue-header ${meta.banner}`;
-      document.getElementById("cours-ue-title").innerText = meta.label;
+    var pdfDoc = null;
+    var currentPage = 1;
+    var currentScale = 1.0;
 
-      renderCoursLessons(ueKey);
-
-      document.querySelectorAll(".view-section").forEach(sec => sec.classList.remove("active"));
-      document.querySelectorAll(".ue-view-section").forEach(sec => sec.classList.remove("active"));
-      document.getElementById("sec-ue-cours-detail").classList.add("active");
-      window.scrollTo(0, 0);
-    }
-
-    function renderCoursLessons(ueKey) {
-      const listEl = document.getElementById("cours-lessons-list");
-      const cat = getCoursCatalogue();
-      const lessons = cat[ueKey] || [];
-      if (!listEl) return;
-      listEl.innerHTML = "";
-
-      lessons.forEach((lesson, idx) => {
-        const storageKey = `${ueKey}_${idx}`;
-        const isSavedOffline = offlineCacheKeys.has(storageKey);
-        const hasLink = lesson.lien && lesson.lien.trim() !== "";
-
-        const card = document.createElement("div");
-        card.className = "lesson-card";
-
-        const statusHtml = isSavedOffline
-          ? `<span class="lesson-status status-offline"><i class="fa-solid fa-circle-check"></i> Stocké hors-ligne</span>`
-          : hasLink
-            ? `<span class="lesson-status status-online"><i class="fa-solid fa-globe"></i> Disponible en ligne</span>`
-            : `<span class="lesson-status" style="color:#64748b;">Emplacement réserve ${idx + 1}/10 (lien PDF à ajouter)</span>`;
-
-        const actionHtml = !hasLink
-          ? ""
-          : isSavedOffline
-            ? `<button class="action-btn btn-saved" onclick="openLesson('${ueKey}', ${idx})"><i class="fa-solid fa-book-open"></i> Lire</button>
-               <button class="action-btn btn-del" onclick="removeOfflineLesson('${storageKey}')" title="Supprimer du cache"><i class="fa-solid fa-trash"></i></button>`
-            : `<button class="action-btn btn-dl" onclick="downloadLessonOffline('${ueKey}', ${idx}, this)"><i class="fa-solid fa-download"></i> Télécharger</button>`;
-
-        card.innerHTML = `
-          <div class="lesson-main" onclick="openLesson('${ueKey}', ${idx})">
-            <i class="fa-solid fa-file-pdf" style="color:${isSavedOffline ? '#4ade80' : hasLink ? '#f87171' : '#475569'}; font-size:1.3rem; flex-shrink:0;"></i>
-            <div class="lesson-details">
-              <span class="lesson-title">${escapeHtml(lesson.titre)}</span>
-              ${statusHtml}
-            </div>
-          </div>
-          <div class="lesson-actions">${actionHtml}</div>
-        `;
-        listEl.appendChild(card);
-      });
-    }
-
-    function renderVideosUeGrid() {
-      const grid = document.getElementById("videos-ue-grid");
-      const cat = getVideosCatalogue();
-      if (!grid) return;
-      grid.innerHTML = "";
-
-      UE_META.forEach(ue => {
-        const vids = cat[ue.key] || [];
-        const activeVids = vids.filter(v => v.lien && v.lien.trim() !== "").length;
-        const card = document.createElement("div");
-        card.className = "subject-card";
-        card.onclick = () => openVideosUE(ue.key);
-        card.innerHTML = `
-          <div class="subject-banner ${ue.banner}"><i class="fa-solid ${ue.icon}"></i></div>
-          <div class="card-content">
-            <h3>${escapeHtml(ue.label)}</h3>
-            <span class="progress-text">${activeVids} / ${vids.length} Vidéos</span>
-          </div>
-        `;
-        grid.appendChild(card);
-      });
-    }
-
-    function openVideosUE(ueKey) {
-      activeVideosUeKey = ueKey;
-      const meta = UE_META.find(u => u.key === ueKey) || UE_META[0];
-      const header = document.getElementById("videos-ue-header");
-      header.className = `ue-header ${meta.banner}`;
-      document.getElementById("videos-ue-title").innerText = `Vidéos • ${meta.label}`;
-
-      renderVideosList(ueKey);
-
-      document.querySelectorAll(".view-section").forEach(sec => sec.classList.remove("active"));
-      document.querySelectorAll(".ue-view-section").forEach(sec => sec.classList.remove("active"));
-      document.getElementById("sec-ue-videos-detail").classList.add("active");
-      window.scrollTo(0, 0);
-    }
-
-    function renderVideosList(ueKey) {
-      const listEl = document.getElementById("videos-lessons-list");
-      const cat = getVideosCatalogue();
-      const vids = cat[ueKey] || [];
-      if (!listEl) return;
-      listEl.innerHTML = "";
-
-      vids.forEach((vid, idx) => {
-        const hasLink = vid.lien && vid.lien.trim() !== "";
-        const card = document.createElement("div");
-        card.className = "lesson-card";
-
-        const statusHtml = hasLink
-          ? `<span class="lesson-status status-online"><i class="fa-solid fa-circle-play"></i> Prête à lire</span>`
-          : `<span class="lesson-status" style="color:#64748b;">Emplacement réserve ${idx + 1}/5 (lien vidéo à ajouter)</span>`;
-
-        const actionHtml = hasLink
-          ? `<button class="action-btn btn-dl" onclick="openVideoItem('${ueKey}', ${idx})"><i class="fa-solid fa-play"></i> Lire</button>`
-          : "";
-
-        card.innerHTML = `
-          <div class="lesson-main" onclick="openVideoItem('${ueKey}', ${idx})">
-            <i class="fa-solid fa-film" style="color:${hasLink ? '#38bdf8' : '#475569'}; font-size:1.3rem; flex-shrink:0;"></i>
-            <div class="lesson-details">
-              <span class="lesson-title">${escapeHtml(vid.titre)}</span>
-              ${statusHtml}
-            </div>
-          </div>
-          <div class="lesson-actions">${actionHtml}</div>
-        `;
-        listEl.appendChild(card);
-      });
-    }
-
-    function extractYouTubeId(url) {
-      const m = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{6,})/);
-      return m ? m[1] : null;
-    }
-
-    function openVideoItem(ueKey, idx) {
-      const cat = getVideosCatalogue();
-      const vid = cat[ueKey][idx];
-      if (!vid || !vid.lien || vid.lien.trim() === "") {
-        alert("Aucun lien vidéo n'a encore été renseigné pour cet emplacement de réserve.");
+    function openPdfLesson(ueKey, idx) {
+      var lesson = (CATALOGUE_COURS[ueKey] || [])[idx];
+      if (!lesson || !lesson.lien || lesson.lien.trim() === "") {
+        alert("Aucun lien PDF n'est encore configuré pour cette leçon.");
         return;
       }
 
-      applyWatermarks();
-      const rawUrl = vid.lien.trim();
+      applyWatermarkNodes("pdf-watermark-layer", "watermark-tag", 16);
+      document.getElementById("viewer-title-text").innerText = lesson.titre;
+      document.getElementById("fallback-external-link").href = lesson.lien;
+      document.getElementById("pdf-viewer-modal").classList.add("active");
+      document.getElementById("pdf-loading").style.display = "block";
+      document.getElementById("canvas-wrapper").style.display = "none";
+      document.getElementById("fallback-box").style.display = "none";
+      currentPage = 1;
+      currentScale = 1.0;
+
+      if (!window.pdfjsLib || !window.pdfjsLib.getDocument) {
+        document.getElementById("pdf-loading").style.display = "none";
+        document.getElementById("fallback-box").style.display = "block";
+        return;
+      }
+
+      if (!window.pdfjsLib.GlobalWorkerOptions.workerSrc) {
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js";
+      }
+
+      window.pdfjsLib.getDocument({ url: lesson.lien, withCredentials: false }).promise.then(function (doc) {
+        pdfDoc = doc;
+        document.getElementById("pdf-loading").style.display = "none";
+        document.getElementById("canvas-wrapper").style.display = "block";
+        doc.getPage(1).then(function (page) {
+          var areaWidth = Math.max(220, document.getElementById("viewer-container").clientWidth - 24);
+          var baseVp = page.getViewport({ scale: 1 });
+          currentScale = Math.max(0.5, Math.min(2.0, areaWidth / baseVp.width));
+          renderPdfPage(currentPage);
+        });
+      })["catch"](function () {
+        document.getElementById("pdf-loading").style.display = "none";
+        document.getElementById("fallback-box").style.display = "block";
+      });
+    }
+
+    function renderPdfPage(num) {
+      if (!pdfDoc) return;
+      var canvas = document.getElementById("pdf-canvas");
+      if (!canvas || !canvas.getContext) return;
+      var ctx = canvas.getContext("2d");
+
+      pdfDoc.getPage(num).then(function (page) {
+        var vp = page.getViewport({ scale: currentScale });
+        canvas.width = Math.floor(vp.width);
+        canvas.height = Math.floor(vp.height);
+        page.render({ canvasContext: ctx, viewport: vp }).promise.then(function () {
+          document.getElementById("page-num-display").innerText = num + " / " + pdfDoc.numPages;
+          document.getElementById("zoom-level-display").innerText = Math.round(currentScale * 100) + "%";
+        });
+      });
+    }
+
+    function changePage(delta) {
+      if (!pdfDoc) return;
+      var next = currentPage + delta;
+      if (next >= 1 && next <= pdfDoc.numPages) {
+        currentPage = next;
+        renderPdfPage(currentPage);
+      }
+    }
+
+    function adjustZoom(delta) {
+      if (!pdfDoc) return;
+      currentScale = Math.min(2.8, Math.max(0.5, currentScale + delta));
+      renderPdfPage(currentPage);
+    }
+
+    function closePdfViewer() {
+      document.getElementById("pdf-viewer-modal").classList.remove("active");
+      pdfDoc = null;
+    }
+
+    function extractYoutubeId(url) {
+      var m = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{6,})/);
+      return m ? m[1] : null;
+    }
+
+    function openVideoLesson(ueKey, idx) {
+      var vid = (CATALOGUE_VIDEOS[ueKey] || [])[idx];
+      if (!vid || !vid.lien || vid.lien.trim() === "") {
+        alert("Aucun lien vidéo n'est encore configuré pour cet emplacement.");
+        return;
+      }
+
+      var rawUrl = vid.lien.trim();
+      applyWatermarkNodes("video-watermark-layer", "video-watermark-item", 6);
       document.getElementById("video-viewer-title").innerText = vid.titre;
       document.getElementById("video-external-link").href = rawUrl;
-      const container = document.getElementById("video-player-container");
 
-      const ytId = extractYouTubeId(rawUrl);
+      var container = document.getElementById("video-player-container");
+      var ytId = extractYoutubeId(rawUrl);
+
       if (ytId) {
-        container.innerHTML = `<iframe src="https://www.youtube.com/embed/${ytId}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+        container.innerHTML = '<iframe src="https://www.youtube.com/embed/' + ytId + '" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
       } else if (/\.(mp4|webm|ogg)(\?.*)?$/i.test(rawUrl)) {
-        container.innerHTML = `<video src="${escapeHtml(rawUrl)}" controls autoplay playsinline controlsList="nodownload"></video>`;
+        container.innerHTML = '<video src="' + escapeHtml(rawUrl) + '" controls autoplay playsinline controlsList="nodownload"></video>';
       } else {
-        container.innerHTML = `<iframe src="${escapeHtml(rawUrl)}" allowfullscreen></iframe>`;
+        container.innerHTML = '<iframe src="' + escapeHtml(rawUrl) + '" allowfullscreen></iframe>';
       }
 
       document.getElementById("video-viewer-modal").classList.add("active");
@@ -1383,350 +1456,44 @@
 
     function closeVideoViewer() {
       document.getElementById("video-viewer-modal").classList.remove("active");
-      document.getElementById("video-player-container").innerHTML = "";
-    }
-
-    function renderQcmUeGrid() {
-      const grid = document.getElementById("qcm-ue-grid");
-      const bank = getFullQcmBank();
-      if (!grid) return;
-      grid.innerHTML = "";
-
-      UE_META.forEach(ue => {
-        const count = (bank[ue.key] || []).length;
-        const card = document.createElement("div");
-        card.className = "subject-card";
-        card.onclick = () => openQcmUE(ue.key);
-        card.innerHTML = `
-          <div class="subject-banner ${ue.banner}"><i class="fa-solid ${ue.icon}"></i></div>
-          <div class="card-content">
-            <h3>${escapeHtml(ue.label)}</h3>
-            <span class="progress-text">${count} Question${count > 1 ? 's' : ''}</span>
-          </div>
-        `;
-        grid.appendChild(card);
-      });
-    }
-
-    function openQcmUE(ueKey) {
-      activeQcmUeKey = ueKey;
-      const meta = UE_META.find(u => u.key === ueKey) || UE_META[0];
-      const header = document.getElementById("qcm-ue-header");
-      header.className = `ue-header ${meta.banner}`;
-      document.getElementById("qcm-ue-title").innerText = `QCM • ${meta.label}`;
-
-      renderCurrentUeQcm();
-
-      document.querySelectorAll(".view-section").forEach(sec => sec.classList.remove("active"));
-      document.querySelectorAll(".ue-view-section").forEach(sec => sec.classList.remove("active"));
-      document.getElementById("sec-ue-qcm-detail").classList.add("active");
-      window.scrollTo(0, 0);
-    }
-
-    function renderCurrentUeQcm() {
-      const bank = getFullQcmBank();
-      const questions = bank[activeQcmUeKey] || [];
-      const container = document.getElementById("qcm-ue-questions-list");
-      ueQcmCorrect = 0;
-      ueQcmAnswered = 0;
-      updateUeQcmScore(questions.length);
-
-      if (!container) return;
-      container.innerHTML = "";
-
-      if (questions.length === 0) {
-        container.innerHTML = `<div style="padding:16px; text-align:center; color:#94a3b8; font-size:0.88rem;">Aucun QCM dans cette UE pour le moment.</div>`;
-        return;
-      }
-
-      questions.forEach((q, qIdx) => {
-        const card = document.createElement("div");
-        card.className = "qcm-card";
-        const optionsHtml = q.options.map((opt, oIdx) => `
-          <button class="qcm-opt-btn" id="ueqcm-${qIdx}-opt-${oIdx}" onclick="answerUeQcm(${qIdx}, ${oIdx})">
-            ${String.fromCharCode(65 + oIdx)}. ${escapeHtml(opt)}
-          </button>
-        `).join("");
-
-        card.innerHTML = `
-          <div class="qcm-meta">
-            <span class="qcm-ue-tag">Question ${qIdx + 1} / ${questions.length}</span>
-            <span style="font-size:0.75rem; color:#94a3b8;">Réponse instantanée</span>
-          </div>
-          <div class="qcm-question">${escapeHtml(q.question)}</div>
-          <div class="qcm-options">${optionsHtml}</div>
-          <div class="qcm-explanation" id="ueqcm-exp-${qIdx}">${escapeHtml(q.explanation)}</div>
-        `;
-        container.appendChild(card);
-      });
-    }
-
-    function answerUeQcm(qIdx, chosenIdx) {
-      const bank = getFullQcmBank();
-      const questions = bank[activeQcmUeKey] || [];
-      const q = questions[qIdx];
-      if (!q) return;
-
-      const btns = q.options.map((_, i) => document.getElementById(`ueqcm-${qIdx}-opt-${i}`));
-      if (!btns[0] || btns[0].disabled) return;
-
-      btns.forEach(b => { if (b) b.disabled = true; });
-      ueQcmAnswered++;
-
-      const isCorrect = chosenIdx === q.correctIndex;
-      if (isCorrect) {
-        ueQcmCorrect++;
-        btns[chosenIdx].classList.add("correct");
-      } else {
-        btns[chosenIdx].classList.add("wrong");
-        btns[q.correctIndex].classList.add("correct");
-      }
-
-      const exp = document.getElementById(`ueqcm-exp-${qIdx}`);
-      if (exp) exp.style.display = "block";
-
-      updateUeQcmScore(questions.length);
-    }
-
-    function updateUeQcmScore(total) {
-      const el = document.getElementById("qcm-ue-score-display");
-      if (el) el.innerText = `Score UE : ${ueQcmCorrect} / ${total}`;
-    }
-
-    function resetCurrentUeQcm() {
-      renderCurrentUeQcm();
-    }
-
-    function normalizePdfUrl(url) {
-      if (!url) return "";
-      const driveMatch = url.match(/drive\.google\.com\/file\/d\/([^/]+)/);
-      if (driveMatch && driveMatch[1]) {
-        return `https://drive.google.com/uc?export=download&id=${driveMatch[1]}`;
-      }
-      if (url.includes("dropbox.com")) {
-        return url.replace("www.dropbox.com", "dl.dropboxusercontent.com").replace("?dl=0", "").replace("&dl=0", "");
-      }
-      return url;
-    }
-
-    let db;
-    const offlineCacheKeys = new Set();
-    const DB_NAME = "MedX_Offline_Storage_v1";
-    const STORE_NAME = "downloaded_pdfs";
-
-    const dbReq = indexedDB.open(DB_NAME, 1);
-    dbReq.onupgradeneeded = (e) => {
-      const database = e.target.result;
-      if (!database.objectStoreNames.contains(STORE_NAME)) {
-        database.createObjectStore(STORE_NAME, { keyPath: "key" });
-      }
-    };
-    dbReq.onsuccess = (e) => {
-      db = e.target.result;
-      syncOfflineKeys();
-    };
-
-    function syncOfflineKeys() {
-      if (!db) { renderCoursUeGrid(); return; }
-      offlineCacheKeys.clear();
-      const tx = db.transaction(STORE_NAME, "readonly");
-      const req = tx.objectStore(STORE_NAME).getAllKeys();
-      req.onsuccess = () => {
-        (req.result || []).forEach(k => offlineCacheKeys.add(k));
-        const totalOfflineEl = document.getElementById("offline-total-count");
-        if (totalOfflineEl) totalOfflineEl.innerText = offlineCacheKeys.size;
-        renderCoursUeGrid();
-        if (document.getElementById("sec-ue-cours-detail").classList.contains("active")) {
-          renderCoursLessons(activeCoursUeKey);
-        }
-      };
-    }
-
-    async function downloadLessonOffline(ueKey, index, btnEl) {
-      const cat = getCoursCatalogue();
-      const lesson = cat[ueKey][index];
-      if (!lesson || !lesson.lien) return;
-
-      const storageKey = `${ueKey}_${index}`;
-      const directUrl = normalizePdfUrl(lesson.lien);
-
-      btnEl.disabled = true;
-      btnEl.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> ...`;
-
-      try {
-        const response = await fetch(directUrl);
-        if (!response.ok) throw new Error("HTTP " + response.status);
-        const arrayBuffer = await response.arrayBuffer();
-        if (arrayBuffer.byteLength < 100) throw new Error("Fichier vide");
-
-        const tx = db.transaction(STORE_NAME, "readwrite");
-        tx.objectStore(STORE_NAME).put({
-          key: storageKey,
-          titre: lesson.titre,
-          data: arrayBuffer
-        });
-
-        tx.oncomplete = () => syncOfflineKeys();
-      } catch (err) {
-        btnEl.disabled = false;
-        btnEl.innerHTML = `<i class="fa-solid fa-download"></i> Télécharger`;
-        alert("Impossible de télécharger automatiquement ce lien (restriction CORS du serveur ou appareil hors connexion).");
-      }
-    }
-
-    function removeOfflineLesson(storageKey) {
-      if (!db) return;
-      if (!confirm("Supprimer ce PDF du stockage hors-ligne ?")) return;
-      const tx = db.transaction(STORE_NAME, "readwrite");
-      tx.objectStore(STORE_NAME).delete(storageKey);
-      tx.oncomplete = () => syncOfflineKeys();
-    }
-
-    function escapeHtml(str) {
-      return String(str).replace(/[&<>"']/g, m => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m]));
-    }
-
-    let pdfDoc = null;
-    let pageNum = 1;
-    let pageRendering = false;
-    let pageNumPending = null;
-    let scale = 1.0;
-
-    const canvas = document.getElementById("pdf-canvas");
-    const ctx = canvas.getContext("2d");
-
-    function openLesson(ueKey, idx) {
-      const cat = getCoursCatalogue();
-      const lesson = cat[ueKey][idx];
-      if (!lesson) return;
-
-      const storageKey = `${ueKey}_${idx}`;
-      const directUrl = normalizePdfUrl(lesson.lien);
-
-      if (!offlineCacheKeys.has(storageKey) && !directUrl) {
-        alert("Aucun lien PDF n'a encore été renseigné pour cette leçon.");
-        return;
-      }
-
-      applyWatermarks();
-      document.getElementById("viewer-title-text").innerText = lesson.titre;
-      document.getElementById("pdf-viewer-modal").classList.add("active");
-      document.getElementById("pdf-loading").style.display = "block";
-      document.getElementById("pdf-loading").innerText = "Ouverture de la leçon...";
-      document.getElementById("canvas-wrapper").style.display = "none";
-      document.getElementById("fallback-box").style.display = "none";
-      document.getElementById("fallback-external-link").href = lesson.lien || "#";
-
-      pageNum = 1;
-      scale = 1.0;
-      pdfDoc = null;
-
-      if (db && offlineCacheKeys.has(storageKey)) {
-        const tx = db.transaction(STORE_NAME, "readonly");
-        const req = tx.objectStore(STORE_NAME).get(storageKey);
-        req.onsuccess = () => {
-          if (req.result && req.result.data) {
-            const bufferCopy = new Uint8Array(req.result.data.slice(0));
-            renderPdfSource({ data: bufferCopy });
-          } else {
-            renderPdfSource({ url: directUrl, withCredentials: false });
-          }
-        };
-      } else {
-        renderPdfSource({ url: directUrl, withCredentials: false });
-      }
-    }
-
-    function renderPdfSource(source) {
-      pdfjsLib.getDocument(source).promise.then((doc) => {
-        pdfDoc = doc;
-        document.getElementById("pdf-loading").style.display = "none";
-        document.getElementById("canvas-wrapper").style.display = "block";
-
-        pdfDoc.getPage(1).then((page) => {
-          const containerWidth = document.getElementById("viewer-container").clientWidth - 28;
-          const unscaledViewport = page.getViewport({ scale: 1 });
-          scale = Math.max(0.5, containerWidth / unscaledViewport.width);
-          renderPage(pageNum);
-        });
-      }).catch(() => {
-        document.getElementById("pdf-loading").style.display = "none";
-        document.getElementById("fallback-box").style.display = "block";
-      });
-    }
-
-    function renderPage(num) {
-      pageRendering = true;
-      pdfDoc.getPage(num).then((page) => {
-        const outputScale = window.devicePixelRatio || 2;
-        const viewport = page.getViewport({ scale: scale });
-
-        canvas.width = Math.floor(viewport.width * outputScale);
-        canvas.height = Math.floor(viewport.height * outputScale);
-        canvas.style.width = Math.floor(viewport.width) + "px";
-        canvas.style.height = Math.floor(viewport.height) + "px";
-
-        const transform = outputScale !== 1 ? [outputScale, 0, 0, outputScale, 0, 0] : null;
-        page.render({ canvasContext: ctx, transform, viewport }).promise.then(() => {
-          pageRendering = false;
-          if (pageNumPending !== null) {
-            renderPage(pageNumPending);
-            pageNumPending = null;
-          }
-        });
-      });
-
-      document.getElementById("page-num-display").innerText = `${pageNum} / ${pdfDoc.numPages}`;
-      document.getElementById("zoom-level-display").innerText = Math.round(scale * 100) + "%";
-    }
-
-    function queueRenderPage(num) {
-      if (pageRendering) pageNumPending = num;
-      else renderPage(num);
-    }
-
-    function changePage(val) {
-      if (!pdfDoc) return;
-      const next = pageNum + val;
-      if (next < 1 || next > pdfDoc.numPages) return;
-      pageNum = next;
-      document.getElementById("viewer-container").scrollTop = 0;
-      queueRenderPage(pageNum);
-    }
-
-    function adjustZoom(val) {
-      if (!pdfDoc) return;
-      scale = Math.min(3.5, Math.max(0.5, scale + val));
-      queueRenderPage(pageNum);
-    }
-
-    function closePdfViewer() {
-      document.getElementById("pdf-viewer-modal").classList.remove("active");
-      document.getElementById("pdf-watermark-layer").classList.remove("active");
-      pdfDoc = null;
+      var container = document.getElementById("video-player-container");
+      if (container) container.innerHTML = "";
     }
 
     function switchTab(tabId) {
-      document.querySelectorAll(".view-section").forEach(sec => sec.classList.remove("active"));
-      document.querySelectorAll(".ue-view-section").forEach(sec => sec.classList.remove("active"));
-      const target = document.getElementById("sec-" + tabId);
-      if (target) target.classList.add("active");
+      var sections = document.querySelectorAll(".view-section");
+      for (var i = 0; i < sections.length; i++) {
+        sections[i].classList.remove("active");
+      }
 
-      document.querySelectorAll(".nav-item").forEach(btn => {
-        btn.classList.toggle("active", btn.getAttribute("onclick")?.includes(`'${tabId}'`));
-      });
-      window.scrollTo(0, 0);
+      var target = document.getElementById("sec-" + tabId);
+      if (target) {
+        target.classList.add("active");
+      } else {
+        var homeSec = document.getElementById("sec-home");
+        if (homeSec) homeSec.classList.add("active");
+      }
+
+      var navItems = document.querySelectorAll(".nav-item");
+      for (var j = 0; j < navItems.length; j++) {
+        var itemTab = navItems[j].getAttribute("data-tab");
+        if (itemTab === tabId) {
+          navItems[j].classList.add("active");
+        } else {
+          navItems[j].classList.remove("active");
+        }
+      }
+
+      try { window.scrollTo(0, 0); } catch (e) {}
     }
 
-    const initProt = getProtectionSettings();
-    document.getElementById("protection-enabled-select").value = String(initProt.enabled);
-    document.getElementById("watermark-text-input").value = initProt.watermarkText;
-    document.getElementById("home-protection-status").innerText = initProt.enabled ? "ACTIF" : "INACTIF";
-
-    renderCoursUeGrid();
-    renderVideosUeGrid();
-    renderQcmUeGrid();
-    renderRankGradeInputs();
+    applyVersionUpdateState();
+    renderGrid("cours-ue-grid", "openCoursUe", function () { return "5 leçons PDF"; });
+    renderGrid("videos-ue-grid", "openVideosUe", function () { return "5 vidéos"; });
+    renderGrid("qcm-ue-grid", "openQcmUe", function (ueKey) {
+      var n = (QCM_PAR_UE[ueKey] || []).length;
+      return n + (n > 1 ? " questions" : " question");
+    });
     renderLeaderboard();
   </script>
 </body>
