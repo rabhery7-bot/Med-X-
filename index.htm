@@ -1,1926 +1,1826 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
-  <title>MedX - Études de Santé</title>
-  <meta name="theme-color" content="#0284c7">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="MedX">
-
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    html, body {
-      background-color: #0b1120;
-      color: #f1f5f9;
-      min-height: 100%;
-      width: 100%;
-      overflow-x: hidden;
-    }
-
-    body {
-      display: flex;
-      justify-content: center;
-    }
-
-    .app-container {
-      width: 100%;
-      max-width: 540px;
-      min-height: 100vh;
-      background-color: #0f172a;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      padding-bottom: 78px;
-    }
-
-    .app-header {
-      background-color: #1e293b;
-      color: #ffffff;
-      padding: 12px 14px;
-      text-align: center;
-      border-bottom: 1px solid #334155;
-    }
-
-    .logo-container {
-      font-size: clamp(1.45rem, 5vw, 1.8rem);
-      font-weight: 900;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-
-    .logo-medx { color: #38bdf8; }
-    .stethoscope-icon { color: #38bdf8; font-size: 1.35rem; }
-    .subtitle { font-size: 0.74rem; color: #94a3b8; margin-top: 2px; }
-    .sync-badge {
-      display: inline-block;
-      margin-top: 6px;
-      padding: 2px 10px;
-      border-radius: 999px;
-      background-color: rgba(74, 222, 128, 0.14);
-      border: 1px solid rgba(74, 222, 128, 0.35);
-      color: #4ade80;
-      font-size: 0.68rem;
-      font-weight: 700;
-    }
-
-    main {
-      padding: 14px;
-      flex: 1;
-      width: 100%;
-    }
-
-    .view-section { display: none; width: 100%; }
-    .view-section.active { display: block; }
-
-    .section-title {
-      font-size: clamp(1.05rem, 4vw, 1.25rem);
-      font-weight: 800;
-      color: #f8fafc;
-      margin-bottom: 10px;
-    }
-
-    .welcome-card {
-      background: linear-gradient(135deg, #0369a1, #0284c7);
-      color: #ffffff;
-      padding: 16px;
-      border-radius: 14px;
-      margin-bottom: 14px;
-    }
-
-    .welcome-card h2 {
-      font-size: clamp(1.08rem, 4.2vw, 1.25rem);
-      margin-bottom: 6px;
-    }
-
-    .welcome-card p {
-      font-size: 0.84rem;
-      line-height: 1.45;
-      opacity: 0.96;
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-
-    .stat-box {
-      background-color: #1e293b;
-      border: 1px solid #334155;
-      padding: 12px;
-      border-radius: 12px;
-      text-align: center;
-    }
-
-    .stat-box i {
-      font-size: 1.25rem;
-      color: #38bdf8;
-      margin-bottom: 5px;
-    }
-
-    .stat-box h3 { font-size: 1.05rem; color: #ffffff; }
-    .stat-box span { font-size: 0.72rem; color: #94a3b8; }
-
-    .btn-primary {
-      width: 100%;
-      background-color: #0284c7;
-      color: #ffffff;
-      border: none;
-      padding: 12px 14px;
-      border-radius: 10px;
-      font-size: 0.92rem;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .btn-primary:active { background-color: #0369a1; }
-
-    .btn-secondary {
-      width: 100%;
-      background-color: #1e293b;
-      color: #f8fafc;
-      border: 1px solid #475569;
-      padding: 11px 14px;
-      border-radius: 10px;
-      font-size: 0.88rem;
-      font-weight: 600;
-      cursor: pointer;
-      margin-top: 9px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-
-    .subjects-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
-      margin-top: 10px;
-    }
-
-    @media (max-width: 340px) {
-      .subjects-grid, .stats-grid, .ue-notes-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .subject-card {
-      background-color: #1e293b;
-      border-radius: 12px;
-      overflow: hidden;
-      border: 1px solid #334155;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .subject-card:active { opacity: 0.92; }
-
-    .subject-banner {
-      height: 58px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #ffffff;
-      font-size: 1.5rem;
-    }
-
-    .banner-anatomie { background: linear-gradient(135deg, #0284c7, #06b6d4); }
-    .banner-biomolecules { background: linear-gradient(135deg, #7c3aed, #a855f7); }
-    .banner-icm { background: linear-gradient(135deg, #059669, #10b981); }
-    .banner-physiologie { background: linear-gradient(135deg, #dc2626, #f43f5e); }
-    .banner-biomath { background: linear-gradient(135deg, #d97706, #f59e0b); }
-    .banner-francais { background: linear-gradient(135deg, #4f46e5, #6366f1); }
-    .banner-biocell { background: linear-gradient(135deg, #0891b2, #22d3ee); }
-    .banner-uespecifique { background: linear-gradient(135deg, #475569, #64748b); }
-
-    .card-content { padding: 9px 10px; }
-    .card-content h3 { font-size: 0.86rem; margin-bottom: 2px; color: #f8fafc; font-weight: 700; }
-    .progress-text { font-size: 0.72rem; color: #94a3b8; }
-
-    .ue-detail-panel {
-      display: none;
-      background-color: #1e293b;
-      border: 1px solid #38bdf8;
-      border-radius: 14px;
-      padding: 12px;
-      margin-top: 14px;
-    }
-
-    .ue-detail-panel.active { display: block; }
-
-    .ue-detail-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      margin-bottom: 12px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid #334155;
-    }
-
-    .ue-detail-header h3 {
-      font-size: 1rem;
-      font-weight: 800;
-      color: #f8fafc;
-    }
-
-    .back-inline-btn {
-      background-color: #0f172a;
-      color: #38bdf8;
-      border: 1px solid #334155;
-      border-radius: 8px;
-      padding: 6px 10px;
-      font-size: 0.78rem;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .item-card {
-      padding: 10px;
-      background-color: #0f172a;
-      margin-bottom: 8px;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      border: 1px solid #283548;
-      flex-wrap: wrap;
-    }
-
-    .item-main {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex: 1;
-      min-width: 170px;
-      cursor: pointer;
-    }
-
-    .item-title { font-weight: 600; font-size: 0.84rem; color: #f8fafc; line-height: 1.3; }
-    .item-sub { font-size: 0.7rem; color: #94a3b8; margin-top: 2px; }
-
-    .action-btn {
-      border: none;
-      border-radius: 8px;
-      padding: 7px 10px;
-      font-size: 0.76rem;
-      font-weight: 700;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      background-color: #0284c7;
-      color: #ffffff;
-    }
-
-    /* QCM */
-    .qcm-top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background-color: #0f172a;
-      border: 1px solid #334155;
-      border-radius: 10px;
-      padding: 9px 11px;
-      margin-bottom: 10px;
-    }
-
-    .qcm-score-badge {
-      color: #38bdf8;
-      font-weight: 700;
-      font-size: 0.82rem;
-    }
-
-    .qcm-card {
-      background-color: #0f172a;
-      border: 1px solid #283548;
-      border-radius: 12px;
-      padding: 12px;
-      margin-bottom: 10px;
-    }
-
-    .qcm-question {
-      font-size: 0.88rem;
-      font-weight: 700;
-      color: #f8fafc;
-      line-height: 1.4;
-      margin-bottom: 8px;
-    }
-
-    .qcm-options { display: flex; flex-direction: column; gap: 6px; }
-
-    .qcm-opt-btn {
-      width: 100%;
-      text-align: left;
-      background-color: #1e293b;
-      color: #e2e8f0;
-      border: 1px solid #334155;
-      border-radius: 8px;
-      padding: 9px 10px;
-      font-size: 0.82rem;
-      cursor: pointer;
-    }
-
-    .qcm-opt-btn.correct {
-      background-color: rgba(74, 222, 128, 0.18);
-      border-color: #4ade80;
-      color: #86efac;
-      font-weight: 700;
-    }
-
-    .qcm-opt-btn.wrong {
-      background-color: rgba(248, 113, 113, 0.18);
-      border-color: #f87171;
-      color: #fca5a5;
-    }
-
-    .qcm-explanation {
-      margin-top: 8px;
-      padding: 8px 10px;
-      border-radius: 8px;
-      background-color: #1e293b;
-      border-left: 3px solid #38bdf8;
-      font-size: 0.78rem;
-      color: #cbd5e1;
-      display: none;
-    }
-
-    /* CLASSEMENT & NOTES */
-    .rank-student-card {
-      background-color: #1e293b;
-      border: 1px solid #334155;
-      border-radius: 12px;
-      padding: 12px;
-      margin-bottom: 10px;
-    }
-
-    .rank-student-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 8px;
-      flex-wrap: wrap;
-    }
-
-    .rank-student-left { display: flex; align-items: center; gap: 8px; }
-
-    .lb-pos {
-      min-width: 26px;
-      height: 26px;
-      padding: 0 5px;
-      border-radius: 999px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      font-size: 0.74rem;
-      background-color: #0f172a;
-      color: #cbd5e1;
-    }
-
-    .lb-pos.top1 { background-color: #f59e0b; color: #0f172a; }
-    .lb-pos.top2 { background-color: #cbd5e1; color: #0f172a; }
-    .lb-pos.top3 { background-color: #d97706; color: #ffffff; }
-
-    .moyenne-pill {
-      background-color: rgba(74, 222, 128, 0.16);
-      color: #4ade80;
-      border: 1px solid rgba(74, 222, 128, 0.35);
-      padding: 3px 8px;
-      border-radius: 8px;
-      font-weight: 800;
-      font-size: 0.78rem;
-    }
-
-    .ue-notes-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 5px;
-      font-size: 0.72rem;
-      color: #cbd5e1;
-    }
-
-    .ue-note-box {
-      background-color: #0f172a;
-      border: 1px solid #283548;
-      border-radius: 6px;
-      padding: 5px 7px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .info-card {
-      background-color: #1e293b;
-      border: 1px solid #334155;
-      border-radius: 14px;
-      padding: 15px;
-      margin-top: 10px;
-    }
-
-    .info-line {
-      font-size: 0.84rem;
-      color: #cbd5e1;
-      line-height: 1.5;
-      margin-bottom: 8px;
-    }
-
-    /* LECTEUR PDF HAUTE LISIBILITÉ + FILIGRANE */
-    #pdf-viewer-modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: #0b1120;
-      z-index: 300;
-      flex-direction: column;
-      user-select: none;
-      -webkit-user-select: none;
-    }
-
-    #pdf-viewer-modal.active { display: flex; }
-
-    .viewer-top-bar {
-      min-height: 50px;
-      background-color: #1e293b;
-      color: #ffffff;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 6px 12px;
-      font-weight: 700;
-      border-bottom: 1px solid #334155;
-      z-index: 305;
-    }
-
-    .viewer-close-btn {
-      background: none;
-      border: none;
-      color: #ffffff;
-      font-size: 1.3rem;
-      cursor: pointer;
-      padding: 4px 8px;
-    }
-
-    .viewer-toolbar {
-      min-height: 44px;
-      background-color: #1e293b;
-      color: #ffffff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 7px;
-      font-size: 0.8rem;
-      border-bottom: 1px solid #334155;
-      z-index: 305;
-      flex-wrap: wrap;
-      padding: 5px 8px;
-    }
-
-    .tool-btn {
-      background-color: #0284c7;
-      color: #ffffff;
-      border: none;
-      min-width: 32px;
-      height: 29px;
-      padding: 0 9px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 700;
-      font-size: 0.78rem;
-    }
-
-    .viewer-content-area {
-      position: relative;
-      flex: 1;
-      overflow: auto;
-      background-color: #111827;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 10px;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .pdf-canvas-container {
-      background-color: #ffffff;
-      box-shadow: 0 6px 22px rgba(0, 0, 0, 0.75);
-      border-radius: 4px;
-      overflow: hidden;
-      margin: 0 auto;
-    }
-
-    #pdf-canvas {
-      display: block;
-      background-color: #ffffff;
-    }
-
-    .watermark-layer {
-      position: fixed;
-      top: 96px;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      pointer-events: none;
-      z-index: 304;
-      overflow: hidden;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-around;
-      align-content: space-around;
-      opacity: 0.16;
-    }
-
-    .watermark-tag {
-      color: #0284c7;
-      font-size: 0.78rem;
-      font-weight: 800;
-      transform: rotate(-28deg);
-      padding: 16px 10px;
-      white-space: nowrap;
-    }
-
-    /* LECTEUR VIDÉO + FILIGRANE */
-    #video-viewer-modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: #0b1120;
-      z-index: 310;
-      flex-direction: column;
-      user-select: none;
-      -webkit-user-select: none;
-    }
-
-    #video-viewer-modal.active { display: flex; }
-
-    .video-player-area {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 12px;
-      background-color: #090e1a;
-      overflow-y: auto;
-    }
-
-    .video-box {
-      position: relative;
-      width: 100%;
-      max-width: 500px;
-      aspect-ratio: 16 / 9;
-      background-color: #000000;
-      border-radius: 12px;
-      overflow: hidden;
-      border: 1px solid #334155;
-    }
-
-    .video-box iframe, .video-box video {
-      width: 100%;
-      height: 100%;
-      border: none;
-      display: block;
-    }
-
-    .video-watermark-overlay {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      z-index: 5;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-around;
-      align-content: center;
-      background-color: rgba(15, 23, 42, 0.08);
-    }
-
-    .video-watermark-item {
-      color: rgba(255, 255, 255, 0.34);
-      font-size: 0.74rem;
-      font-weight: 800;
-      transform: rotate(-24deg);
-      padding: 8px 12px;
-      white-space: nowrap;
-    }
-
-    .fallback-box {
-      display: none;
-      background-color: #1e293b;
-      border: 1px solid #334155;
-      border-radius: 12px;
-      padding: 16px;
-      margin-top: 14px;
-      max-width: 380px;
-      text-align: center;
-    }
-
-    .fallback-box p {
-      font-size: 0.84rem;
-      color: #cbd5e1;
-      margin-bottom: 12px;
-      line-height: 1.45;
-    }
-
-    .fallback-link-btn {
-      display: inline-block;
-      background-color: #0284c7;
-      color: #ffffff;
-      text-decoration: none;
-      padding: 10px 14px;
-      border-radius: 8px;
-      font-weight: 700;
-      font-size: 0.84rem;
-    }
-
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 100%;
-      max-width: 540px;
-      min-height: 60px;
-      background-color: #1e293b;
-      border-top: 1px solid #334155;
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      z-index: 100;
-      padding: 4px 2px;
-    }
-
-    .nav-item {
-      background: none;
-      border: none;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      color: #94a3b8;
-      font-size: clamp(0.54rem, 1.6vw, 0.62rem);
-      cursor: pointer;
-      gap: 2px;
-      flex: 1;
-      min-width: 0;
-      padding: 4px 2px;
-    }
-
-    .nav-item i { font-size: clamp(0.9rem, 2.8vw, 1.05rem); }
-    .nav-item span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
-    .nav-item.active { color: #38bdf8; font-weight: 700; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+<title>MedX - Études de Santé</title>
+<meta name="theme-color" content="#0284c7">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="MedX">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+html, body {
+  background-color: #0b1120;
+  color: #f1f5f9;
+  min-height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+}
+body {
+  display: flex;
+  justify-content: center;
+}
+.app-container {
+  width: 100%;
+  max-width: 540px;
+  min-height: 100vh;
+  background-color: #0f172a;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding-bottom: 78px;
+}
+.app-header {
+  background-color: #1e293b;
+  color: #ffffff;
+  padding: 12px 14px;
+  text-align: center;
+  border-bottom: 1px solid #334155;
+}
+.logo-container {
+  font-size: clamp(1.45rem, 5vw, 1.8rem);
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.logo-medx { color: #38bdf8; }
+.stethoscope-icon { color: #38bdf8; font-size: 1.35rem; }
+.subtitle { font-size: 0.74rem; color: #94a3b8; margin-top: 2px; }
+.sync-badge {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background-color: rgba(74, 222, 128, 0.14);
+  border: 1px solid rgba(74, 222, 128, 0.35);
+  color: #4ade80;
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+main {
+  padding: 14px;
+  flex: 1;
+  width: 100%;
+}
+.view-section { display: none; width: 100%; }
+.view-section.active { display: block; }
+.section-title {
+  font-size: clamp(1.05rem, 4vw, 1.25rem);
+  font-weight: 800;
+  color: #f8fafc;
+  margin-bottom: 10px;
+}
+.welcome-card {
+  background: linear-gradient(135deg, #0369a1, #0284c7);
+  color: #ffffff;
+  padding: 16px;
+  border-radius: 14px;
+  margin-bottom: 14px;
+}
+.welcome-card h2 {
+  font-size: clamp(1.08rem, 4.2vw, 1.25rem);
+  margin-bottom: 6px;
+}
+.welcome-card p {
+  font-size: 0.84rem;
+  line-height: 1.45;
+  opacity: 0.96;
+}
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.stat-box {
+  background-color: #1e293b;
+  border: 1px solid #334155;
+  padding: 12px;
+  border-radius: 12px;
+  text-align: center;
+}
+.stat-box i {
+  font-size: 1.25rem;
+  color: #38bdf8;
+  margin-bottom: 5px;
+}
+.stat-box h3 { font-size: 1.05rem; color: #ffffff; }
+.stat-box span { font-size: 0.72rem; color: #94a3b8; }
+.btn-primary {
+  width: 100%;
+  background-color: #0284c7;
+  color: #ffffff;
+  border: none;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.btn-primary:active { background-color: #0369a1; }
+.btn-secondary {
+  width: 100%;
+  background-color: #1e293b;
+  color: #f8fafc;
+  border: 1px solid #475569;
+  padding: 11px 14px;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.subjects-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+@media (max-width: 340px) {
+  .subjects-grid, .stats-grid, .ue-notes-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.subject-card {
+  background-color: #1e293b;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #334155;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+}
+.subject-card:active { opacity: 0.92; }
+.subject-banner {
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 1.5rem;
+}
+.banner-anatomie { background: linear-gradient(135deg, #0284c7, #06b6d4); }
+.banner-biomolecules { background: linear-gradient(135deg, #7c3aed, #a855f7); }
+.banner-icm { background: linear-gradient(135deg, #059669, #10b981); }
+.banner-physiologie { background: linear-gradient(135deg, #dc2626, #f43f5e); }
+.banner-biomath { background: linear-gradient(135deg, #d97706, #f59e0b); }
+.banner-francais { background: linear-gradient(135deg, #4f46e5, #6366f1); }
+.banner-biocell { background: linear-gradient(135deg, #0891b2, #22d3ee); }
+.banner-uespecifique { background: linear-gradient(135deg, #475569, #64748b); }
+.card-content { padding: 9px 10px; }
+.card-content h3 { font-size: 0.86rem; margin-bottom: 2px; color: #f8fafc; font-weight: 700; }
+.progress-text { font-size: 0.72rem; color: #94a3b8; }
+.ue-detail-panel {
+  display: none;
+  background-color: #1e293b;
+  border: 1px solid #38bdf8;
+  border-radius: 14px;
+  padding: 12px;
+  margin-top: 14px;
+}
+.ue-detail-panel.active { display: block; }
+.ue-detail-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #334155;
+}
+.ue-detail-header h3 {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #f8fafc;
+}
+.back-inline-btn {
+  background-color: #0f172a;
+  color: #38bdf8;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.item-card {
+  padding: 10px;
+  background-color: #0f172a;
+  margin-bottom: 8px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border: 1px solid #283548;
+  flex-wrap: wrap;
+}
+.item-main {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 170px;
+  cursor: pointer;
+}
+.item-title { font-weight: 600; font-size: 0.84rem; color: #f8fafc; line-height: 1.3; }
+.item-sub { font-size: 0.7rem; color: #94a3b8; margin-top: 2px; }
+.action-btn {
+  border: none;
+  border-radius: 8px;
+  padding: 7px 10px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background-color: #0284c7;
+  color: #ffffff;
+}
+/* QCM */
+.qcm-top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 10px;
+  padding: 9px 11px;
+  margin-bottom: 10px;
+}
+.qcm-score-badge {
+  color: #38bdf8;
+  font-weight: 700;
+  font-size: 0.82rem;
+}
+.qcm-card {
+  background-color: #0f172a;
+  border: 1px solid #283548;
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 10px;
+}
+.qcm-question {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #f8fafc;
+  line-height: 1.4;
+  margin-bottom: 8px;
+}
+.qcm-options { display: flex; flex-direction: column; gap: 6px; }
+.qcm-opt-btn {
+  width: 100%;
+  text-align: left;
+  background-color: #1e293b;
+  color: #e2e8f0;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  padding: 9px 10px;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+.qcm-opt-btn.correct {
+  background-color: rgba(74, 222, 128, 0.18);
+  border-color: #4ade80;
+  color: #86efac;
+  font-weight: 700;
+}
+.qcm-opt-btn.wrong {
+  background-color: rgba(248, 113, 113, 0.18);
+  border-color: #f87171;
+  color: #fca5a5;
+}
+.qcm-explanation {
+  margin-top: 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background-color: #1e293b;
+  border-left: 3px solid #38bdf8;
+  font-size: 0.78rem;
+  color: #cbd5e1;
+  display: none;
+}
+/* CLASSEMENT & NOTES */
+.rank-student-card {
+  background-color: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 10px;
+}
+.rank-student-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+.rank-student-left { display: flex; align-items: center; gap: 8px; }
+.lb-pos {
+  min-width: 26px;
+  height: 26px;
+  padding: 0 5px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.74rem;
+  background-color: #0f172a;
+  color: #cbd5e1;
+}
+.lb-pos.top1 { background-color: #f59e0b; color: #0f172a; }
+.lb-pos.top2 { background-color: #cbd5e1; color: #0f172a; }
+.lb-pos.top3 { background-color: #d97706; color: #ffffff; }
+.moyenne-pill {
+  background-color: rgba(74, 222, 128, 0.16);
+  color: #4ade80;
+  border: 1px solid rgba(74, 222, 128, 0.35);
+  padding: 3px 8px;
+  border-radius: 8px;
+  font-weight: 800;
+  font-size: 0.78rem;
+}
+.ue-notes-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 5px;
+  font-size: 0.72rem;
+  color: #cbd5e1;
+}
+.ue-note-box {
+  background-color: #0f172a;
+  border: 1px solid #283548;
+  border-radius: 6px;
+  padding: 5px 7px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 4px;
+}
+.info-card {
+  background-color: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 14px;
+  padding: 15px;
+  margin-top: 10px;
+}
+.info-line {
+  font-size: 0.84rem;
+  color: #cbd5e1;
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+/* LECTEUR PDF HAUTE LISIBILITÉ + FILIGRANE */
+#pdf-viewer-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #0b1120;
+  z-index: 300;
+  flex-direction: column;
+  user-select: none;
+  -webkit-user-select: none;
+}
+#pdf-viewer-modal.active { display: flex; }
+.viewer-top-bar {
+  min-height: 50px;
+  background-color: #1e293b;
+  color: #ffffff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 12px;
+  font-weight: 700;
+  border-bottom: 1px solid #334155;
+  z-index: 305;
+}
+.viewer-close-btn {
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 1.3rem;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+.viewer-toolbar {
+  min-height: 44px;
+  background-color: #1e293b;
+  color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.8rem;
+  border-bottom: 1px solid #334155;
+  z-index: 305;
+  flex-wrap: wrap;
+  padding: 5px 8px;
+}
+.tool-btn {
+  background-color: #0284c7;
+  color: #ffffff;
+  border: none;
+  min-width: 32px;
+  height: 29px;
+  padding: 0 9px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.78rem;
+}
+.viewer-content-area {
+  position: relative;
+  flex: 1;
+  overflow: auto;
+  background-color: #111827;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+  -webkit-overflow-scrolling: touch;
+}
+.pdf-canvas-container {
+  background-color: #ffffff;
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.75);
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 0 auto;
+}
+#pdf-canvas {
+  display: block;
+  background-color: #ffffff;
+}
+.watermark-layer {
+  position: fixed;
+  top: 96px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 304;
+  overflow: hidden;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-content: space-around;
+  opacity: 0.16;
+}
+.watermark-tag {
+  color: #0284c7;
+  font-size: 0.78rem;
+  font-weight: 800;
+  transform: rotate(-28deg);
+  padding: 16px 10px;
+  white-space: nowrap;
+}
+/* LECTEUR VIDÉO + FILIGRANE */
+#video-viewer-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #0b1120;
+  z-index: 310;
+  flex-direction: column;
+  user-select: none;
+  -webkit-user-select: none;
+}
+#video-viewer-modal.active { display: flex; }
+.video-player-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 12px;
+  background-color: #090e1a;
+  overflow-y: auto;
+}
+.video-box {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  aspect-ratio: 16/9;
+  background-color: #000000;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #334155;
+}
+.video-box iframe, .video-box video {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+.video-watermark-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-content: center;
+  background-color: rgba(15, 23, 42, 0.08);
+}
+.video-watermark-item {
+  color: rgba(255, 255, 255, 0.34);
+  font-size: 0.74rem;
+  font-weight: 800;
+  transform: rotate(-24deg);
+  padding: 8px 12px;
+  white-space: nowrap;
+}
+.fallback-box {
+  display: none;
+  background-color: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 14px;
+  max-width: 380px;
+  text-align: center;
+}
+.fallback-box p {
+  font-size: 0.84rem;
+  color: #cbd5e1;
+  margin-bottom: 12px;
+  line-height: 1.45;
+}
+.fallback-link-btn {
+  display: inline-block;
+  background-color: #0284c7;
+  color: #ffffff;
+  text-decoration: none;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.84rem;
+}
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 540px;
+  min-height: 60px;
+  background-color: #1e293b;
+  border-top: 1px solid #334155;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 100;
+  padding: 4px 2px;
+}
+.nav-item {
+  background: none;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #94a3b8;
+  font-size: clamp(0.54rem, 1.6vw, 0.62rem);
+  cursor: pointer;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+  padding: 4px 2px;
+}
+.nav-item i { font-size: clamp(0.9rem, 2.8vw, 1.05rem); }
+.nav-item span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.nav-item.active { color: #38bdf8; font-weight: 700; }
+</style>
 </head>
 <body>
-
-  <div class="app-container">
-    <header class="app-header">
-      <div class="logo-container">
-        <i class="fa-solid fa-stethoscope stethoscope-icon"></i>
-        <span class="logo-medx">MedX</span>
-      </div>
-      <p class="subtitle">Révisions & Concours de Santé • Android 8–14+ & WebView</p>
-      <span class="sync-badge" id="auto-sync-badge">Synchronisation auto active</span>
-    </header>
-
-    <main id="main-content">
-      <!-- HOME -->
-      <section id="sec-home" class="view-section active">
-        <div class="welcome-card">
-          <h2>Bonjour, Étudiant (e)! </h2>
-          <p>Accédez aux 20 leçons par UE, aux 20 vidéos par UE, aux QCM, au classement des 50 étudiants et à la section À propos.</p>
-        </div>
-
-        <div class="stats-grid">
-          <div class="stat-box">
-            <i class="fa-solid fa-book-open"></i>
-            <h3>8 UE • 20 Leçons</h3>
-            <span>Cours & Vidéos par UE</span>
-          </div>
-          <div class="stat-box">
-            <i class="fa-solid fa-trophy"></i>
-            <h3 id="home-student-count">50 Étudiants</h3>
-            <span>Classement & Notes /20</span>
-          </div>
-        </div>
-
-        <button class="btn-primary" onclick="switchTab('cours')">Accéder aux Cours (20/UE)</button>
-        <button class="btn-secondary" onclick="switchTab('videos')"><i class="fa-solid fa-circle-play"></i> Voir les Vidéos (20/UE)</button>
-        <button class="btn-secondary" onclick="switchTab('classement')"><i class="fa-solid fa-trophy"></i> Classement (50 Étudiants)</button>
-        <button class="btn-secondary" onclick="switchTab('apropos')"><i class="fa-solid fa-circle-info"></i> À propos</button>
-      </section>
-
-      <!-- COURS (20 LEÇONS PAR UE) -->
-      <section id="sec-cours" class="view-section">
-        <h2 class="section-title">Cours par UE (20 Leçons)</h2>
-        <div class="subjects-grid" id="cours-ue-grid"></div>
-
-        <div class="ue-detail-panel" id="cours-ue-panel">
-          <div class="ue-detail-header">
-            <h3 id="cours-panel-title">Leçons PDF</h3>
-            <button class="back-inline-btn" onclick="closePanel('cours-ue-panel')">Fermer</button>
-          </div>
-          <div id="cours-lessons-list"></div>
-        </div>
-      </section>
-
-      <!-- VIDÉOS (20 VIDÉOS PAR UE) -->
-      <section id="sec-videos" class="view-section">
-        <h2 class="section-title">Vidéos par UE (20 Vidéos)</h2>
-        <div class="subjects-grid" id="videos-ue-grid"></div>
-
-        <div class="ue-detail-panel" id="videos-ue-panel">
-          <div class="ue-detail-header">
-            <h3 id="videos-panel-title">Vidéos</h3>
-            <button class="back-inline-btn" onclick="closePanel('videos-ue-panel')">Fermer</button>
-          </div>
-          <div id="videos-lessons-list"></div>
-        </div>
-      </section>
-
-      <!-- QCM -->
-      <section id="sec-qcm" class="view-section">
-        <h2 class="section-title">QCM par UE</h2>
-        <div class="subjects-grid" id="qcm-ue-grid"></div>
-
-        <div class="ue-detail-panel" id="qcm-ue-panel">
-          <div class="ue-detail-header">
-            <h3 id="qcm-panel-title">QCM</h3>
-            <button class="back-inline-btn" onclick="closePanel('qcm-ue-panel')">Fermer</button>
-          </div>
-          <div class="qcm-top-bar">
-            <span class="qcm-score-badge" id="qcm-score-display">Score : 0 / 0</span>
-            <button class="action-btn" onclick="resetCurrentQcm()">Refaire</button>
-          </div>
-          <div id="qcm-questions-list"></div>
-        </div>
-      </section>
-
-      <!-- CLASSEMENT (50 ÉTUDIANTS • NOTES PAR UE /20 + MOYENNE GÉNÉRALE) -->
-      <section id="sec-classement" class="view-section">
-        <h2 class="section-title">Classement & Notes (/20)</h2>
-        <div id="leaderboard-container"></div>
-      </section>
-
-      <!-- À PROPOS -->
-      <section id="sec-apropos" class="view-section">
-        <h2 class="section-title">À propos de MedX</h2>
-        <div class="info-card">
-          <p class="info-line"><strong>Application :</strong> MedX — Révisions & Concours de Santé</p>
-          <p class="info-line"><strong>Mise à jour automatique :</strong> Active (empreinte automatique du contenu <span id="about-build-hash">—</span>)</p>
-          <p class="info-line"><strong>Auteur :</strong> Investissez dans une valeur, choisissez Med X pour assurer votre avenir</p>
-          <p class="info-line"><strong>Contact :</strong> 0342002623 • rabherilala@gmail.com</p>
-          <p class="info-line"><strong>Compatibilité :</strong> Android 8, 9, 10, 11, 12, 13, 14+, WebView Android et toutes tailles d'écran.</p>
-          <button class="btn-primary" style="margin-top:8px;" onclick="switchTab('home')">Retour à Home</button>
-        </div>
-      </section>
-    </main>
-
-    <!-- LECTEUR PDF HAUTE LISIBILITÉ AVEC FILIGRANE -->
-    <div id="pdf-viewer-modal">
-      <div class="viewer-top-bar">
-        <span id="viewer-title-text" style="font-size:0.88rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:82%;">Leçon PDF</span>
-        <button class="viewer-close-btn" onclick="closePdfViewer()"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-      <div class="viewer-toolbar">
-        <button class="tool-btn" onclick="changePage(-1)">Préc.</button>
-        <span id="page-num-display">1 / 1</span>
-        <button class="tool-btn" onclick="changePage(1)">Suiv.</button>
-        <button class="tool-btn" onclick="adjustZoom(-0.25)">-</button>
-        <span id="zoom-level-display">100%</span>
-        <button class="tool-btn" onclick="adjustZoom(0.25)">+</button>
-        <button class="tool-btn" onclick="fitPdfToWidth()">Ajuster</button>
-      </div>
-      <div id="viewer-container" class="viewer-content-area">
-        <div id="pdf-loading" style="color:#38bdf8; margin-top:24px; font-size:0.9rem; font-weight:600;">Chargement haute netteté du PDF...</div>
-        <div class="pdf-canvas-container" id="canvas-wrapper" style="display:none;">
-          <canvas id="pdf-canvas"></canvas>
-        </div>
-        <div class="fallback-box" id="fallback-box">
-          <p>Ce lien nécessite une ouverture directe ou un téléchargement dans votre navigateur Android :</p>
-          <a id="fallback-external-link" href="#" target="_blank" rel="noopener noreferrer" class="fallback-link-btn">
-            Ouvrir le PDF directement
-          </a>
-        </div>
-      </div>
-      <div class="watermark-layer" id="pdf-watermark-layer"></div>
+<div class="app-container">
+  <header class="app-header">
+    <div class="logo-container">
+      <i class="fa-solid fa-stethoscope stethoscope-icon"></i>
+      <span class="logo-medx">MedX</span>
     </div>
+    <p class="subtitle">Révisions & Concours de Santé Android 8-14+ & WebView</p>
+    <span class="sync-badge" id="auto-sync-badge">Synchronisation auto active</span>
+  </header>
 
-    <!-- LECTEUR VIDÉO AVEC FILIGRANE -->
-    <div id="video-viewer-modal">
-      <div class="viewer-top-bar">
-        <span id="video-viewer-title" style="font-size:0.88rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:82%;">Vidéo</span>
-        <button class="viewer-close-btn" onclick="closeVideoViewer()"><i class="fa-solid fa-xmark"></i></button>
+  <main id="main-content">
+    <!-- HOME -->
+    <section id="sec-home" class="view-section active">
+      <div class="welcome-card">
+        <h2>Bonjour, Étudiant(e) !</h2>
+        <p>Accédez aux 20 leçons par UE, aux 20 vidéos par UE, aux QCM, au classement des 50 étudiants et à la section À propos.</p>
       </div>
-      <div class="video-player-area">
-        <div class="video-box">
-          <div id="video-player-container" style="width:100%; height:100%;"></div>
-          <div class="video-watermark-overlay" id="video-watermark-layer"></div>
+      <div class="stats-grid">
+        <div class="stat-box">
+          <i class="fa-solid fa-book-open"></i>
+          <h3>8 UE • 20 Leçons</h3>
+          <span>Cours & Vidéos par UE</span>
         </div>
-        <div style="margin-top:12px;">
-          <a id="video-external-link" href="#" target="_blank" rel="noopener noreferrer" class="fallback-link-btn">
-            Ouvrir la vidéo externe
-          </a>
+        <div class="stat-box">
+          <i class="fa-solid fa-trophy"></i>
+          <h3 id="home-student-count">50 Étudiants</h3>
+          <span>Classement & Notes /20</span>
         </div>
+      </div>
+      <button class="btn-primary" onclick="switchTab('cours')">Accéder aux Cours (20/UE)</button>
+      <button class="btn-secondary" onclick="switchTab('videos')"><i class="fa-solid fa-circle-play"></i> Voir les Vidéos (20/UE)</button>
+      <button class="btn-secondary" onclick="switchTab('classement')"><i class="fa-solid fa-trophy"></i> Classement (50 Étudiants)</button>
+      <button class="btn-secondary" onclick="switchTab('apropos')"><i class="fa-solid fa-circle-info"></i> À propos</button>
+    </section>
+
+    <!-- COURS (20 LEÇONS PAR UE) -->
+    <section id="sec-cours" class="view-section">
+      <h2 class="section-title">Cours par UE (20 Leçons)</h2>
+      <div class="subjects-grid" id="cours-ue-grid"></div>
+      <div class="ue-detail-panel" id="cours-ue-panel">
+        <div class="ue-detail-header">
+          <h3 id="cours-panel-title">Leçons PDF</h3>
+          <button class="back-inline-btn" onclick="closePanel('cours-ue-panel')">Fermer</button>
+        </div>
+        <div id="cours-lessons-list"></div>
+      </div>
+    </section>
+
+    <!-- VIDÉOS (20 VIDÉOS PAR UE) -->
+    <section id="sec-videos" class="view-section">
+      <h2 class="section-title">Vidéos par UE (20 Vidéos)</h2>
+      <div class="subjects-grid" id="videos-ue-grid"></div>
+      <div class="ue-detail-panel" id="videos-ue-panel">
+        <div class="ue-detail-header">
+          <h3 id="videos-panel-title">Vidéos</h3>
+          <button class="back-inline-btn" onclick="closePanel('videos-ue-panel')">Fermer</button>
+        </div>
+        <div id="videos-lessons-list"></div>
+      </div>
+    </section>
+
+    <!-- QCM -->
+    <section id="sec-qcm" class="view-section">
+      <h2 class="section-title">QCM par UE</h2>
+      <div class="subjects-grid" id="qcm-ue-grid"></div>
+      <div class="ue-detail-panel" id="qcm-ue-panel">
+        <div class="ue-detail-header">
+          <h3 id="qcm-panel-title">QCM</h3>
+          <button class="back-inline-btn" onclick="closePanel('qcm-ue-panel')">Fermer</button>
+        </div>
+        <div class="qcm-top-bar">
+          <span class="qcm-score-badge" id="qcm-score-display">Score: 0/0</span>
+          <button class="action-btn" onclick="resetCurrentQcm()">Refaire</button>
+        </div>
+        <div id="qcm-questions-list"></div>
+      </div>
+    </section>
+
+    <!-- CLASSEMENT (50 ÉTUDIANTS NOTES PAR UE /20 + MOYENNE GÉNÉRALE) -->
+    <section id="sec-classement" class="view-section">
+      <h2 class="section-title">Classement & Notes (/20)</h2>
+      <div id="leaderboard-container"></div>
+    </section>
+
+    <!-- À PROPOS -->
+    <section id="sec-apropos" class="view-section">
+      <h2 class="section-title">À propos de MedX</h2>
+      <div class="info-card">
+        <p class="info-line"><strong>Application :</strong> MedX - Révisions & Concours de Santé</p>
+        <p class="info-line"><strong>Mise à jour automatique :</strong> Active (empreinte automatique du contenu <span id="about-build-hash">-</span>)</p>
+        <p class="info-line"><strong>Auteur :</strong> Investissez dans une valeur, choisissez Med X pour assurer votre avenir</p>
+        <p class="info-line"><strong>Contact :</strong> 0342002623 • rabherilala@gmail.com</p>
+        <p class="info-line"><strong>Compatibilité :</strong> Android 8, 9, 10, 11, 12, 13, 14+, WebView Android et toutes tailles d'écran.</p>
+        <button class="btn-primary" style="margin-top:8px;" onclick="switchTab('home')">Retour à Home</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- LECTEUR PDF HAUTE LISIBILITÉ AVEC FILIGRANE -->
+  <div id="pdf-viewer-modal">
+    <div class="viewer-top-bar">
+      <span id="viewer-title-text" style="font-size:0.88rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:82%;">Leçon PDF</span>
+      <button class="viewer-close-btn" onclick="closePdfViewer()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="viewer-toolbar">
+      <button class="tool-btn" onclick="changePage(-1)">Préc.</button>
+      <span id="page-num-display">1/1</span>
+      <button class="tool-btn" onclick="changePage(1)">Suiv.</button>
+      <button class="tool-btn" onclick="adjustZoom(-0.25)">-</button>
+      <span id="zoom-level-display">100%</span>
+      <button class="tool-btn" onclick="adjustZoom(0.25)">+</button>
+      <button class="tool-btn" onclick="fitPdfToWidth()">Ajuster</button>
+    </div>
+    <div id="viewer-container" class="viewer-content-area">
+      <div id="pdf-loading" style="color:#38bdf8; margin-top:24px; font-size:0.9rem; font-weight:600;">Chargement haute netteté du PDF...</div>
+      <div class="pdf-canvas-container" id="canvas-wrapper" style="display:none;">
+        <canvas id="pdf-canvas"></canvas>
+      </div>
+      <div class="fallback-box" id="fallback-box">
+        <p>Ce lien nécessite une ouverture directe ou un téléchargement dans votre navigateur Android :</p>
+        <a id="fallback-external-link" href="#" target="_blank" rel="noopener noreferrer" class="fallback-link-btn">
+          Ouvrir le PDF directement
+        </a>
       </div>
     </div>
-
-    <!-- NAVIGATION BASSE -->
-    <nav class="bottom-nav">
-      <button class="nav-item active" data-tab="home" onclick="switchTab('home')"><i class="fa-solid fa-house"></i><span>Home</span></button>
-      <button class="nav-item" data-tab="cours" onclick="switchTab('cours')"><i class="fa-solid fa-book"></i><span>Cours</span></button>
-      <button class="nav-item" data-tab="videos" onclick="switchTab('videos')"><i class="fa-solid fa-circle-play"></i><span>Vidéos</span></button>
-      <button class="nav-item" data-tab="qcm" onclick="switchTab('qcm')"><i class="fa-solid fa-file-pen"></i><span>QCM</span></button>
-      <button class="nav-item" data-tab="classement" onclick="switchTab('classement')"><i class="fa-solid fa-trophy"></i><span>Classement</span></button>
-      <button class="nav-item" data-tab="apropos" onclick="switchTab('apropos')"><i class="fa-solid fa-circle-info"></i><span>À propos</span></button>
-    </nav>
+    <div class="watermark-layer" id="pdf-watermark-layer"></div>
   </div>
 
-  <!-- =========================================================================
-       EMPLACEMENT DÉDIÉ : COLLER ICI VOTRE CODE / LIEN WEBVIEW & COMPATIBILITÉ ANDROID
-       Exemple : <script src="webview-compat.js"></script>
-       ========================================================================= -->
+  <!-- LECTEUR VIDÉO AVEC FILIGRANE -->
+  <div id="video-viewer-modal">
+    <div class="viewer-top-bar">
+      <span id="video-viewer-title" style="font-size:0.88rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:82%;">Vidéo</span>
+      <button class="viewer-close-btn" onclick="closeVideoViewer()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="video-player-area">
+      <div class="video-box">
+        <div id="video-player-container" style="width:100%; height:100%;"></div>
+        <div class="video-watermark-overlay" id="video-watermark-layer"></div>
+      </div>
+      <div style="margin-top:12px;">
+        <a id="video-external-link" href="#" target="_blank" rel="noopener noreferrer" class="fallback-link-btn">
+          Ouvrir la vidéo externe
+        </a>
+      </div>
+    </div>
+  </div>
 
-  <!-- ========================================================================= -->
+  <!-- NAVIGATION BASSE -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" data-tab="home" onclick="switchTab('home')"><i class="fa-solid fa-house"></i><span>Home</span></button>
+    <button class="nav-item" data-tab="cours" onclick="switchTab('cours')"><i class="fa-solid fa-book"></i><span>Cours</span></button>
+    <button class="nav-item" data-tab="videos" onclick="switchTab('videos')"><i class="fa-solid fa-circle-play"></i><span>Vidéos</span></button>
+    <button class="nav-item" data-tab="qcm" onclick="switchTab('qcm')"><i class="fa-solid fa-file-pen"></i><span>QCM</span></button>
+    <button class="nav-item" data-tab="classement" onclick="switchTab('classement')"><i class="fa-solid fa-trophy"></i><span>Classement</span></button>
+    <button class="nav-item" data-tab="apropos" onclick="switchTab('apropos')"><i class="fa-solid fa-circle-info"></i><span>À propos</span></button>
+  </nav>
+</div>
 
-  <script>
-    /* Garde de compatibilité Android 8+ (WebView Chromium 61+) */
-    if (!Array.prototype.find) {
-      Array.prototype.find = function (predicate) {
-        if (this == null) throw new TypeError("Array.prototype.find called on null or undefined");
-        var list = Object(this);
-        var length = list.length >>> 0;
-        var thisArg = arguments[1];
-        for (var i = 0; i < length; i++) {
-          var element = list[i];
-          if (predicate.call(thisArg, element, i, list)) return element;
-        }
-        return undefined;
-      };
+<!-- =========================================================================
+EMPLACEMENT DÉDIÉ : COLLER ICI VOTRE CODE / LIEN WEBVIEW & COMPATIBILITÉ ANDROID
+Exemple : <script src="webview-compat.js"></script>
+========================================================================= -->
+
+<script>
+/* Garde de compatibilité Android 8+ (WebView Chromium 61+) */
+if (!Array.prototype.find) {
+  Array.prototype.find = function (predicate) {
+    if (this == null) throw new TypeError("Array.prototype.find called on null or undefined");
+    var list = Object(this);
+    var length = list.length >>> 0;
+    var thisArg = arguments[1];
+    for (var i = 0; i < length; i++) {
+      var element = list[i];
+      if (predicate.call(thisArg, element, i, list)) return element;
     }
+    return undefined;
+  };
+}
 
-    var WATERMARK_TEXT = "MedX • Dr RABIBISOA • 0342002623";
-    var memoryStore = {};
+var WATERMARK_TEXT = "MedX Dr RABIBISOA 0342002623";
+var memoryStore = {};
 
-    function safeGet(key) {
-      try {
-        if (window.localStorage) return window.localStorage.getItem(key);
-      } catch (e) {}
-      return Object.prototype.hasOwnProperty.call(memoryStore, key) ? memoryStore[key] : null;
+function safeGet(key) {
+  try {
+    if (window.localStorage) return window.localStorage.getItem(key);
+  } catch (e) {}
+  return Object.prototype.hasOwnProperty.call(memoryStore, key) ? memoryStore[key] : null;
+}
+
+function safeSet(key, value) {
+  var strVal = String(value);
+  memoryStore[key] = strVal;
+  try {
+    if (window.localStorage) window.localStorage.setItem(key, strVal);
+  } catch (e) {}
+}
+
+function escapeHtml(str) {
+  return String(str || "").replace(/[&<>"']/g, function (m) {
+    return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[m];
+  });
+}
+
+var UE_META = [
+  { key: "anatomie", label: "Anatomie", banner: "banner-anatomie", icon: "fa-bone" },
+  { key: "biomolecules", label: "Biomolécules", banner: "banner-biomolecules", icon: "fa-dna" },
+  { key: "icm", label: "ICM", banner: "banner-icm", icon: "fa-pills" },
+  { key: "physiologie", label: "Physiologie", banner: "banner-physiologie", icon: "fa-heart-pulse" },
+  { key: "biomath", label: "Biomath", banner: "banner-biomath", icon: "fa-calculator" },
+  { key: "francais", label: "Français Médical", banner: "banner-francais", icon: "fa-language" },
+  { key: "biocell", label: "Biocell & Tissu", banner: "banner-biocell", icon: "fa-microscope" },
+  { key: "uespecifique", label: "UE Spécifique", banner: "banner-uespecifique", icon: "fa-user-doctor" }
+];
+
+/* =========================================================================
+   1. COURS PAR UE (20 LEÇONS PAR UE)
+   Changez simplement "titre" et collez "lien" dans chaque leçon.
+========================================================================= */
+var CATALOGUE_COURS = {
+  anatomie: [
+    { titre: "Leçon 1: Anatomie des nerfs", lien: "assets/anatomie/anat de nerf paces.pdf" },
+    { titre: "Leçon 2: Anatomie de l'estomac", lien: "assets/anatomie/02 ESTOMAC.pdf" },
+    { titre: "Leçon 3: Anatomie de l'oesophage", lien: "assets/anatomie/01 ESOPHAGE.pdf" },
+    { titre: "Leçon 4: Anatomie de la rate", lien: "assets/anatomie/Anatomie de la rate.pdf" },
+    { titre: "Leçon 5: Anatomie", lien: "" },
+    { titre: "Leçon 6: Anatomie", lien: "" },
+    { titre: "Leçon 7: Anatomie", lien: "" },
+    { titre: "Leçon 8: Anatomie", lien: "" },
+    { titre: "Leçon 9: Anatomie", lien: "" },
+    { titre: "Leçon 10: Anatomie", lien: "" },
+    { titre: "Leçon 11: Anatomie", lien: "" },
+    { titre: "Leçon 12: Anatomie", lien: "" },
+    { titre: "Leçon 13: Anatomie", lien: "" },
+    { titre: "Leçon 14: Anatomie", lien: "" },
+    { titre: "Leçon 15: Anatomie", lien: "" },
+    { titre: "Leçon 16: Anatomie", lien: "" },
+    { titre: "Leçon 17: Anatomie", lien: "" },
+    { titre: "Leçon 18: Anatomie", lien: "" },
+    { titre: "Leçon 19: Anatomie", lien: "" },
+    { titre: "Leçon 20: Anatomie", lien: "" }
+    // Place pour ajout de nouveaux cours d'Anatomie :
+    // { titre: "Leçon 21: ...", lien: "https://..." }
+  ],
+  biomolecules: [
+    { titre: "Leçon 1: Biomolécules", lien: "" },
+    { titre: "Leçon 2: Biomolécules", lien: "" },
+    { titre: "Leçon 3: Biomolécules", lien: "" },
+    { titre: "Leçon 4: Biomolécules", lien: "" },
+    { titre: "Leçon 5: Biomolécules", lien: "" },
+    { titre: "Leçon 6: Biomolécules", lien: "" },
+    { titre: "Leçon 7: Biomolécules", lien: "" },
+    { titre: "Leçon 8: Biomolécules", lien: "" },
+    { titre: "Leçon 9: Biomolécules", lien: "" },
+    { titre: "Leçon 10: Biomolécules", lien: "" },
+    { titre: "Leçon 11: Biomolécules", lien: "" },
+    { titre: "Leçon 12: Biomolécules", lien: "" },
+    { titre: "Leçon 13: Biomolécules", lien: "" },
+    { titre: "Leçon 14: Biomolécules", lien: "" },
+    { titre: "Leçon 15: Biomolécules", lien: "" },
+    { titre: "Leçon 16: Biomolécules", lien: "" },
+    { titre: "Leçon 17: Biomolécules", lien: "" },
+    { titre: "Leçon 18: Biomolécules", lien: "" },
+    { titre: "Leçon 19: Biomolécules", lien: "" },
+    { titre: "Leçon 20: Biomolécules", lien: "" }
+    // Place pour ajout de nouveaux cours de Biomolécules
+  ],
+  icm: [
+    { titre: "Leçon 1: ICM", lien: "" },
+    { titre: "Leçon 2: ICM", lien: "" },
+    { titre: "Leçon 3: ICM", lien: "" },
+    { titre: "Leçon 4: ICM", lien: "" },
+    { titre: "Leçon 5: ICM", lien: "" },
+    { titre: "Leçon 6: ICM", lien: "" },
+    { titre: "Leçon 7: ICM", lien: "" },
+    { titre: "Leçon 8: ICM", lien: "" },
+    { titre: "Leçon 9: ICM", lien: "" },
+    { titre: "Leçon 10: ICM", lien: "" },
+    { titre: "Leçon 11: ICM", lien: "" },
+    { titre: "Leçon 12: ICM", lien: "" },
+    { titre: "Leçon 13: ICM", lien: "" },
+    { titre: "Leçon 14: ICM", lien: "" },
+    { titre: "Leçon 15: ICM", lien: "" },
+    { titre: "Leçon 16: ICM", lien: "" },
+    { titre: "Leçon 17: ICM", lien: "" },
+    { titre: "Leçon 18: ICM", lien: "" },
+    { titre: "Leçon 19: ICM", lien: "" },
+    { titre: "Leçon 20: ICM", lien: "" }
+    // Place pour ajout de nouveaux cours d'ICM
+  ],
+  physiologie: [
+    { titre: "Leçon 1: Physiologie", lien: "" },
+    { titre: "Leçon 2: Physiologie", lien: "" },
+    { titre: "Leçon 3: Physiologie", lien: "" },
+    { titre: "Leçon 4: Physiologie", lien: "" },
+    { titre: "Leçon 5: Physiologie", lien: "" },
+    { titre: "Leçon 6: Physiologie", lien: "" },
+    { titre: "Leçon 7: Physiologie", lien: "" },
+    { titre: "Leçon 8: Physiologie", lien: "" },
+    { titre: "Leçon 9: Physiologie", lien: "" },
+    { titre: "Leçon 10: Physiologie", lien: "" },
+    { titre: "Leçon 11: Physiologie", lien: "" },
+    { titre: "Leçon 12: Physiologie", lien: "" },
+    { titre: "Leçon 13: Physiologie", lien: "" },
+    { titre: "Leçon 14: Physiologie", lien: "" },
+    { titre: "Leçon 15: Physiologie", lien: "" },
+    { titre: "Leçon 16: Physiologie", lien: "" },
+    { titre: "Leçon 17: Physiologie", lien: "" },
+    { titre: "Leçon 18: Physiologie", lien: "" },
+    { titre: "Leçon 19: Physiologie", lien: "" },
+    { titre: "Leçon 20: Physiologie", lien: "" }
+    // Place pour ajout de nouveaux cours de Physiologie
+  ],
+  biomath: [
+    { titre: "Leçon 1: Biomath", lien: "" },
+    { titre: "Leçon 2: Biomath", lien: "" },
+    { titre: "Leçon 3: Biomath", lien: "" },
+    { titre: "Leçon 4: Biomath", lien: "" },
+    { titre: "Leçon 5: Biomath", lien: "" },
+    { titre: "Leçon 6: Biomath", lien: "" },
+    { titre: "Leçon 7: Biomath", lien: "" },
+    { titre: "Leçon 8: Biomath", lien: "" },
+    { titre: "Leçon 9: Biomath", lien: "" },
+    { titre: "Leçon 10: Biomath", lien: "" },
+    { titre: "Leçon 11: Biomath", lien: "" },
+    { titre: "Leçon 12: Biomath", lien: "" },
+    { titre: "Leçon 13: Biomath", lien: "" },
+    { titre: "Leçon 14: Biomath", lien: "" },
+    { titre: "Leçon 15: Biomath", lien: "" },
+    { titre: "Leçon 16: Biomath", lien: "" },
+    { titre: "Leçon 17: Biomath", lien: "" },
+    { titre: "Leçon 18: Biomath", lien: "" },
+    { titre: "Leçon 19: Biomath", lien: "" },
+    { titre: "Leçon 20: Biomath", lien: "" }
+    // Place pour ajout de nouveaux cours de Biomath
+  ],
+  francais: [
+    { titre: "Leçon 1: Français Médical", lien: "" },
+    { titre: "Leçon 2: Français Médical", lien: "" },
+    { titre: "Leçon 3: Français Médical", lien: "" },
+    { titre: "Leçon 4: Français Médical", lien: "" },
+    { titre: "Leçon 5: Français Médical", lien: "" },
+    { titre: "Leçon 6: Français Médical", lien: "" },
+    { titre: "Leçon 7: Français Médical", lien: "" },
+    { titre: "Leçon 8: Français Médical", lien: "" },
+    { titre: "Leçon 9: Français Médical", lien: "" },
+    { titre: "Leçon 10: Français Médical", lien: "" },
+    { titre: "Leçon 11: Français Médical", lien: "" },
+    { titre: "Leçon 12: Français Médical", lien: "" },
+    { titre: "Leçon 13: Français Médical", lien: "" },
+    { titre: "Leçon 14: Français Médical", lien: "" },
+    { titre: "Leçon 15: Français Médical", lien: "" },
+    { titre: "Leçon 16: Français Médical", lien: "" },
+    { titre: "Leçon 17: Français Médical", lien: "" },
+    { titre: "Leçon 18: Français Médical", lien: "" },
+    { titre: "Leçon 19: Français Médical", lien: "" },
+    { titre: "Leçon 20: Français Médical", lien: "" }
+    // Place pour ajout de nouveaux cours de Français Médical
+  ],
+  biocell: [
+    { titre: "Leçon 1: Biocell & Tissu", lien: "" },
+    { titre: "Leçon 2: Biocell & Tissu", lien: "" },
+    { titre: "Leçon 3: Biocell & Tissu", lien: "" },
+    { titre: "Leçon 4: Biocell & Tissu", lien: "" },
+    { titre: "Leçon 5: Biocell & Tissu", lien: "" },
+    { titre: "Leçon 6: Biocell & Tissu", lien: "" },
+    { titre: "Leçon 7: Biocell & Tissu", lien: "" },
+    { titre: "Leçon 8: Biocell & Tissu", lien: "" },
+    { titre: "Leçon 9: Biocell & Tissu", lien: "" },
+    { titre: "Leçon 10: Biocell & Tissu", lien: "" },
+    { titre: "Leçon 11: Biocell & Tissu", lien: "" },
+    { titre: "Leçon 12: Biocell & Tissu", lien: "" },
+    { titre: "Leçon 13: Biocell & Tissu", lien: "" },
+    { titre: "Leçon 14: Biocell & Tissu", lien: "" },
+    { titre: "Leçon 15: Biocell & Tissu", lien: "" },
+    { titre: "Leçon 16: Biocell & Tissu", lien: "" },
+    { titre: "Leçon 17: Biocell & Tissu", lien: "" },
+    { titre: "Leçon 18: Biocell & Tissu", lien: "" },
+    { titre: "Leçon 19: Biocell & Tissu", lien: "" },
+    { titre: "Leçon 20: Biocell & Tissu", lien: "" }
+    // Place pour ajout de nouveaux cours de Biocell & Tissu
+  ],
+  uespecifique: [
+    { titre: "Leçon 1: UE Spécifique", lien: "" },
+    { titre: "Leçon 2: UE Spécifique", lien: "" },
+    { titre: "Leçon 3: UE Spécifique", lien: "" },
+    { titre: "Leçon 4: UE Spécifique", lien: "" },
+    { titre: "Leçon 5: UE Spécifique", lien: "" },
+    { titre: "Leçon 6: UE Spécifique", lien: "" },
+    { titre: "Leçon 7: UE Spécifique", lien: "" },
+    { titre: "Leçon 8: UE Spécifique", lien: "" },
+    { titre: "Leçon 9: UE Spécifique", lien: "" },
+    { titre: "Leçon 10: UE Spécifique", lien: "" },
+    { titre: "Leçon 11: UE Spécifique", lien: "" },
+    { titre: "Leçon 12: UE Spécifique", lien: "" },
+    { titre: "Leçon 13: UE Spécifique", lien: "" },
+    { titre: "Leçon 14: UE Spécifique", lien: "" },
+    { titre: "Leçon 15: UE Spécifique", lien: "" },
+    { titre: "Leçon 16: UE Spécifique", lien: "" },
+    { titre: "Leçon 17: UE Spécifique", lien: "" },
+    { titre: "Leçon 18: UE Spécifique", lien: "" },
+    { titre: "Leçon 19: UE Spécifique", lien: "" },
+    { titre: "Leçon 20: UE Spécifique", lien: "" }
+    // Place pour ajout de nouveaux cours d'UE Spécifique
+  ]
+};
+
+/* =========================================================================
+   2. VIDÉOS PAR UE (20 VIDÉOS PAR UE)
+   Changez simplement "titre" et collez "lien" dans chaque vidéo.
+========================================================================= */
+var CATALOGUE_VIDEOS = {
+  anatomie: [
+    { titre: "Vidéo 1: Anatomie", lien: "" },
+    { titre: "Vidéo 2: Anatomie", lien: "" },
+    { titre: "Vidéo 3: Anatomie", lien: "" },
+    { titre: "Vidéo 4: Anatomie", lien: "" },
+    { titre: "Vidéo 5: Anatomie", lien: "" },
+    { titre: "Vidéo 6: Anatomie", lien: "" },
+    { titre: "Vidéo 7: Anatomie", lien: "" },
+    { titre: "Vidéo 8: Anatomie", lien: "" },
+    { titre: "Vidéo 9: Anatomie", lien: "" },
+    { titre: "Vidéo 10: Anatomie", lien: "" },
+    { titre: "Vidéo 11: Anatomie", lien: "" },
+    { titre: "Vidéo 12: Anatomie", lien: "" },
+    { titre: "Vidéo 13: Anatomie", lien: "" },
+    { titre: "Vidéo 14: Anatomie", lien: "" },
+    { titre: "Vidéo 15: Anatomie", lien: "" },
+    { titre: "Vidéo 16: Anatomie", lien: "" },
+    { titre: "Vidéo 17: Anatomie", lien: "" },
+    { titre: "Vidéo 18: Anatomie", lien: "" },
+    { titre: "Vidéo 19: Anatomie", lien: "" },
+    { titre: "Vidéo 20: Anatomie", lien: "" }
+    // Place pour ajout de nouvelles vidéos d'Anatomie :
+    // { titre: "Vidéo 21: ...", lien: "https://..." }
+  ],
+  biomolecules: [
+    { titre: "Vidéo 1: Biomolécules", lien: "" },
+    { titre: "Vidéo 2: Biomolécules", lien: "" },
+    { titre: "Vidéo 3: Biomolécules", lien: "" },
+    { titre: "Vidéo 4: Biomolécules", lien: "" },
+    { titre: "Vidéo 5: Biomolécules", lien: "" },
+    { titre: "Vidéo 6: Biomolécules", lien: "" },
+    { titre: "Vidéo 7: Biomolécules", lien: "" },
+    { titre: "Vidéo 8: Biomolécules", lien: "" },
+    { titre: "Vidéo 9: Biomolécules", lien: "" },
+    { titre: "Vidéo 10: Biomolécules", lien: "" },
+    { titre: "Vidéo 11: Biomolécules", lien: "" },
+    { titre: "Vidéo 12: Biomolécules", lien: "" },
+    { titre: "Vidéo 13: Biomolécules", lien: "" },
+    { titre: "Vidéo 14: Biomolécules", lien: "" },
+    { titre: "Vidéo 15: Biomolécules", lien: "" },
+    { titre: "Vidéo 16: Biomolécules", lien: "" },
+    { titre: "Vidéo 17: Biomolécules", lien: "" },
+    { titre: "Vidéo 18: Biomolécules", lien: "" },
+    { titre: "Vidéo 19: Biomolécules", lien: "" },
+    { titre: "Vidéo 20: Biomolécules", lien: "" }
+    // Place pour ajout de nouvelles vidéos de Biomolécules
+  ],
+  icm: [
+    { titre: "Vidéo 1: ICM", lien: "" },
+    { titre: "Vidéo 2: ICM", lien: "" },
+    { titre: "Vidéo 3: ICM", lien: "" },
+    { titre: "Vidéo 4: ICM", lien: "" },
+    { titre: "Vidéo 5: ICM", lien: "" },
+    { titre: "Vidéo 6: ICM", lien: "" },
+    { titre: "Vidéo 7: ICM", lien: "" },
+    { titre: "Vidéo 8: ICM", lien: "" },
+    { titre: "Vidéo 9: ICM", lien: "" },
+    { titre: "Vidéo 10: ICM", lien: "" },
+    { titre: "Vidéo 11: ICM", lien: "" },
+    { titre: "Vidéo 12: ICM", lien: "" },
+    { titre: "Vidéo 13: ICM", lien: "" },
+    { titre: "Vidéo 14: ICM", lien: "" },
+    { titre: "Vidéo 15: ICM", lien: "" },
+    { titre: "Vidéo 16: ICM", lien: "" },
+    { titre: "Vidéo 17: ICM", lien: "" },
+    { titre: "Vidéo 18: ICM", lien: "" },
+    { titre: "Vidéo 19: ICM", lien: "" },
+    { titre: "Vidéo 20: ICM", lien: "" }
+    // Place pour ajout de nouvelles vidéos d'ICM
+  ],
+  physiologie: [
+    { titre: "Vidéo 1: Physiologie", lien: "" },
+    { titre: "Vidéo 2: Physiologie", lien: "" },
+    { titre: "Vidéo 3: Physiologie", lien: "" },
+    { titre: "Vidéo 4: Physiologie", lien: "" },
+    { titre: "Vidéo 5: Physiologie", lien: "" },
+    { titre: "Vidéo 6: Physiologie", lien: "" },
+    { titre: "Vidéo 7: Physiologie", lien: "" },
+    { titre: "Vidéo 8: Physiologie", lien: "" },
+    { titre: "Vidéo 9: Physiologie", lien: "" },
+    { titre: "Vidéo 10: Physiologie", lien: "" },
+    { titre: "Vidéo 11: Physiologie", lien: "" },
+    { titre: "Vidéo 12: Physiologie", lien: "" },
+    { titre: "Vidéo 13: Physiologie", lien: "" },
+    { titre: "Vidéo 14: Physiologie", lien: "" },
+    { titre: "Vidéo 15: Physiologie", lien: "" },
+    { titre: "Vidéo 16: Physiologie", lien: "" },
+    { titre: "Vidéo 17: Physiologie", lien: "" },
+    { titre: "Vidéo 18: Physiologie", lien: "" },
+    { titre: "Vidéo 19: Physiologie", lien: "" },
+    { titre: "Vidéo 20: Physiologie", lien: "" }
+    // Place pour ajout de nouvelles vidéos de Physiologie
+  ],
+  biomath: [
+    { titre: "Vidéo 1: Biomath", lien: "" },
+    { titre: "Vidéo 2: Biomath", lien: "" },
+    { titre: "Vidéo 3: Biomath", lien: "" },
+    { titre: "Vidéo 4: Biomath", lien: "" },
+    { titre: "Vidéo 5: Biomath", lien: "" },
+    { titre: "Vidéo 6: Biomath", lien: "" },
+    { titre: "Vidéo 7: Biomath", lien: "" },
+    { titre: "Vidéo 8: Biomath", lien: "" },
+    { titre: "Vidéo 9: Biomath", lien: "" },
+    { titre: "Vidéo 10: Biomath", lien: "" },
+    { titre: "Vidéo 11: Biomath", lien: "" },
+    { titre: "Vidéo 12: Biomath", lien: "" },
+    { titre: "Vidéo 13: Biomath", lien: "" },
+    { titre: "Vidéo 14: Biomath", lien: "" },
+    { titre: "Vidéo 15: Biomath", lien: "" },
+    { titre: "Vidéo 16: Biomath", lien: "" },
+    { titre: "Vidéo 17: Biomath", lien: "" },
+    { titre: "Vidéo 18: Biomath", lien: "" },
+    { titre: "Vidéo 19: Biomath", lien: "" },
+    { titre: "Vidéo 20: Biomath", lien: "" }
+    // Place pour ajout de nouvelles vidéos de Biomath
+  ],
+  francais: [
+    { titre: "Vidéo 1: Français Médical", lien: "" },
+    { titre: "Vidéo 2: Français Médical", lien: "" },
+    { titre: "Vidéo 3: Français Médical", lien: "" },
+    { titre: "Vidéo 4: Français Médical", lien: "" },
+    { titre: "Vidéo 5: Français Médical", lien: "" },
+    { titre: "Vidéo 6: Français Médical", lien: "" },
+    { titre: "Vidéo 7: Français Médical", lien: "" },
+    { titre: "Vidéo 8: Français Médical", lien: "" },
+    { titre: "Vidéo 9: Français Médical", lien: "" },
+    { titre: "Vidéo 10: Français Médical", lien: "" },
+    { titre: "Vidéo 11: Français Médical", lien: "" },
+    { titre: "Vidéo 12: Français Médical", lien: "" },
+    { titre: "Vidéo 13: Français Médical", lien: "" },
+    { titre: "Vidéo 14: Français Médical", lien: "" },
+    { titre: "Vidéo 15: Français Médical", lien: "" },
+    { titre: "Vidéo 16: Français Médical", lien: "" },
+    { titre: "Vidéo 17: Français Médical", lien: "" },
+    { titre: "Vidéo 18: Français Médical", lien: "" },
+    { titre: "Vidéo 19: Français Médical", lien: "" },
+    { titre: "Vidéo 20: Français Médical", lien: "" }
+    // Place pour ajout de nouvelles vidéos de Français Médical
+  ],
+  biocell: [
+    { titre: "Vidéo 1: Biocell & Tissu", lien: "" },
+    { titre: "Vidéo 2: Biocell & Tissu", lien: "" },
+    { titre: "Vidéo 3: Biocell & Tissu", lien: "" },
+    { titre: "Vidéo 4: Biocell & Tissu", lien: "" },
+    { titre: "Vidéo 5: Biocell & Tissu", lien: "" },
+    { titre: "Vidéo 6: Biocell & Tissu", lien: "" },
+    { titre: "Vidéo 7: Biocell & Tissu", lien: "" },
+    { titre: "Vidéo 8: Biocell & Tissu", lien: "" },
+    { titre: "Vidéo 9: Biocell & Tissu", lien: "" },
+    { titre: "Vidéo 10: Biocell & Tissu", lien: "" },
+    { titre: "Vidéo 11: Biocell & Tissu", lien: "" },
+    { titre: "Vidéo 12: Biocell & Tissu", lien: "" },
+    { titre: "Vidéo 13: Biocell & Tissu", lien: "" },
+    { titre: "Vidéo 14: Biocell & Tissu", lien: "" },
+    { titre: "Vidéo 15: Biocell & Tissu", lien: "" },
+    { titre: "Vidéo 16: Biocell & Tissu", lien: "" },
+    { titre: "Vidéo 17: Biocell & Tissu", lien: "" },
+    { titre: "Vidéo 18: Biocell & Tissu", lien: "" },
+    { titre: "Vidéo 19: Biocell & Tissu", lien: "" },
+    { titre: "Vidéo 20: Biocell & Tissu", lien: "" }
+    // Place pour ajout de nouvelles vidéos de Biocell & Tissu
+  ],
+  uespecifique: [
+    { titre: "Vidéo 1: UE Spécifique", lien: "assets/anatomie/ue spésifique/irm/L'examen_au_scanner(360p).mp4" },
+    { titre: "Vidéo 2: UE Spécifique", lien: "" },
+    { titre: "Vidéo 3: UE Spécifique", lien: "" },
+    { titre: "Vidéo 4: UE Spécifique", lien: "" },
+    { titre: "Vidéo 5: UE Spécifique", lien: "" },
+    { titre: "Vidéo 6: UE Spécifique", lien: "" },
+    { titre: "Vidéo 7: UE Spécifique", lien: "" },
+    { titre: "Vidéo 8: UE Spécifique", lien: "" },
+    { titre: "Vidéo 9: UE Spécifique", lien: "" },
+    { titre: "Vidéo 10: UE Spécifique", lien: "" },
+    { titre: "Vidéo 11: UE Spécifique", lien: "" },
+    { titre: "Vidéo 12: UE Spécifique", lien: "" },
+    { titre: "Vidéo 13: UE Spécifique", lien: "" },
+    { titre: "Vidéo 14: UE Spécifique", lien: "" },
+    { titre: "Vidéo 15: UE Spécifique", lien: "" },
+    { titre: "Vidéo 16: UE Spécifique", lien: "" },
+    { titre: "Vidéo 17: UE Spécifique", lien: "" },
+    { titre: "Vidéo 18: UE Spécifique", lien: "" },
+    { titre: "Vidéo 19: UE Spécifique", lien: "" },
+    { titre: "Vidéo 20: UE Spécifique", lien: "" }
+    // Place pour ajout de nouvelles vidéos d'UE Spécifique
+  ]
+};
+
+/* =========================================================================
+   3. QCM PAR UE (PLACE POUR L'AJOUT DE NOUVEAUX QCM DANS CHAQUE UE)
+   Format :
+   {
+     question: "Votre question ?",
+     options: ["Choix A", "Choix B", "Choix C", "Choix D"],
+     correctIndex: 0, // 0=A, 1=B, 2=C, 3=D
+     explanation: "Explication de la réponse."
+   }
+========================================================================= */
+var QCM_PAR_UE = {
+  anatomie: [
+    {
+      question: "Par quel orifice de la base du crâne passe le nerf mandibulaire (V3) ?",
+      options: ["Le foramen ovale", "Le canal optique", "Le foramen stylomastoïdien", "La lame criblée de l'ethmoïde"],
+      correctIndex: 0,
+      explanation: "Le nerf mandibulaire (V3) traverse le foramen ovale."
+    },
+    {
+      question: "Où se trouve le foie ?",
+      options: ["Dans l'hypochondre gauche", "Dans l'hypochondre droit", "Dans la zone pelvienne", "Dans la cage thoracique"],
+      correctIndex: 1,
+      explanation: "Le foie se trouve principalement dans l'hypochondre droit."
     }
-
-    function safeSet(key, value) {
-      var strVal = String(value);
-      memoryStore[key] = strVal;
-      try {
-        if (window.localStorage) window.localStorage.setItem(key, strVal);
-      } catch (e) {}
+    // Place pour ajout de nouveaux QCM d'Anatomie ici...
+  ],
+  biomolecules: [
+    {
+      question: "Quelle liaison relie deux acides aminés au sein d'une chaîne polypeptidique ?",
+      options: ["Liaison glycosidique", "Liaison peptidique", "Liaison phosphodiester", "Liaison ester"],
+      correctIndex: 1,
+      explanation: "La liaison peptidique relie deux acides aminés."
     }
-
-    function escapeHtml(str) {
-      return String(str || "").replace(/[&<>"']/g, function (m) {
-        return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[m];
-      });
+    // Place pour ajout de nouveaux QCM de Biomolécules ici...
+  ],
+  icm: [
+    {
+      question: "Quelle voie d'administration offre une biodisponibilité de 100% ?",
+      options: ["Voie orale", "Voie intraveineuse (IV)", "Voie sous-cutanée", "Voie rectale"],
+      correctIndex: 1,
+      explanation: "La voie intraveineuse offre une biodisponibilité de 100%."
     }
-
-    var UE_META = [
-      { key: "anatomie", label: "Anatomie", banner: "banner-anatomie", icon: "fa-bone" },
-      { key: "biomolecules", label: "Biomolécules", banner: "banner-biomolecules", icon: "fa-dna" },
-      { key: "icm", label: "ICM", banner: "banner-icm", icon: "fa-pills" },
-      { key: "physiologie", label: "Physiologie", banner: "banner-physiologie", icon: "fa-heart-pulse" },
-      { key: "biomath", label: "Biomath", banner: "banner-biomath", icon: "fa-calculator" },
-      { key: "francais", label: "Français Médical", banner: "banner-francais", icon: "fa-language" },
-      { key: "biocell", label: "Biocell & Tissu", banner: "banner-biocell", icon: "fa-microscope" },
-      { key: "uespecifique", label: "UE Spécifique", banner: "banner-uespecifique", icon: "fa-user-doctor" }
-    ];
-
-    /* =========================================================================
-       1. COURS PAR UE (20 LEÇONS PAR UE)
-       Changez simplement "titre" et collez "lien" dans chaque leçon.
-       ========================================================================= */
-    var CATALOGUE_COURS = {
-      anatomie: [
-        { titre: "Leçon 1 : Anatomie des nerfs", lien: "assets/anatomie/anat de nerf paces.pdf" },
-        { titre: "Leçon 2 : Anatomie de l’estomac", lien: "assets/anatomie/02 ESTOMAC.pdf" },
-        { titre: "Leçon 3 : Anatomie de l’oesophage", lien: "assets/anatomie/01 ŒSOPHAGE.pdf" },
-        { titre: "Leçon 4 : Anatomie", lien: "assets/anatomie/Anatomie de la rate.pdf" },
-        { titre: "Leçon 5 : Anatomie", lien: "" },
-        { titre: "Leçon 6 : Anatomie", lien: "" },
-        { titre: "Leçon 7 : Anatomie", lien: "" },
-        { titre: "Leçon 8 : Anatomie", lien: "" },
-        { titre: "Leçon 9 : Anatomie", lien: "" },
-        { titre: "Leçon 10 : Anatomie", lien: "" },
-        { titre: "Leçon 11 : Anatomie", lien: "" },
-        { titre: "Leçon 12 : Anatomie", lien: "" },
-        { titre: "Leçon 13 : Anatomie", lien: "" },
-        { titre: "Leçon 14 : Anatomie", lien: "" },
-        { titre: "Leçon 15 : Anatomie", lien: "" },
-        { titre: "Leçon 16 : Anatomie", lien: "" },
-        { titre: "Leçon 17 : Anatomie", lien: "" },
-        { titre: "Leçon 18 : Anatomie", lien: "" },
-        { titre: "Leçon 19 : Anatomie", lien: "" },
-        { titre: "Leçon 20 : Anatomie", lien: "" }
-        // Place pour ajout de nouveaux cours d'Anatomie :
-        // { titre: "Leçon 21 : ...", lien: "https://..." }
-      ],
-      biomolecules: [
-        { titre: "Leçon 1 : Biomolécules", lien: "" },
-        { titre: "Leçon 2 : Biomolécules", lien: "" },
-        { titre: "Leçon 3 : Biomolécules", lien: "" },
-        { titre: "Leçon 4 : Biomolécules", lien: "" },
-        { titre: "Leçon 5 : Biomolécules", lien: "" },
-        { titre: "Leçon 6 : Biomolécules", lien: "" },
-        { titre: "Leçon 7 : Biomolécules", lien: "" },
-        { titre: "Leçon 8 : Biomolécules", lien: "" },
-        { titre: "Leçon 9 : Biomolécules", lien: "" },
-        { titre: "Leçon 10 : Biomolécules", lien: "" },
-        { titre: "Leçon 11 : Biomolécules", lien: "" },
-        { titre: "Leçon 12 : Biomolécules", lien: "" },
-        { titre: "Leçon 13 : Biomolécules", lien: "" },
-        { titre: "Leçon 14 : Biomolécules", lien: "" },
-        { titre: "Leçon 15 : Biomolécules", lien: "" },
-        { titre: "Leçon 16 : Biomolécules", lien: "" },
-        { titre: "Leçon 17 : Biomolécules", lien: "" },
-        { titre: "Leçon 18 : Biomolécules", lien: "" },
-        { titre: "Leçon 19 : Biomolécules", lien: "" },
-        { titre: "Leçon 20 : Biomolécules", lien: "" }
-        // Place pour ajout de nouveaux cours de Biomolécules
-      ],
-      icm: [
-        { titre: "Leçon 1 : ICM", lien: "" },
-        { titre: "Leçon 2 : ICM", lien: "" },
-        { titre: "Leçon 3 : ICM", lien: "" },
-        { titre: "Leçon 4 : ICM", lien: "" },
-        { titre: "Leçon 5 : ICM", lien: "" },
-        { titre: "Leçon 6 : ICM", lien: "" },
-        { titre: "Leçon 7 : ICM", lien: "" },
-        { titre: "Leçon 8 : ICM", lien: "" },
-        { titre: "Leçon 9 : ICM", lien: "" },
-        { titre: "Leçon 10 : ICM", lien: "" },
-        { titre: "Leçon 11 : ICM", lien: "" },
-        { titre: "Leçon 12 : ICM", lien: "" },
-        { titre: "Leçon 13 : ICM", lien: "" },
-        { titre: "Leçon 14 : ICM", lien: "" },
-        { titre: "Leçon 15 : ICM", lien: "" },
-        { titre: "Leçon 16 : ICM", lien: "" },
-        { titre: "Leçon 17 : ICM", lien: "" },
-        { titre: "Leçon 18 : ICM", lien: "" },
-        { titre: "Leçon 19 : ICM", lien: "" },
-        { titre: "Leçon 20 : ICM", lien: "" }
-        // Place pour ajout de nouveaux cours d'ICM
-      ],
-      physiologie: [
-        { titre: "Leçon 1 : Physiologie", lien: "" },
-        { titre: "Leçon 2 : Physiologie", lien: "" },
-        { titre: "Leçon 3 : Physiologie", lien: "" },
-        { titre: "Leçon 4 : Physiologie", lien: "" },
-        { titre: "Leçon 5 : Physiologie", lien: "" },
-        { titre: "Leçon 6 : Physiologie", lien: "" },
-        { titre: "Leçon 7 : Physiologie", lien: "" },
-        { titre: "Leçon 8 : Physiologie", lien: "" },
-        { titre: "Leçon 9 : Physiologie", lien: "" },
-        { titre: "Leçon 10 : Physiologie", lien: "" },
-        { titre: "Leçon 11 : Physiologie", lien: "" },
-        { titre: "Leçon 12 : Physiologie", lien: "" },
-        { titre: "Leçon 13 : Physiologie", lien: "" },
-        { titre: "Leçon 14 : Physiologie", lien: "" },
-        { titre: "Leçon 15 : Physiologie", lien: "" },
-        { titre: "Leçon 16 : Physiologie", lien: "" },
-        { titre: "Leçon 17 : Physiologie", lien: "" },
-        { titre: "Leçon 18 : Physiologie", lien: "" },
-        { titre: "Leçon 19 : Physiologie", lien: "" },
-        { titre: "Leçon 20 : Physiologie", lien: "" }
-        // Place pour ajout de nouveaux cours de Physiologie
-      ],
-      biomath: [
-        { titre: "Leçon 1 : Biomath", lien: "" },
-        { titre: "Leçon 2 : Biomath", lien: "" },
-        { titre: "Leçon 3 : Biomath", lien: "" },
-        { titre: "Leçon 4 : Biomath", lien: "" },
-        { titre: "Leçon 5 : Biomath", lien: "" },
-        { titre: "Leçon 6 : Biomath", lien: "" },
-        { titre: "Leçon 7 : Biomath", lien: "" },
-        { titre: "Leçon 8 : Biomath", lien: "" },
-        { titre: "Leçon 9 : Biomath", lien: "" },
-        { titre: "Leçon 10 : Biomath", lien: "" },
-        { titre: "Leçon 11 : Biomath", lien: "" },
-        { titre: "Leçon 12 : Biomath", lien: "" },
-        { titre: "Leçon 13 : Biomath", lien: "" },
-        { titre: "Leçon 14 : Biomath", lien: "" },
-        { titre: "Leçon 15 : Biomath", lien: "" },
-        { titre: "Leçon 16 : Biomath", lien: "" },
-        { titre: "Leçon 17 : Biomath", lien: "" },
-        { titre: "Leçon 18 : Biomath", lien: "" },
-        { titre: "Leçon 19 : Biomath", lien: "" },
-        { titre: "Leçon 20 : Biomath", lien: "" }
-        // Place pour ajout de nouveaux cours de Biomath
-      ],
-      francais: [
-        { titre: "Leçon 1 : Français Médical", lien: "" },
-        { titre: "Leçon 2 : Français Médical", lien: "" },
-        { titre: "Leçon 3 : Français Médical", lien: "" },
-        { titre: "Leçon 4 : Français Médical", lien: "" },
-        { titre: "Leçon 5 : Français Médical", lien: "" },
-        { titre: "Leçon 6 : Français Médical", lien: "" },
-        { titre: "Leçon 7 : Français Médical", lien: "" },
-        { titre: "Leçon 8 : Français Médical", lien: "" },
-        { titre: "Leçon 9 : Français Médical", lien: "" },
-        { titre: "Leçon 10 : Français Médical", lien: "" },
-        { titre: "Leçon 11 : Français Médical", lien: "" },
-        { titre: "Leçon 12 : Français Médical", lien: "" },
-        { titre: "Leçon 13 : Français Médical", lien: "" },
-        { titre: "Leçon 14 : Français Médical", lien: "" },
-        { titre: "Leçon 15 : Français Médical", lien: "" },
-        { titre: "Leçon 16 : Français Médical", lien: "" },
-        { titre: "Leçon 17 : Français Médical", lien: "" },
-        { titre: "Leçon 18 : Français Médical", lien: "" },
-        { titre: "Leçon 19 : Français Médical", lien: "" },
-        { titre: "Leçon 20 : Français Médical", lien: "" }
-        // Place pour ajout de nouveaux cours de Français Médical
-      ],
-      biocell: [
-        { titre: "Leçon 1 : Biocell & Tissu", lien: "" },
-        { titre: "Leçon 2 : Biocell & Tissu", lien: "" },
-        { titre: "Leçon 3 : Biocell & Tissu", lien: "" },
-        { titre: "Leçon 4 : Biocell & Tissu", lien: "" },
-        { titre: "Leçon 5 : Biocell & Tissu", lien: "" },
-        { titre: "Leçon 6 : Biocell & Tissu", lien: "" },
-        { titre: "Leçon 7 : Biocell & Tissu", lien: "" },
-        { titre: "Leçon 8 : Biocell & Tissu", lien: "" },
-        { titre: "Leçon 9 : Biocell & Tissu", lien: "" },
-        { titre: "Leçon 10 : Biocell & Tissu", lien: "" },
-        { titre: "Leçon 11 : Biocell & Tissu", lien: "" },
-        { titre: "Leçon 12 : Biocell & Tissu", lien: "" },
-        { titre: "Leçon 13 : Biocell & Tissu", lien: "" },
-        { titre: "Leçon 14 : Biocell & Tissu", lien: "" },
-        { titre: "Leçon 15 : Biocell & Tissu", lien: "" },
-        { titre: "Leçon 16 : Biocell & Tissu", lien: "" },
-        { titre: "Leçon 17 : Biocell & Tissu", lien: "" },
-        { titre: "Leçon 18 : Biocell & Tissu", lien: "" },
-        { titre: "Leçon 19 : Biocell & Tissu", lien: "" },
-        { titre: "Leçon 20 : Biocell & Tissu", lien: "" }
-        // Place pour ajout de nouveaux cours de Biocell & Tissu
-      ],
-      uespecifique: [
-        { titre: "Leçon 1 : UE Spécifique", lien: "" },
-        { titre: "Leçon 2 : UE Spécifique", lien: "" },
-        { titre: "Leçon 3 : UE Spécifique", lien: "" },
-        { titre: "Leçon 4 : UE Spécifique", lien: "" },
-        { titre: "Leçon 5 : UE Spécifique", lien: "" },
-        { titre: "Leçon 6 : UE Spécifique", lien: "" },
-        { titre: "Leçon 7 : UE Spécifique", lien: "" },
-        { titre: "Leçon 8 : UE Spécifique", lien: "" },
-        { titre: "Leçon 9 : UE Spécifique", lien: "" },
-        { titre: "Leçon 10 : UE Spécifique", lien: "" },
-        { titre: "Leçon 11 : UE Spécifique", lien: "" },
-        { titre: "Leçon 12 : UE Spécifique", lien: "" },
-        { titre: "Leçon 13 : UE Spécifique", lien: "" },
-        { titre: "Leçon 14 : UE Spécifique", lien: "" },
-        { titre: "Leçon 15 : UE Spécifique", lien: "" },
-        { titre: "Leçon 16 : UE Spécifique", lien: "" },
-        { titre: "Leçon 17 : UE Spécifique", lien: "" },
-        { titre: "Leçon 18 : UE Spécifique", lien: "" },
-        { titre: "Leçon 19 : UE Spécifique", lien: "" },
-        { titre: "Leçon 20 : UE Spécifique", lien: "" }
-        // Place pour ajout de nouveaux cours d'UE Spécifique
-      ]
-    };
-
-    /* =========================================================================
-       2. VIDÉOS PAR UE (20 VIDÉOS PAR UE)
-       Changez simplement "titre" et collez "lien" dans chaque vidéo.
-       ========================================================================= */
-    var CATALOGUE_VIDEOS = {
-      anatomie: [
-        { titre: "Vidéo 1 : Anatomie", lien: "" },
-        { titre: "Vidéo 2 : Anatomie", lien: "" },
-        { titre: "Vidéo 3 : Anatomie", lien: "" },
-        { titre: "Vidéo 4 : Anatomie", lien: "" },
-        { titre: "Vidéo 5 : Anatomie", lien: "" },
-        { titre: "Vidéo 6 : Anatomie", lien: "" },
-        { titre: "Vidéo 7 : Anatomie", lien: "" },
-        { titre: "Vidéo 8 : Anatomie", lien: "" },
-        { titre: "Vidéo 9 : Anatomie", lien: "" },
-        { titre: "Vidéo 10 : Anatomie", lien: "" },
-        { titre: "Vidéo 11 : Anatomie", lien: "" },
-        { titre: "Vidéo 12 : Anatomie", lien: "" },
-        { titre: "Vidéo 13 : Anatomie", lien: "" },
-        { titre: "Vidéo 14 : Anatomie", lien: "" },
-        { titre: "Vidéo 15 : Anatomie", lien: "" },
-        { titre: "Vidéo 16 : Anatomie", lien: "" },
-        { titre: "Vidéo 17 : Anatomie", lien: "" },
-        { titre: "Vidéo 18 : Anatomie", lien: "" },
-        { titre: "Vidéo 19 : Anatomie", lien: "" },
-        { titre: "Vidéo 20 : Anatomie", lien: "" }
-        // Place pour ajout de nouvelles vidéos d'Anatomie :
-        // { titre: "Vidéo 21 : ...", lien: "https://..." }
-      ],
-      biomolecules: [
-        { titre: "Vidéo 1 : Biomolécules", lien: "" },
-        { titre: "Vidéo 2 : Biomolécules", lien: "" },
-        { titre: "Vidéo 3 : Biomolécules", lien: "" },
-        { titre: "Vidéo 4 : Biomolécules", lien: "" },
-        { titre: "Vidéo 5 : Biomolécules", lien: "" },
-        { titre: "Vidéo 6 : Biomolécules", lien: "" },
-        { titre: "Vidéo 7 : Biomolécules", lien: "" },
-        { titre: "Vidéo 8 : Biomolécules", lien: "" },
-        { titre: "Vidéo 9 : Biomolécules", lien: "" },
-        { titre: "Vidéo 10 : Biomolécules", lien: "" },
-        { titre: "Vidéo 11 : Biomolécules", lien: "" },
-        { titre: "Vidéo 12 : Biomolécules", lien: "" },
-        { titre: "Vidéo 13 : Biomolécules", lien: "" },
-        { titre: "Vidéo 14 : Biomolécules", lien: "" },
-        { titre: "Vidéo 15 : Biomolécules", lien: "" },
-        { titre: "Vidéo 16 : Biomolécules", lien: "" },
-        { titre: "Vidéo 17 : Biomolécules", lien: "" },
-        { titre: "Vidéo 18 : Biomolécules", lien: "" },
-        { titre: "Vidéo 19 : Biomolécules", lien: "" },
-        { titre: "Vidéo 20 : Biomolécules", lien: "" }
-        // Place pour ajout de nouvelles vidéos de Biomolécules
-      ],
-      icm: [
-        { titre: "Vidéo 1 : ICM", lien: "" },
-        { titre: "Vidéo 2 : ICM", lien: "" },
-        { titre: "Vidéo 3 : ICM", lien: "" },
-        { titre: "Vidéo 4 : ICM", lien: "" },
-        { titre: "Vidéo 5 : ICM", lien: "" },
-        { titre: "Vidéo 6 : ICM", lien: "" },
-        { titre: "Vidéo 7 : ICM", lien: "" },
-        { titre: "Vidéo 8 : ICM", lien: "" },
-        { titre: "Vidéo 9 : ICM", lien: "" },
-        { titre: "Vidéo 10 : ICM", lien: "" },
-        { titre: "Vidéo 11 : ICM", lien: "" },
-        { titre: "Vidéo 12 : ICM", lien: "" },
-        { titre: "Vidéo 13 : ICM", lien: "" },
-        { titre: "Vidéo 14 : ICM", lien: "" },
-        { titre: "Vidéo 15 : ICM", lien: "" },
-        { titre: "Vidéo 16 : ICM", lien: "" },
-        { titre: "Vidéo 17 : ICM", lien: "" },
-        { titre: "Vidéo 18 : ICM", lien: "" },
-        { titre: "Vidéo 19 : ICM", lien: "" },
-        { titre: "Vidéo 20 : ICM", lien: "" }
-        // Place pour ajout de nouvelles vidéos d'ICM
-      ],
-      physiologie: [
-        { titre: "Vidéo 1 : Physiologie", lien: "" },
-        { titre: "Vidéo 2 : Physiologie", lien: "" },
-        { titre: "Vidéo 3 : Physiologie", lien: "" },
-        { titre: "Vidéo 4 : Physiologie", lien: "" },
-        { titre: "Vidéo 5 : Physiologie", lien: "" },
-        { titre: "Vidéo 6 : Physiologie", lien: "" },
-        { titre: "Vidéo 7 : Physiologie", lien: "" },
-        { titre: "Vidéo 8 : Physiologie", lien: "" },
-        { titre: "Vidéo 9 : Physiologie", lien: "" },
-        { titre: "Vidéo 10 : Physiologie", lien: "" },
-        { titre: "Vidéo 11 : Physiologie", lien: "" },
-        { titre: "Vidéo 12 : Physiologie", lien: "" },
-        { titre: "Vidéo 13 : Physiologie", lien: "" },
-        { titre: "Vidéo 14 : Physiologie", lien: "" },
-        { titre: "Vidéo 15 : Physiologie", lien: "" },
-        { titre: "Vidéo 16 : Physiologie", lien: "" },
-        { titre: "Vidéo 17 : Physiologie", lien: "" },
-        { titre: "Vidéo 18 : Physiologie", lien: "" },
-        { titre: "Vidéo 19 : Physiologie", lien: "" },
-        { titre: "Vidéo 20 : Physiologie", lien: "" }
-        // Place pour ajout de nouvelles vidéos de Physiologie
-      ],
-      biomath: [
-        { titre: "Vidéo 1 : Biomath", lien: "" },
-        { titre: "Vidéo 2 : Biomath", lien: "" },
-        { titre: "Vidéo 3 : Biomath", lien: "" },
-        { titre: "Vidéo 4 : Biomath", lien: "" },
-        { titre: "Vidéo 5 : Biomath", lien: "" },
-        { titre: "Vidéo 6 : Biomath", lien: "" },
-        { titre: "Vidéo 7 : Biomath", lien: "" },
-        { titre: "Vidéo 8 : Biomath", lien: "" },
-        { titre: "Vidéo 9 : Biomath", lien: "" },
-        { titre: "Vidéo 10 : Biomath", lien: "" },
-        { titre: "Vidéo 11 : Biomath", lien: "" },
-        { titre: "Vidéo 12 : Biomath", lien: "" },
-        { titre: "Vidéo 13 : Biomath", lien: "" },
-        { titre: "Vidéo 14 : Biomath", lien: "" },
-        { titre: "Vidéo 15 : Biomath", lien: "" },
-        { titre: "Vidéo 16 : Biomath", lien: "" },
-        { titre: "Vidéo 17 : Biomath", lien: "" },
-        { titre: "Vidéo 18 : Biomath", lien: "" },
-        { titre: "Vidéo 19 : Biomath", lien: "" },
-        { titre: "Vidéo 20 : Biomath", lien: "" }
-        // Place pour ajout de nouvelles vidéos de Biomath
-      ],
-      francais: [
-        { titre: "Vidéo 1 : Français Médical", lien: "" },
-        { titre: "Vidéo 2 : Français Médical", lien: "" },
-        { titre: "Vidéo 3 : Français Médical", lien: "" },
-        { titre: "Vidéo 4 : Français Médical", lien: "" },
-        { titre: "Vidéo 5 : Français Médical", lien: "" },
-        { titre: "Vidéo 6 : Français Médical", lien: "" },
-        { titre: "Vidéo 7 : Français Médical", lien: "" },
-        { titre: "Vidéo 8 : Français Médical", lien: "" },
-        { titre: "Vidéo 9 : Français Médical", lien: "" },
-        { titre: "Vidéo 10 : Français Médical", lien: "" },
-        { titre: "Vidéo 11 : Français Médical", lien: "" },
-        { titre: "Vidéo 12 : Français Médical", lien: "" },
-        { titre: "Vidéo 13 : Français Médical", lien: "" },
-        { titre: "Vidéo 14 : Français Médical", lien: "" },
-        { titre: "Vidéo 15 : Français Médical", lien: "" },
-        { titre: "Vidéo 16 : Français Médical", lien: "" },
-        { titre: "Vidéo 17 : Français Médical", lien: "" },
-        { titre: "Vidéo 18 : Français Médical", lien: "" },
-        { titre: "Vidéo 19 : Français Médical", lien: "" },
-        { titre: "Vidéo 20 : Français Médical", lien: "" }
-        // Place pour ajout de nouvelles vidéos de Français Médical
-      ],
-      biocell: [
-        { titre: "Vidéo 1 : Biocell & Tissu", lien: "" },
-        { titre: "Vidéo 2 : Biocell & Tissu", lien: "" },
-        { titre: "Vidéo 3 : Biocell & Tissu", lien: "" },
-        { titre: "Vidéo 4 : Biocell & Tissu", lien: "" },
-        { titre: "Vidéo 5 : Biocell & Tissu", lien: "" },
-        { titre: "Vidéo 6 : Biocell & Tissu", lien: "" },
-        { titre: "Vidéo 7 : Biocell & Tissu", lien: "" },
-        { titre: "Vidéo 8 : Biocell & Tissu", lien: "" },
-        { titre: "Vidéo 9 : Biocell & Tissu", lien: "" },
-        { titre: "Vidéo 10 : Biocell & Tissu", lien: "" },
-        { titre: "Vidéo 11 : Biocell & Tissu", lien: "" },
-        { titre: "Vidéo 12 : Biocell & Tissu", lien: "" },
-        { titre: "Vidéo 13 : Biocell & Tissu", lien: "" },
-        { titre: "Vidéo 14 : Biocell & Tissu", lien: "" },
-        { titre: "Vidéo 15 : Biocell & Tissu", lien: "" },
-        { titre: "Vidéo 16 : Biocell & Tissu", lien: "" },
-        { titre: "Vidéo 17 : Biocell & Tissu", lien: "" },
-        { titre: "Vidéo 18 : Biocell & Tissu", lien: "" },
-        { titre: "Vidéo 19 : Biocell & Tissu", lien: "" },
-        { titre: "Vidéo 20 : Biocell & Tissu", lien: "" }
-        // Place pour ajout de nouvelles vidéos de Biocell & Tissu
-      ],
-      uespecifique: [
-        { titre: "Vidéo 1 : UE Spécifique", lien: "assets/anatomie/ue spésifique/irm/L'examen_au_scanner(360p).mp4" },
-        { titre: "Vidéo 2 : UE Spécifique", lien: "" },
-        { titre: "Vidéo 3 : UE Spécifique", lien: "" },
-        { titre: "Vidéo 4 : UE Spécifique", lien: "" },
-        { titre: "Vidéo 5 : UE Spécifique", lien: "" },
-        { titre: "Vidéo 6 : UE Spécifique", lien: "" },
-        { titre: "Vidéo 7 : UE Spécifique", lien: "" },
-        { titre: "Vidéo 8 : UE Spécifique", lien: "" },
-        { titre: "Vidéo 9 : UE Spécifique", lien: "" },
-        { titre: "Vidéo 10 : UE Spécifique", lien: "" },
-        { titre: "Vidéo 11 : UE Spécifique", lien: "" },
-        { titre: "Vidéo 12 : UE Spécifique", lien: "" },
-        { titre: "Vidéo 13 : UE Spécifique", lien: "" },
-        { titre: "Vidéo 14 : UE Spécifique", lien: "" },
-        { titre: "Vidéo 15 : UE Spécifique", lien: "" },
-        { titre: "Vidéo 16 : UE Spécifique", lien: "" },
-        { titre: "Vidéo 17 : UE Spécifique", lien: "" },
-        { titre: "Vidéo 18 : UE Spécifique", lien: "" },
-        { titre: "Vidéo 19 : UE Spécifique", lien: "" },
-        { titre: "Vidéo 20 : UE Spécifique", lien: "" }
-        // Place pour ajout de nouvelles vidéos d'UE Spécifique
-      ]
-    };
-
-    /* =========================================================================
-       3. QCM PAR UE (PLACE POUR L'AJOUT DE NOUVEAUX QCM DANS CHAQUE UE)
-       Format :
-       {
-         question: "Votre question ?",
-         options: ["Choix A", "Choix B", "Choix C", "Choix D"],
-         correctIndex: 0, // 0 = A, 1 = B, 2 = C, 3 = D
-         explanation: "Explication de la réponse."
-       }
-       ========================================================================= */
-    var QCM_PAR_UE = {
-      anatomie: [
-        {
-          question: "Par quel orifice de la base du crâne passe le nerf mandibulaire (V3) ?",
-          options: ["Le foramen ovale", "Le canal optique", "Le foramen stylomastoïdien", "La lame criblée de l'ethmoïde"],
-          correctIndex: 0,
-          explanation: "Le nerf mandibulaire (V3) traverse le foramen ovale."
-        }
-        {
-          question: "Où se trouve le foie ?",
-          options: ["Dans l'hypochondre gauche", "Dans l'hypochondre droite", "Dans la zone pelvienne", "Dans la cage thoracique"],
-          correctIndex: 0,
-          explanation: "Le foie se trouve dans l'hypochondre droite."
-        }
-        // Place pour ajout de nouveaux QCM d'Anatomie ici...
-      ],
-      biomolecules: [
-        {
-          question: "Quelle liaison relie deux acides aminés au sein d'une chaîne polypeptidique ?",
-          options: ["Liaison glycosidique", "Liaison peptidique", "Liaison phosphodiester", "Liaison ester"],
-          correctIndex: 1,
-          explanation: "La liaison peptidique relie deux acides aminés."
-        }
-        // Place pour ajout de nouveaux QCM de Biomolécules ici...
-      ],
-      icm: [
-        {
-          question: "Quelle voie d'administration offre une biodisponibilité de 100 % ?",
-          options: ["Voie orale", "Voie intraveineuse (IV)", "Voie sous-cutanée", "Voie rectale"],
-          correctIndex: 1,
-          explanation: "La voie intraveineuse offre une biodisponibilité de 100 %."
-        }
-        // Place pour ajout de nouveaux QCM d'ICM ici...
-      ],
-      physiologie: [
-        {
-          question: "Quelle structure constitue le pacemaker physiologique principal du cœur ?",
-          options: ["Nœud atrio-ventriculaire", "Faisceau de His", "Nœud sino-atrial", "Fibres de Purkinje"],
-          correctIndex: 2,
-          explanation: "Le nœud sino-atrial impose le rythme sinusal normal."
-        }
-        // Place pour ajout de nouveaux QCM de Physiologie ici...
-      ],
-      biomath: [
-        {
-          question: "Que mesure la sensibilité d'un test diagnostique ?",
-          options: ["P(T+ | M+)", "P(T- | S+)", "La prévalence", "La VPN"],
-          correctIndex: 0,
-          explanation: "La sensibilité correspond à P(T+ | M+)."
-        }
-        // Place pour ajout de nouveaux QCM de Biomath ici...
-      ],
-      francais: [
-        {
-          question: "Que signifie le préfixe médical « brady- » ?",
-          options: ["Rapide", "Lent", "Douloureux", "Absent"],
-          correctIndex: 1,
-          explanation: "Brady- signifie lent."
-        }
-        // Place pour ajout de nouveaux QCM de Français Médical ici...
-      ],
-      biocell: [
-        {
-          question: "Quel organite cellulaire produit l'ATP par phosphorylation oxydative ?",
-          options: ["Appareil de Golgi", "Lysosome", "Mitochondrie", "Peroxysome"],
-          correctIndex: 2,
-          explanation: "La mitochondrie produit l'ATP."
-        }
-        // Place pour ajout de nouveaux QCM de Biocell & Tissu ici...
-      ],
-      uespecifique: [
-        {
-          question: "Quel signe clinique évoque une hémorragie digestive haute ?",
-          options: ["Hématémèse", "Hématurie", "Hémoptysie", "Épistaxis"],
-          correctIndex: 0,
-          explanation: "L'hématémèse est un vomissement de sang d'origine digestive haute."
-        }
-        // Place pour ajout de nouveaux QCM d'UE Spécifique ici...
-      ]
-    };
-
-    /* =========================================================================
-       4. CLASSEMENT : 50 ÉTUDIANTS + PLACE POUR AJOUT DE NOUVEAU ÉTUDIANT
-       Modifiez les noms et les notes sur /20 directement dans ce tableau.
-       La moyenne générale sur /20 et le rang sont calculés automatiquement.
-       ========================================================================= */
-    var ETUDIANTS_NOTES = [
-      { name: "Andrianina R.", notes: { anatomie: 17.5, biomolecules: 16.5, icm: 16, physiologie: 17, biomath: 16, francais: 16.5, biocell: 17.5, uespecifique: 16.5 } },
-      { name: "Rakotoarisoa M.", notes: { anatomie: 16.5, biomolecules: 16, icm: 15.5, physiologie: 16.5, biomath: 15.5, francais: 16, biocell: 16.5, uespecifique: 16 } },
-      { name: "Rasoanaivo T.", notes: { anatomie: 16, biomolecules: 15.5, icm: 15, physiologie: 16, biomath: 15, francais: 15.5, biocell: 16, uespecifique: 15.5 } },
-      { name: "Randrianasolo K.", notes: { anatomie: 15.5, biomolecules: 15, icm: 15, physiologie: 15.5, biomath: 14.5, francais: 15.5, biocell: 15.5, uespecifique: 15 } },
-      { name: "Ravelomanana S.", notes: { anatomie: 15, biomolecules: 15, icm: 14.5, physiologie: 15.5, biomath: 14.5, francais: 15, biocell: 15, uespecifique: 15 } },
-      { name: "Razafindrakoto H.", notes: { anatomie: 15, biomolecules: 14.5, icm: 14.5, physiologie: 15, biomath: 14, francais: 15, biocell: 14.5, uespecifique: 14.5 } },
-      { name: "Ramanantsoa L.", notes: { anatomie: 14.5, biomolecules: 14.5, icm: 14, physiologie: 15, biomath: 14, francais: 14.5, biocell: 14.5, uespecifique: 14 } },
-      { name: "Rafalimanana N.", notes: { anatomie: 14.5, biomolecules: 14, icm: 14, physiologie: 14.5, biomath: 13.5, francais: 14.5, biocell: 14, uespecifique: 14 } },
-      { name: "Raharison V.", notes: { anatomie: 14, biomolecules: 14, icm: 13.5, physiologie: 14.5, biomath: 13.5, francais: 14, biocell: 14, uespecifique: 14 } },
-      { name: "Rajaonarison E.", notes: { anatomie: 14, biomolecules: 13.5, icm: 13.5, physiologie: 14, biomath: 13.5, francais: 14, biocell: 13.5, uespecifique: 13.5 } },
-      { name: "Rakotomalala F.", notes: { anatomie: 13.5, biomolecules: 13.5, icm: 13.5, physiologie: 14, biomath: 13, francais: 13.5, biocell: 13.5, uespecifique: 13.5 } },
-      { name: "Randriamanantena J.", notes: { anatomie: 13.5, biomolecules: 13.5, icm: 13, physiologie: 13.5, biomath: 13, francais: 13.5, biocell: 13.5, uespecifique: 13 } },
-      { name: "Rasolofo A.", notes: { anatomie: 13.5, biomolecules: 13, icm: 13, physiologie: 13.5, biomath: 13, francais: 13.5, biocell: 13, uespecifique: 13 } },
-      { name: "Ratsimbazafy C.", notes: { anatomie: 13, biomolecules: 13, icm: 13, physiologie: 13.5, biomath: 12.5, francais: 13, biocell: 13, uespecifique: 13 } },
-      { name: "Ranaivo D.", notes: { anatomie: 13, biomolecules: 13, icm: 12.5, physiologie: 13, biomath: 12.5, francais: 13, biocell: 13, uespecifique: 12.5 } },
-      { name: "Rakotonirina G.", notes: { anatomie: 13, biomolecules: 12.5, icm: 12.5, physiologie: 13, biomath: 12.5, francais: 13, biocell: 12.5, uespecifique: 12.5 } },
-      { name: "Andriamampianina P.", notes: { anatomie: 12.5, biomolecules: 12.5, icm: 12.5, physiologie: 13, biomath: 12, francais: 12.5, biocell: 12.5, uespecifique: 12.5 } },
-      { name: "Rabenandrasana B.", notes: { anatomie: 12.5, biomolecules: 12.5, icm: 12, physiologie: 12.5, biomath: 12, francais: 12.5, biocell: 12.5, uespecifique: 12 } },
-      { name: "Razanadrakoto O.", notes: { anatomie: 12.5, biomolecules: 12, icm: 12, physiologie: 12.5, biomath: 12, francais: 12.5, biocell: 12, uespecifique: 12 } },
-      { name: "Rakotondrabe Y.", notes: { anatomie: 12, biomolecules: 12, icm: 12, physiologie: 12.5, biomath: 11.5, francais: 12, biocell: 12, uespecifique: 12 } },
-      { name: "Randrianarivelo Z.", notes: { anatomie: 12, biomolecules: 12, icm: 11.5, physiologie: 12, biomath: 11.5, francais: 12, biocell: 12, uespecifique: 11.5 } },
-      { name: "Rasolonjatovo W.", notes: { anatomie: 12, biomolecules: 11.5, icm: 11.5, physiologie: 12, biomath: 11.5, francais: 12, biocell: 11.5, uespecifique: 11.5 } },
-      { name: "Ramaroson I.", notes: { anatomie: 11.5, biomolecules: 11.5, icm: 11.5, physiologie: 12, biomath: 11.5, francais: 11.5, biocell: 11.5, uespecifique: 11.5 } },
-      { name: "Raveloson U.", notes: { anatomie: 11.5, biomolecules: 11.5, icm: 11.5, physiologie: 11.5, biomath: 11, francais: 11.5, biocell: 11.5, uespecifique: 11.5 } },
-      { name: "Rajaonah Q.", notes: { anatomie: 11.5, biomolecules: 11.5, icm: 11, physiologie: 11.5, biomath: 11, francais: 11.5, biocell: 11.5, uespecifique: 11 } },
-      { name: "Andriantsoa X.", notes: { anatomie: 11.5, biomolecules: 11, icm: 11, physiologie: 11.5, biomath: 11, francais: 11.5, biocell: 11, uespecifique: 11 } },
-      { name: "Rakotozafy A.", notes: { anatomie: 11, biomolecules: 11, icm: 11, physiologie: 11.5, biomath: 11, francais: 11, biocell: 11, uespecifique: 11 } },
-      { name: "Randriamihaja B.", notes: { anatomie: 11, biomolecules: 11, icm: 11, physiologie: 11, biomath: 10.5, francais: 11, biocell: 11, uespecifique: 11 } },
-      { name: "Rasoanirina C.", notes: { anatomie: 11, biomolecules: 11, icm: 10.5, physiologie: 11, biomath: 10.5, francais: 11, biocell: 11, uespecifique: 10.5 } },
-      { name: "Razafimahatratra D.", notes: { anatomie: 11, biomolecules: 10.5, icm: 10.5, physiologie: 11, biomath: 10.5, francais: 11, biocell: 10.5, uespecifique: 10.5 } },
-      { name: "Rabeantoandro E.", notes: { anatomie: 10.5, biomolecules: 10.5, icm: 10.5, physiologie: 11, biomath: 10.5, francais: 10.5, biocell: 10.5, uespecifique: 10.5 } },
-      { name: "Ranaivoson F.", notes: { anatomie: 10.5, biomolecules: 10.5, icm: 10.5, physiologie: 10.5, biomath: 10, francais: 10.5, biocell: 10.5, uespecifique: 10.5 } },
-      { name: "Rakotovao G.", notes: { anatomie: 10.5, biomolecules: 10.5, icm: 10, physiologie: 10.5, biomath: 10, francais: 10.5, biocell: 10.5, uespecifique: 10 } },
-      { name: "Randrianambinina H.", notes: { anatomie: 10.5, biomolecules: 10, icm: 10, physiologie: 10.5, biomath: 10, francais: 10.5, biocell: 10, uespecifique: 10 } },
-      { name: "Rasolofomanana I.", notes: { anatomie: 10, biomolecules: 10, icm: 10, physiologie: 10.5, biomath: 10, francais: 10, biocell: 10, uespecifique: 10 } },
-      { name: "Ratsirahonana J.", notes: { anatomie: 10, biomolecules: 10, icm: 10, physiologie: 10, biomath: 9.5, francais: 10, biocell: 10, uespecifique: 10 } },
-      { name: "Andriamanjato K.", notes: { anatomie: 10, biomolecules: 10, icm: 9.5, physiologie: 10, biomath: 9.5, francais: 10, biocell: 10, uespecifique: 9.5 } },
-      { name: "Rakotondrasoa L.", notes: { anatomie: 10, biomolecules: 9.5, icm: 9.5, physiologie: 10, biomath: 9.5, francais: 10, biocell: 9.5, uespecifique: 9.5 } },
-      { name: "Randriambololona M.", notes: { anatomie: 9.5, biomolecules: 9.5, icm: 9.5, physiologie: 10, biomath: 9.5, francais: 9.5, biocell: 9.5, uespecifique: 9.5 } },
-      { name: "Rasoamanarivo N.", notes: { anatomie: 9.5, biomolecules: 9.5, icm: 9.5, physiologie: 9.5, biomath: 9, francais: 9.5, biocell: 9.5, uespecifique: 9.5 } },
-      { name: "Razanakoto O.", notes: { anatomie: 9.5, biomolecules: 9.5, icm: 9, physiologie: 9.5, biomath: 9, francais: 9.5, biocell: 9.5, uespecifique: 9 } },
-      { name: "Rabarison P.", notes: { anatomie: 9.5, biomolecules: 9, icm: 9, physiologie: 9.5, biomath: 9, francais: 9.5, biocell: 9, uespecifique: 9 } },
-      { name: "Ranaivomanana Q.", notes: { anatomie: 9, biomolecules: 9, icm: 9, physiologie: 9.5, biomath: 9, francais: 9, biocell: 9, uespecifique: 9 } },
-      { name: "Rakotomanga R.", notes: { anatomie: 9, biomolecules: 9, icm: 9, physiologie: 9, biomath: 8.5, francais: 9, biocell: 9, uespecifique: 9 } },
-      { name: "Randrianantenaina S.", notes: { anatomie: 9, biomolecules: 9, icm: 8.5, physiologie: 9, biomath: 8.5, francais: 9, biocell: 9, uespecifique: 8.5 } },
-      { name: "Rasoloniaina T.", notes: { anatomie: 9, biomolecules: 8.5, icm: 8.5, physiologie: 9, biomath: 8.5, francais: 9, biocell: 8.5, uespecifique: 8.5 } },
-      { name: "Ratsimandresy U.", notes: { anatomie: 8.5, biomolecules: 8.5, icm: 8.5, physiologie: 9, biomath: 8.5, francais: 8.5, biocell: 8.5, uespecifique: 8.5 } },
-      { name: "Andriambelo V.", notes: { anatomie: 8.5, biomolecules: 8.5, icm: 8.5, physiologie: 8.5, biomath: 8, francais: 8.5, biocell: 8.5, uespecifique: 8.5 } },
-      { name: "Rakotoarivelo W.", notes: { anatomie: 8.5, biomolecules: 8.5, icm: 8, physiologie: 8.5, biomath: 8, francais: 8.5, biocell: 8, uespecifique: 8 } },
-      { name: "Randriamahefa X.", notes: { anatomie: 8, biomolecules: 8, icm: 8, physiologie: 8.5, biomath: 8, francais: 8, biocell: 8, uespecifique: 8 } },
-      { name: "Rabarisoa T.", notes: { anatomie: 7, biomolecules: 7, icm: 6, physiologie: 8, biomath: 8, francais: 8, biocell: 8, uespecifique: 8 } }
-      // =========================================================================
-      // PLACE POUR L'AJOUT D'UN NOUVEAU ÉTUDIANT ET SES NOTES /20 :
-      // ,{ name: "Nom Prénom", notes: { anatomie: 15, biomolecules: 14, icm: 13, physiologie: 15, biomath: 14, francais: 15, biocell: 14, uespecifique: 14 } }
-      // =========================================================================
-    ];
-
-    /* =========================================================================
-       SYSTÈME DE MISE À JOUR AUTOMATIQUE (DÉTECTE N'IMPORTE QUEL CHANGEMENT)
-       Calcule automatiquement une empreinte du code et de toutes vos données.
-       ========================================================================= */
-    var AUTO_SYNC_KEY = "MedX_Auto_Fingerprint";
-    var lastDetectedFingerprint = "";
-
-    function computeContentFingerprint() {
-      var payload = JSON.stringify({
-        cours: CATALOGUE_COURS,
-        videos: CATALOGUE_VIDEOS,
-        qcm: QCM_PAR_UE,
-        etudiants: ETUDIANTS_NOTES,
-        ue: UE_META
-      });
-      var hash = 2166136261;
-      for (var i = 0; i < payload.length; i++) {
-        hash ^= payload.charCodeAt(i);
-        hash = (hash * 16777619) >>> 0;
-      }
-      return "MX-" + hash.toString(16).toUpperCase();
+    // Place pour ajout de nouveaux QCM d'ICM ici...
+  ],
+  physiologie: [
+    {
+      question: "Quelle structure constitue le pacemaker physiologique principal du cœur ?",
+      options: ["Nœud atrio-ventriculaire", "Faisceau de His", "Nœud sino-atrial", "Fibres de Purkinje"],
+      correctIndex: 2,
+      explanation: "Le nœud sino-atrial impose le rythme sinusal normal."
     }
+    // Place pour ajout de nouveaux QCM de Physiologie ici...
+  ],
+  biomath: [
+    {
+      question: "Que mesure la sensibilité d'un test diagnostique ?",
+      options: ["P(T+ | M+)", "P(T- | M-)", "La prévalence", "La VPN"],
+      correctIndex: 0,
+      explanation: "La sensibilité correspond à la probabilité P(T+ | M+)."
+    }
+    // Place pour ajout de nouveaux QCM de Biomath ici...
+  ],
+  francais: [
+    {
+      question: "Que signifie le préfixe médical « brady- » ?",
+      options: ["Rapide", "Lent", "Douloureux", "Absent"],
+      correctIndex: 1,
+      explanation: "Brady- signifie lent."
+    }
+    // Place pour ajout de nouveaux QCM de Français Médical ici...
+  ],
+  biocell: [
+    {
+      question: "Quel organite cellulaire produit l'ATP par phosphorylation oxydative ?",
+      options: ["Appareil de Golgi", "Lysosome", "Mitochondrie", "Peroxysome"],
+      correctIndex: 2,
+      explanation: "La mitochondrie produit l'ATP."
+    }
+    // Place pour ajout de nouveaux QCM de Biocell & Tissu ici...
+  ],
+  uespecifique: [
+    {
+      question: "Quel signe clinique évoque une hémorragie digestive haute ?",
+      options: ["Hématémèse", "Hématurie", "Hémoptysie", "Épistaxis"],
+      correctIndex: 0,
+      explanation: "L'hématémèse est un vomissement de sang d'origine digestive haute."
+    }
+    // Place pour ajout de nouveaux QCM d'UE Spécifique ici...
+  ]
+};
 
-    function autoSyncApplication(forceRefreshUi) {
-      var currentFingerprint = computeContentFingerprint();
-      var previousFingerprint = safeGet(AUTO_SYNC_KEY);
+/* =========================================================================
+   4. CLASSEMENT : 50 ÉTUDIANTS + PLACE POUR AJOUT DE NOUVEAU ÉTUDIANT
+   Modifiez les noms et les notes sur /20 directement dans ce tableau.
+   La moyenne générale sur /20 et le rang sont calculés automatiquement.
+========================================================================= */
+var ETUDIANTS_NOTES = [
+  { name: "Andrianina R.", notes: { anatomie: 17.5, biomolecules: 16.5, icm: 16, physiologie: 17, biomath: 16, francais: 16.5, biocell: 17.5, uespecifique: 16.5 } },
+  { name: "Rakotoarisoa M.", notes: { anatomie: 16.5, biomolecules: 16, icm: 15.5, physiologie: 16.5, biomath: 15.5, francais: 16, biocell: 16.5, uespecifique: 16 } },
+  { name: "Rasoanaivo T.", notes: { anatomie: 16, biomolecules: 15.5, icm: 15, physiologie: 16, biomath: 15, francais: 15.5, biocell: 16, uespecifique: 15.5 } },
+  { name: "Randrianasolo K.", notes: { anatomie: 15.5, biomolecules: 15, icm: 15, physiologie: 15.5, biomath: 14.5, francais: 15.5, biocell: 15.5, uespecifique: 15 } },
+  { name: "Ravelomanana S.", notes: { anatomie: 15, biomolecules: 15, icm: 14.5, physiologie: 15.5, biomath: 14.5, francais: 15, biocell: 15, uespecifique: 15 } },
+  { name: "Razafindrakoto H.", notes: { anatomie: 15, biomolecules: 14.5, icm: 14.5, physiologie: 15, biomath: 14, francais: 15, biocell: 14.5, uespecifique: 14.5 } },
+  { name: "Ramanantsoa L.", notes: { anatomie: 14.5, biomolecules: 14.5, icm: 14, physiologie: 15, biomath: 14, francais: 14.5, biocell: 14.5, uespecifique: 14 } },
+  { name: "Rafalimanana N.", notes: { anatomie: 14.5, biomolecules: 14, icm: 14, physiologie: 14.5, biomath: 13.5, francais: 14.5, biocell: 14, uespecifique: 14 } },
+  { name: "Raharison V.", notes: { anatomie: 14, biomolecules: 14, icm: 13.5, physiologie: 14.5, biomath: 13.5, francais: 14, biocell: 14, uespecifique: 14 } },
+  { name: "Rajaonarison E.", notes: { anatomie: 14, biomolecules: 13.5, icm: 13.5, physiologie: 14, biomath: 13.5, francais: 14, biocell: 13.5, uespecifique: 13.5 } },
+  { name: "Rakotomalala F.", notes: { anatomie: 13.5, biomolecules: 13.5, icm: 13.5, physiologie: 14, biomath: 13, francais: 13.5, biocell: 13.5, uespecifique: 13.5 } },
+  { name: "Randriamanantena J.", notes: { anatomie: 13.5, biomolecules: 13.5, icm: 13, physiologie: 13.5, biomath: 13, francais: 13.5, biocell: 13.5, uespecifique: 13 } },
+  { name: "Rasolofo A.", notes: { anatomie: 13.5, biomolecules: 13, icm: 13, physiologie: 13.5, biomath: 13, francais: 13.5, biocell: 13, uespecifique: 13 } },
+  { name: "Ratsimbazafy C.", notes: { anatomie: 13, biomolecules: 13, icm: 13, physiologie: 13.5, biomath: 12.5, francais: 13, biocell: 13, uespecifique: 13 } },
+  { name: "Ranaivo D.", notes: { anatomie: 13, biomolecules: 13, icm: 12.5, physiologie: 13, biomath: 12.5, francais: 13, biocell: 13, uespecifique: 12.5 } },
+  { name: "Rakotonirina G.", notes: { anatomie: 13, biomolecules: 12.5, icm: 12.5, physiologie: 13, biomath: 12.5, francais: 13, biocell: 12.5, uespecifique: 12.5 } },
+  { name: "Andriamampianina P.", notes: { anatomie: 12.5, biomolecules: 12.5, icm: 12.5, physiologie: 13, biomath: 12, francais: 12.5, biocell: 12.5, uespecifique: 12.5 } },
+  { name: "Rabenandrasana B.", notes: { anatomie: 12.5, biomolecules: 12.5, icm: 12, physiologie: 12.5, biomath: 12, francais: 12.5, biocell: 12.5, uespecifique: 12 } },
+  { name: "Razanadrakoto O.", notes: { anatomie: 12.5, biomolecules: 12, icm: 12, physiologie: 12.5, biomath: 12, francais: 12.5, biocell: 12, uespecifique: 12 } },
+  { name: "Rakotondrabe Y.", notes: { anatomie: 12, biomolecules: 12, icm: 12, physiologie: 12.5, biomath: 11.5, francais: 12, biocell: 12, uespecifique: 12 } },
+  { name: "Randrianarivelo Z.", notes: { anatomie: 12, biomolecules: 12, icm: 11.5, physiologie: 12, biomath: 11.5, francais: 12, biocell: 12, uespecifique: 11.5 } },
+  { name: "Rasolonjatovo W.", notes: { anatomie: 12, biomolecules: 11.5, icm: 11.5, physiologie: 12, biomath: 11.5, francais: 12, biocell: 11.5, uespecifique: 11.5 } },
+  { name: "Ramaroson I.", notes: { anatomie: 11.5, biomolecules: 11.5, icm: 11.5, physiologie: 12, biomath: 11.5, francais: 11.5, biocell: 11.5, uespecifique: 11.5 } },
+  { name: "Raveloson U.", notes: { anatomie: 11.5, biomolecules: 11.5, icm: 11.5, physiologie: 11.5, biomath: 11, francais: 11.5, biocell: 11.5, uespecifique: 11.5 } },
+  { name: "Rajaonah Q.", notes: { anatomie: 11.5, biomolecules: 11.5, icm: 11, physiologie: 11.5, biomath: 11, francais: 11.5, biocell: 11.5, uespecifique: 11 } },
+  { name: "Andriantsoa X.", notes: { anatomie: 11.5, biomolecules: 11, icm: 11, physiologie: 11.5, biomath: 11, francais: 11.5, biocell: 11, uespecifique: 11 } },
+  { name: "Rakotozafy A.", notes: { anatomie: 11, biomolecules: 11, icm: 11, physiologie: 11.5, biomath: 11, francais: 11, biocell: 11, uespecifique: 11 } },
+  { name: "Randriamihaja B.", notes: { anatomie: 11, biomolecules: 11, icm: 11, physiologie: 11, biomath: 10.5, francais: 11, biocell: 11, uespecifique: 11 } },
+  { name: "Rasoanirina C.", notes: { anatomie: 11, biomolecules: 11, icm: 10.5, physiologie: 11, biomath: 10.5, francais: 11, biocell: 11, uespecifique: 10.5 } },
+  { name: "Razafimahatratra D.", notes: { anatomie: 11, biomolecules: 10.5, icm: 10.5, physiologie: 11, biomath: 10.5, francais: 11, biocell: 10.5, uespecifique: 10.5 } },
+  { name: "Rabeantoandro E.", notes: { anatomie: 10.5, biomolecules: 10.5, icm: 10.5, physiologie: 11, biomath: 10.5, francais: 10.5, biocell: 10.5, uespecifique: 10.5 } },
+  { name: "Ranaivoson F.", notes: { anatomie: 10.5, biomolecules: 10.5, icm: 10.5, physiologie: 10.5, biomath: 10, francais: 10.5, biocell: 10.5, uespecifique: 10.5 } },
+  { name: "Rakotovao G.", notes: { anatomie: 10.5, biomolecules: 10.5, icm: 10, physiologie: 10.5, biomath: 10, francais: 10.5, biocell: 10.5, uespecifique: 10 } },
+  { name: "Randrianambinina H.", notes: { anatomie: 10.5, biomolecules: 10, icm: 10, physiologie: 10.5, biomath: 10, francais: 10.5, biocell: 10, uespecifique: 10 } },
+  { name: "Rasolofomanana I.", notes: { anatomie: 10, biomolecules: 10, icm: 10, physiologie: 10.5, biomath: 10, francais: 10, biocell: 10, uespecifique: 10 } },
+  { name: "Ratsirahonana J.", notes: { anatomie: 10, biomolecules: 10, icm: 10, physiologie: 10, biomath: 9.5, francais: 10, biocell: 10, uespecifique: 10 } },
+  { name: "Andriamanjato K.", notes: { anatomie: 10, biomolecules: 10, icm: 9.5, physiologie: 10, biomath: 9.5, francais: 10, biocell: 10, uespecifique: 9.5 } },
+  { name: "Rakotondrasoa L.", notes: { anatomie: 10, biomolecules: 9.5, icm: 9.5, physiologie: 10, biomath: 9.5, francais: 10, biocell: 9.5, uespecifique: 9.5 } },
+  { name: "Randriambololona M.", notes: { anatomie: 9.5, biomolecules: 9.5, icm: 9.5, physiologie: 10, biomath: 9.5, francais: 9.5, biocell: 9.5, uespecifique: 9.5 } },
+  { name: "Rasoamanarivo N.", notes: { anatomie: 9.5, biomolecules: 9.5, icm: 9.5, physiologie: 9.5, biomath: 9, francais: 9.5, biocell: 9.5, uespecifique: 9.5 } },
+  { name: "Razanakoto O.", notes: { anatomie: 9.5, biomolecules: 9.5, icm: 9, physiologie: 9.5, biomath: 9, francais: 9.5, biocell: 9.5, uespecifique: 9 } },
+  { name: "Rabarison P.", notes: { anatomie: 9.5, biomolecules: 9, icm: 9, physiologie: 9.5, biomath: 9, francais: 9.5, biocell: 9, uespecifique: 9 } },
+  { name: "Ranaivomanana Q.", notes: { anatomie: 9, biomolecules: 9, icm: 9, physiologie: 9.5, biomath: 9, francais: 9, biocell: 9, uespecifique: 9 } },
+  { name: "Rakotomanga R.", notes: { anatomie: 9, biomolecules: 9, icm: 9, physiologie: 9, biomath: 8.5, francais: 9, biocell: 9, uespecifique: 9 } },
+  { name: "Randrianantenaina S.", notes: { anatomie: 9, biomolecules: 9, icm: 8.5, physiologie: 9, biomath: 8.5, francais: 9, biocell: 9, uespecifique: 8.5 } },
+  { name: "Rasoloniaina T.", notes: { anatomie: 9, biomolecules: 8.5, icm: 8.5, physiologie: 9, biomath: 8.5, francais: 9, biocell: 8.5, uespecifique: 8.5 } },
+  { name: "Ratsimandresy U.", notes: { anatomie: 8.5, biomolecules: 8.5, icm: 8.5, physiologie: 9, biomath: 8.5, francais: 8.5, biocell: 8.5, uespecifique: 8.5 } },
+  { name: "Andriambelo V.", notes: { anatomie: 8.5, biomolecules: 8.5, icm: 8.5, physiologie: 8.5, biomath: 8, francais: 8.5, biocell: 8.5, uespecifique: 8.5 } },
+  { name: "Rakotoarivelo W.", notes: { anatomie: 8.5, biomolecules: 8.5, icm: 8, physiologie: 8.5, biomath: 8, francais: 8.5, biocell: 8, uespecifique: 8 } },
+  { name: "Randriamahefa X.", notes: { anatomie: 8, biomolecules: 8, icm: 8, physiologie: 8.5, biomath: 8, francais: 8, biocell: 8, uespecifique: 8 } },
+  { name: "Rabarisoa T.", notes: { anatomie: 7, biomolecules: 7, icm: 6, physiologie: 8, biomath: 8, francais: 8, biocell: 8, uespecifique: 8 } }
+  // =========================================================================
+  // PLACE POUR L'AJOUT D'UN NOUVEAU ÉTUDIANT ET SES NOTES /20 :
+  // ,{ name: "Nom Prénom", notes: { anatomie: 15, biomolecules: 14, icm: 13, physiologie: 15, biomath: 14, francais: 15, biocell: 14, uespecifique: 14 } }
+  // =========================================================================
+];
 
-      var badge = document.getElementById("auto-sync-badge");
-      var aboutHash = document.getElementById("about-build-hash");
-      if (badge) badge.innerText = "À jour • " + currentFingerprint;
-      if (aboutHash) aboutHash.innerText = currentFingerprint;
+/* =========================================================================
+   SYSTÈME DE MISE À JOUR AUTOMATIQUE (DÉTECTE N'IMPORTE QUEL CHANGEMENT)
+   Calcule automatiquement une empreinte du code et de toutes vos données.
+========================================================================= */
+var AUTO_SYNC_KEY = "MedX_Auto_Fingerprint";
+var lastDetectedFingerprint = "";
 
-      if (previousFingerprint !== currentFingerprint || lastDetectedFingerprint !== currentFingerprint || forceRefreshUi) {
-        safeSet(AUTO_SYNC_KEY, currentFingerprint);
-        lastDetectedFingerprint = currentFingerprint;
+function computeContentFingerprint() {
+  var payload = JSON.stringify({
+    cours: CATALOGUE_COURS,
+    videos: CATALOGUE_VIDEOS,
+    qcm: QCM_PAR_UE,
+    etudiants: ETUDIANTS_NOTES,
+    ue: UE_META
+  });
+  var hash = 2166136261;
+  for (var i = 0; i < payload.length; i++) {
+    hash ^= payload.charCodeAt(i);
+    hash = (hash * 16777619) >>> 0;
+  }
+  return "MX-" + hash.toString(16).toUpperCase();
+}
 
-        try {
-          if ("serviceWorker" in navigator && navigator.serviceWorker.getRegistration) {
-            navigator.serviceWorker.getRegistration().then(function (reg) {
-              if (reg && reg.update) reg.update();
-              if (reg && reg.waiting && reg.waiting.postMessage) {
-                reg.waiting.postMessage({ type: "SKIP_WAITING" });
-              }
-            })["catch"](function () {});
+function autoSyncApplication(forceRefreshUi) {
+  var currentFingerprint = computeContentFingerprint();
+  var previousFingerprint = safeGet(AUTO_SYNC_KEY);
+  var badge = document.getElementById("auto-sync-badge");
+  var aboutHash = document.getElementById("about-build-hash");
+  if (badge) badge.innerText = "À jour " + currentFingerprint;
+  if (aboutHash) aboutHash.innerText = currentFingerprint;
+
+  if (previousFingerprint !== currentFingerprint || lastDetectedFingerprint !== currentFingerprint || forceRefreshUi) {
+    safeSet(AUTO_SYNC_KEY, currentFingerprint);
+    lastDetectedFingerprint = currentFingerprint;
+    try {
+      if ("serviceWorker" in navigator && navigator.serviceWorker.getRegistration) {
+        navigator.serviceWorker.getRegistration().then(function (reg) {
+          if (reg && reg.update) reg.update();
+          if (reg && reg.waiting && reg.waiting.postMessage) {
+            reg.waiting.postMessage({ type: "SKIP_WAITING" });
           }
-        } catch (e) {}
-
-        refreshAllViews();
+        })["catch"](function () {});
       }
+    } catch (e) {}
+    refreshAllViews();
+  }
+}
+
+function refreshAllViews() {
+  var homeCount = document.getElementById("home-student-count");
+  if (homeCount) homeCount.innerText = ETUDIANTS_NOTES.length + " Étudiants";
+
+  renderGrid("cours-ue-grid", "openCoursUe", function (ueKey) {
+    var list = CATALOGUE_COURS[ueKey] || [];
+    var ready = list.filter(function (x) { return x.lien && x.lien.trim() !== ""; }).length;
+    return list.length + " leçons (" + ready + " prête" + (ready > 1 ? "s" : "") + ")";
+  });
+
+  renderGrid("videos-ue-grid", "openVideosUe", function (ueKey) {
+    var list = CATALOGUE_VIDEOS[ueKey] || [];
+    var ready = list.filter(function (x) { return x.lien && x.lien.trim() !== ""; }).length;
+    return list.length + " vidéos (" + ready + " prête" + (ready > 1 ? "s" : "") + ")";
+  });
+
+  renderGrid("qcm-ue-grid", "openQcmUe", function (ueKey) {
+    var n = (QCM_PAR_UE[ueKey] || []).length;
+    return n + (n > 1 ? " questions" : " question");
+  });
+
+  renderLeaderboard();
+}
+
+document.addEventListener("visibilitychange", function () {
+  if (document.visibilityState === "visible") {
+    autoSyncApplication(false);
+  }
+});
+
+function renderGrid(containerId, onSelectUe, countLabelFn) {
+  var grid = document.getElementById(containerId);
+  if (!grid) return;
+  var html = "";
+  for (var i = 0; i < UE_META.length; i++) {
+    var ue = UE_META[i];
+    html += '<div class="subject-card" onclick="' + onSelectUe + '(\'' + ue.key + '\')">' +
+      '<div class="subject-banner ' + ue.banner + '"><i class="fa-solid ' + ue.icon + '"></i></div>' +
+      '<div class="card-content"><h3>' + escapeHtml(ue.label) + '</h3><span class="progress-text">' + escapeHtml(countLabelFn(ue.key)) + '</span></div>' +
+      '</div>';
+  }
+  grid.innerHTML = html;
+}
+
+function openCoursUe(ueKey) {
+  var meta = UE_META.find(function (u) { return u.key === ueKey; }) || UE_META[0];
+  var lessons = CATALOGUE_COURS[ueKey] || [];
+  document.getElementById("cours-panel-title").innerText = "Cours " + meta.label + " (" + lessons.length + ")";
+  var listEl = document.getElementById("cours-lessons-list");
+  var html = "";
+  for (var i = 0; i < lessons.length; i++) {
+    var l = lessons[i];
+    var hasLink = l.lien && l.lien.trim() !== "";
+    html += '<div class="item-card">' +
+      '<div class="item-main" onclick="openPdfLesson(\'' + ueKey + '\', ' + i + ')">' +
+      '<i class="fa-solid fa-file-pdf" style="color:' + (hasLink ? '#f87171' : '#64748b') + '; font-size:1.2rem;"></i>' +
+      '<div><div class="item-title">' + escapeHtml(l.titre) + '</div>' +
+      '<div class="item-sub">' + (hasLink ? 'PDF prêt • Lecture nette' : 'Emplacement ' + (i + 1) + '/' + lessons.length + ' (lien à coller)') + '</div></div>' +
+      '</div>' +
+      (hasLink ? '<button class="action-btn" onclick="openPdfLesson(\'' + ueKey + '\', ' + i + ')">Lire</button>' : '') +
+      '</div>';
+  }
+  listEl.innerHTML = html;
+  var panel = document.getElementById("cours-ue-panel");
+  panel.classList.add("active");
+  try { panel.scrollIntoView({ behavior: "smooth", block: "nearest" }); } catch (e) {}
+}
+
+function openVideosUe(ueKey) {
+  var meta = UE_META.find(function (u) { return u.key === ueKey; }) || UE_META[0];
+  var vids = CATALOGUE_VIDEOS[ueKey] || [];
+  document.getElementById("videos-panel-title").innerText = "Vidéos " + meta.label + " (" + vids.length + ")";
+  var listEl = document.getElementById("videos-lessons-list");
+  var html = "";
+  for (var i = 0; i < vids.length; i++) {
+    var v = vids[i];
+    var hasLink = v.lien && v.lien.trim() !== "";
+    html += '<div class="item-card">' +
+      '<div class="item-main" onclick="openVideoLesson(\'' + ueKey + '\', ' + i + ')">' +
+      '<i class="fa-solid fa-circle-play" style="color:' + (hasLink ? '#38bdf8' : '#64748b') + '; font-size:1.2rem;"></i>' +
+      '<div><div class="item-title">' + escapeHtml(v.titre) + '</div>' +
+      '<div class="item-sub">' + (hasLink ? 'Vidéo prête' : 'Emplacement ' + (i + 1) + '/' + vids.length + ' (lien à coller)') + '</div></div>' +
+      '</div>' +
+      (hasLink ? '<button class="action-btn" onclick="openVideoLesson(\'' + ueKey + '\', ' + i + ')">Lire</button>' : '') +
+      '</div>';
+  }
+  listEl.innerHTML = html;
+  var panel = document.getElementById("videos-ue-panel");
+  panel.classList.add("active");
+  try { panel.scrollIntoView({ behavior: "smooth", block: "nearest" }); } catch (e) {}
+}
+
+var currentQcmKey = "anatomie";
+var qcmCorrectCount = 0;
+
+function openQcmUe(ueKey) {
+  currentQcmKey = ueKey;
+  var meta = UE_META.find(function (u) { return u.key === ueKey; }) || UE_META[0];
+  document.getElementById("qcm-panel-title").innerText = "QCM " + meta.label;
+  resetCurrentQcm();
+  var panel = document.getElementById("qcm-ue-panel");
+  panel.classList.add("active");
+  try { panel.scrollIntoView({ behavior: "smooth", block: "nearest" }); } catch (e) {}
+}
+
+function resetCurrentQcm() {
+  var questions = QCM_PAR_UE[currentQcmKey] || [];
+  qcmCorrectCount = 0;
+  document.getElementById("qcm-score-display").innerText = "Score: 0/" + questions.length;
+  var listEl = document.getElementById("qcm-questions-list");
+  var html = "";
+  for (var qIdx = 0; qIdx < questions.length; qIdx++) {
+    var q = questions[qIdx];
+    var optsHtml = "";
+    for (var oIdx = 0; oIdx < q.options.length; oIdx++) {
+      optsHtml += '<button class="qcm-opt-btn" id="q-' + qIdx + '-o-' + oIdx + '" onclick="checkQcmAnswer(' + qIdx + ', ' + oIdx + ')">' +
+        String.fromCharCode(65 + oIdx) + ". " + escapeHtml(q.options[oIdx]) + '</button>';
     }
+    html += '<div class="qcm-card"><div class="qcm-question">' + escapeHtml(q.question) + '</div>' +
+      '<div class="qcm-options">' + optsHtml + '</div>' +
+      '<div class="qcm-explanation" id="q-exp-' + qIdx + '">' + escapeHtml(q.explanation) + '</div></div>';
+  }
+  listEl.innerHTML = html;
+}
 
-    function refreshAllViews() {
-      var homeCount = document.getElementById("home-student-count");
-      if (homeCount) homeCount.innerText = ETUDIANTS_NOTES.length + " Étudiants";
+function checkQcmAnswer(qIdx, chosenIdx) {
+  var questions = QCM_PAR_UE[currentQcmKey] || [];
+  var q = questions[qIdx];
+  if (!q) return;
 
-      renderGrid("cours-ue-grid", "openCoursUe", function (ueKey) {
-        var list = CATALOGUE_COURS[ueKey] || [];
-        var ready = list.filter(function (x) { return x.lien && x.lien.trim() !== ""; }).length;
-        return list.length + " leçons (" + ready + " prête" + (ready > 1 ? "s" : "") + ")";
-      });
+  for (var i = 0; i < q.options.length; i++) {
+    var btn = document.getElementById("q-" + qIdx + "-o-" + i);
+    if (!btn) continue;
+    if (btn.disabled) return;
+    btn.disabled = true;
+  }
 
-      renderGrid("videos-ue-grid", "openVideosUe", function (ueKey) {
-        var list = CATALOGUE_VIDEOS[ueKey] || [];
-        var ready = list.filter(function (x) { return x.lien && x.lien.trim() !== ""; }).length;
-        return list.length + " vidéos (" + ready + " prête" + (ready > 1 ? "s" : "") + ")";
-      });
+  var chosenBtn = document.getElementById("q-" + qIdx + "-o-" + chosenIdx);
+  var rightBtn = document.getElementById("q-" + qIdx + "-o-" + q.correctIndex);
 
-      renderGrid("qcm-ue-grid", "openQcmUe", function (ueKey) {
-        var n = (QCM_PAR_UE[ueKey] || []).length;
-        return n + (n > 1 ? " questions" : " question");
-      });
+  if (chosenIdx === q.correctIndex) {
+    qcmCorrectCount++;
+    if (chosenBtn) chosenBtn.classList.add("correct");
+  } else {
+    if (chosenBtn) chosenBtn.classList.add("wrong");
+    if (rightBtn) rightBtn.classList.add("correct");
+  }
 
-      renderLeaderboard();
+  var exp = document.getElementById("q-exp-" + qIdx);
+  if (exp) exp.style.display = "block";
+  document.getElementById("qcm-score-display").innerText = "Score : " + qcmCorrectCount + "/" + questions.length;
+}
+
+function closePanel(panelId) {
+  var panel = document.getElementById(panelId);
+  if (panel) panel.classList.remove("active");
+}
+
+function computeAverage(notes) {
+  var total = 0;
+  var count = 0;
+  for (var i = 0; i < UE_META.length; i++) {
+    var v = notes[UE_META[i].key];
+    if (typeof v === "number") {
+      total += v;
+      count++;
     }
+  }
+  return count > 0 ? Number((total / count).toFixed(2)) : 0;
+}
 
-    document.addEventListener("visibilitychange", function () {
-      if (document.visibilityState === "visible") {
-        autoSyncApplication(false);
-      }
+function renderLeaderboard() {
+  var container = document.getElementById("leaderboard-container");
+  if (!container) return;
+  var ranked = ETUDIANTS_NOTES.map(function (st) {
+    return { name: st.name, notes: st.notes, moyenne: computeAverage(st.notes) };
+  }).sort(function (a, b) { return b.moyenne - a.moyenne; });
+
+  var html = "";
+  for (var i = 0; i < ranked.length; i++) {
+    var st = ranked[i];
+    var posClass = i === 0 ? " top1" : (i === 1 ? " top2" : (i === 2 ? " top3" : ""));
+    var ueBoxes = "";
+    for (var j = 0; j < UE_META.length; j++) {
+      var ue = UE_META[j];
+      var noteVal = typeof st.notes[ue.key] === "number" ? (st.notes[ue.key] + "/20") : "-";
+      ueBoxes += '<div class="ue-note-box"><span>' + escapeHtml(ue.label) + '</span><strong>' + escapeHtml(noteVal) + '</strong></div>';
+    }
+    html += '<div class="rank-student-card"><div class="rank-student-header">' +
+      '<div class="rank-student-left"><div class="lb-pos' + posClass + '">' + (i + 1) + '</div>' +
+      '<div style="font-weight:700; font-size:0.88rem; color:#f8fafc;">' + escapeHtml(st.name) + '</div></div>' +
+      '<div class="moyenne-pill">Moy: ' + st.moyenne.toFixed(2) + '/20</div></div>' +
+      '<div class="ue-notes-grid">' + ueBoxes + '</div></div>';
+  }
+  container.innerHTML = html;
+}
+
+function applyWatermarkNodes(containerId, itemClass, count) {
+  var box = document.getElementById(containerId);
+  if (!box) return;
+  var html = "";
+  for (var i = 0; i < count; i++) {
+    html += '<div class="' + itemClass + '">' + escapeHtml(WATERMARK_TEXT) + '</div>';
+  }
+  box.innerHTML = html;
+}
+
+/* =========================================================================
+   LECTEUR PDF HAUTE NETTETÉ (DPR SCALING + AJUSTEMENT LARGEUR + ZOOM)
+========================================================================= */
+var pdfDoc = null;
+var currentPage = 1;
+var currentScale = 1.0;
+var activeRenderTask = null;
+
+function normalizePdfUrl(url) {
+  var clean = String(url || "").trim();
+  var driveMatch = clean.match(/drive\.google\.com\/file\/d\/([A-Za-z0-9_-]+)/);
+  if (driveMatch) {
+    return "https://drive.google.com/uc?export=download&id=" + driveMatch[1];
+  }
+  return clean;
+}
+
+function openPdfLesson(ueKey, idx) {
+  var lesson = (CATALOGUE_COURS[ueKey] || [])[idx];
+  if (!lesson || !lesson.lien || lesson.lien.trim() === "") {
+    alert("Aucun lien PDF n'est encore configuré pour cette leçon.");
+    return;
+  }
+  var rawUrl = lesson.lien.trim();
+  var resolvedUrl = normalizePdfUrl(rawUrl);
+  applyWatermarkNodes("pdf-watermark-layer", "watermark-tag", 14);
+  document.getElementById("viewer-title-text").innerText = lesson.titre;
+  document.getElementById("fallback-external-link").href = rawUrl;
+  document.getElementById("pdf-viewer-modal").classList.add("active");
+  document.getElementById("pdf-loading").style.display = "block";
+  document.getElementById("canvas-wrapper").style.display = "none";
+  document.getElementById("fallback-box").style.display = "none";
+  currentPage = 1;
+  currentScale = 1.0;
+
+  if (!window.pdfjsLib || !window.pdfjsLib.getDocument) {
+    document.getElementById("pdf-loading").style.display = "none";
+    document.getElementById("fallback-box").style.display = "block";
+    return;
+  }
+
+  if (!window.pdfjsLib.GlobalWorkerOptions.workerSrc) {
+    window.pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js";
+  }
+
+  window.pdfjsLib.getDocument({
+    url: resolvedUrl,
+    withCredentials: false,
+    disableAutoFetch: false,
+    disableStream: false
+  }).promise.then(function (doc) {
+    pdfDoc = doc;
+    document.getElementById("pdf-loading").style.display = "none";
+    document.getElementById("canvas-wrapper").style.display = "block";
+    fitPdfToWidth();
+  })["catch"](function () {
+    document.getElementById("pdf-loading").style.display = "none";
+    document.getElementById("fallback-box").style.display = "block";
+  });
+}
+
+function fitPdfToWidth() {
+  if (!pdfDoc) return;
+  pdfDoc.getPage(currentPage).then(function (page) {
+    var container = document.getElementById("viewer-container");
+    var availableWidth = Math.max(240, (container ? container.clientWidth : window.innerWidth) - 20);
+    var baseVp = page.getViewport({ scale: 1 });
+    currentScale = Math.max(0.6, Math.min(2.5, availableWidth / baseVp.width));
+    renderPdfPage(currentPage);
+  });
+}
+
+function renderPdfPage(num) {
+  if (!pdfDoc) return;
+  var canvas = document.getElementById("pdf-canvas");
+  if (!canvas || !canvas.getContext) return;
+  var ctx = canvas.getContext("2d", { alpha: false });
+  if (activeRenderTask && activeRenderTask.cancel) {
+    try { activeRenderTask.cancel(); } catch (e) {}
+  }
+
+  pdfDoc.getPage(num).then(function (page) {
+    var dpr = Math.min(2.25, Math.max(1.25, window.devicePixelRatio || 1));
+    var cssViewport = page.getViewport({ scale: currentScale });
+    var renderViewport = page.getViewport({ scale: currentScale * dpr });
+    canvas.width = Math.floor(renderViewport.width);
+    canvas.height = Math.floor(renderViewport.height);
+    canvas.style.width = Math.floor(cssViewport.width) + "px";
+    canvas.style.height = Math.floor(cssViewport.height) + "px";
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    activeRenderTask = page.render({
+      canvasContext: ctx,
+      viewport: renderViewport
     });
 
-    function renderGrid(containerId, onSelectUe, countLabelFn) {
-      var grid = document.getElementById(containerId);
-      if (!grid) return;
-      var html = "";
-      for (var i = 0; i < UE_META.length; i++) {
-        var ue = UE_META[i];
-        html += '<div class="subject-card" onclick="' + onSelectUe + '(\'' + ue.key + '\')">' +
-          '<div class="subject-banner ' + ue.banner + '"><i class="fa-solid ' + ue.icon + '"></i></div>' +
-          '<div class="card-content"><h3>' + escapeHtml(ue.label) + '</h3><span class="progress-text">' + escapeHtml(countLabelFn(ue.key)) + '</span></div>' +
-          '</div>';
-      }
-      grid.innerHTML = html;
+    activeRenderTask.promise.then(function () {
+      activeRenderTask = null;
+      document.getElementById("page-num-display").innerText = num + "/" + pdfDoc.numPages;
+      document.getElementById("zoom-level-display").innerText = Math.round(currentScale * 100) + "%";
+    })["catch"](function () {});
+  });
+}
+
+function changePage(delta) {
+  if (!pdfDoc) return;
+  var next = currentPage + delta;
+  if (next >= 1 && next <= pdfDoc.numPages) {
+    currentPage = next;
+    var container = document.getElementById("viewer-container");
+    if (container) container.scrollTop = 0;
+    renderPdfPage(currentPage);
+  }
+}
+
+function adjustZoom(delta) {
+  if (!pdfDoc) return;
+  currentScale = Math.min(3.0, Math.max(0.5, currentScale + delta));
+  renderPdfPage(currentPage);
+}
+
+function closePdfViewer() {
+  if (activeRenderTask && activeRenderTask.cancel) {
+    try { activeRenderTask.cancel(); } catch (e) {}
+  }
+  document.getElementById("pdf-viewer-modal").classList.remove("active");
+  pdfDoc = null;
+}
+
+function extractYoutubeId(url) {
+  var m = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{6,})/);
+  return m ? m[1] : null;
+}
+
+function openVideoLesson(ueKey, idx) {
+  var vid = (CATALOGUE_VIDEOS[ueKey] || [])[idx];
+  if (!vid || !vid.lien || vid.lien.trim() === "") {
+    alert("Aucun lien vidéo n'est encore configuré pour cet emplacement.");
+    return;
+  }
+  var rawUrl = vid.lien.trim();
+  applyWatermarkNodes("video-watermark-layer", "video-watermark-item", 6);
+  document.getElementById("video-viewer-title").innerText = vid.titre;
+  document.getElementById("video-external-link").href = rawUrl;
+  var container = document.getElementById("video-player-container");
+  var ytId = extractYoutubeId(rawUrl);
+
+  if (ytId) {
+    container.innerHTML = '<iframe src="https://www.youtube.com/embed/' + ytId + '" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+  } else if (/\.(mp4|webm|ogg)(\?.*)?$/i.test(rawUrl)) {
+    container.innerHTML = '<video src="' + escapeHtml(rawUrl) + '" controls autoplay playsinline controlsList="nodownload"></video>';
+  } else {
+    container.innerHTML = '<iframe src="' + escapeHtml(rawUrl) + '" allowfullscreen></iframe>';
+  }
+  document.getElementById("video-viewer-modal").classList.add("active");
+}
+
+function closeVideoViewer() {
+  document.getElementById("video-viewer-modal").classList.remove("active");
+  var container = document.getElementById("video-player-container");
+  if (container) container.innerHTML = "";
+}
+
+function switchTab(tabId) {
+  var sections = document.querySelectorAll(".view-section");
+  for (var i = 0; i < sections.length; i++) {
+    sections[i].classList.remove("active");
+  }
+  var target = document.getElementById("sec-" + tabId);
+  if (target) {
+    target.classList.add("active");
+  } else {
+    var homeSec = document.getElementById("sec-home");
+    if (homeSec) homeSec.classList.add("active");
+  }
+
+  var navItems = document.querySelectorAll(".nav-item");
+  for (var j = 0; j < navItems.length; j++) {
+    var itemTab = navItems[j].getAttribute("data-tab");
+    if (itemTab === tabId) {
+      navItems[j].classList.add("active");
+    } else {
+      navItems[j].classList.remove("active");
     }
+  }
+  try { window.scrollTo(0, 0); } catch (e) {}
+  autoSyncApplication(true);
+}
 
-    function openCoursUe(ueKey) {
-      var meta = UE_META.find(function (u) { return u.key === ueKey; }) || UE_META[0];
-      var lessons = CATALOGUE_COURS[ueKey] || [];
-      document.getElementById("cours-panel-title").innerText = "Cours • " + meta.label + " (" + lessons.length + ")";
-      var listEl = document.getElementById("cours-lessons-list");
-      var html = "";
-
-      for (var i = 0; i < lessons.length; i++) {
-        var l = lessons[i];
-        var hasLink = l.lien && l.lien.trim() !== "";
-        html += '<div class="item-card">' +
-          '<div class="item-main" onclick="openPdfLesson(\'' + ueKey + '\', ' + i + ')">' +
-          '<i class="fa-solid fa-file-pdf" style="color:' + (hasLink ? '#f87171' : '#64748b') + '; font-size:1.2rem;"></i>' +
-          '<div><div class="item-title">' + escapeHtml(l.titre) + '</div>' +
-          '<div class="item-sub">' + (hasLink ? 'PDF prêt • Lecture nette' : 'Emplacement ' + (i + 1) + '/' + lessons.length + ' (lien à coller)') + '</div></div>' +
-          '</div>' +
-          (hasLink ? '<button class="action-btn" onclick="openPdfLesson(\'' + ueKey + '\', ' + i + ')">Lire</button>' : '') +
-          '</div>';
-      }
-
-      listEl.innerHTML = html;
-      var panel = document.getElementById("cours-ue-panel");
-      panel.classList.add("active");
-      try { panel.scrollIntoView({ behavior: "smooth", block: "nearest" }); } catch (e) {}
-    }
-
-    function openVideosUe(ueKey) {
-      var meta = UE_META.find(function (u) { return u.key === ueKey; }) || UE_META[0];
-      var vids = CATALOGUE_VIDEOS[ueKey] || [];
-      document.getElementById("videos-panel-title").innerText = "Vidéos • " + meta.label + " (" + vids.length + ")";
-      var listEl = document.getElementById("videos-lessons-list");
-      var html = "";
-
-      for (var i = 0; i < vids.length; i++) {
-        var v = vids[i];
-        var hasLink = v.lien && v.lien.trim() !== "";
-        html += '<div class="item-card">' +
-          '<div class="item-main" onclick="openVideoLesson(\'' + ueKey + '\', ' + i + ')">' +
-          '<i class="fa-solid fa-circle-play" style="color:' + (hasLink ? '#38bdf8' : '#64748b') + '; font-size:1.2rem;"></i>' +
-          '<div><div class="item-title">' + escapeHtml(v.titre) + '</div>' +
-          '<div class="item-sub">' + (hasLink ? 'Vidéo prête' : 'Emplacement ' + (i + 1) + '/' + vids.length + ' (lien à coller)') + '</div></div>' +
-          '</div>' +
-          (hasLink ? '<button class="action-btn" onclick="openVideoLesson(\'' + ueKey + '\', ' + i + ')">Lire</button>' : '') +
-          '</div>';
-      }
-
-      listEl.innerHTML = html;
-      var panel = document.getElementById("videos-ue-panel");
-      panel.classList.add("active");
-      try { panel.scrollIntoView({ behavior: "smooth", block: "nearest" }); } catch (e) {}
-    }
-
-    var currentQcmKey = "anatomie";
-    var qcmCorrectCount = 0;
-
-    function openQcmUe(ueKey) {
-      currentQcmKey = ueKey;
-      var meta = UE_META.find(function (u) { return u.key === ueKey; }) || UE_META[0];
-      document.getElementById("qcm-panel-title").innerText = "QCM • " + meta.label;
-      resetCurrentQcm();
-      var panel = document.getElementById("qcm-ue-panel");
-      panel.classList.add("active");
-      try { panel.scrollIntoView({ behavior: "smooth", block: "nearest" }); } catch (e) {}
-    }
-
-    function resetCurrentQcm() {
-      var questions = QCM_PAR_UE[currentQcmKey] || [];
-      qcmCorrectCount = 0;
-      document.getElementById("qcm-score-display").innerText = "Score : 0 / " + questions.length;
-      var listEl = document.getElementById("qcm-questions-list");
-      var html = "";
-
-      for (var qIdx = 0; qIdx < questions.length; qIdx++) {
-        var q = questions[qIdx];
-        var optsHtml = "";
-        for (var oIdx = 0; oIdx < q.options.length; oIdx++) {
-          optsHtml += '<button class="qcm-opt-btn" id="q-' + qIdx + '-o-' + oIdx + '" onclick="checkQcmAnswer(' + qIdx + ', ' + oIdx + ')">' +
-            String.fromCharCode(65 + oIdx) + ". " + escapeHtml(q.options[oIdx]) + '</button>';
-        }
-        html += '<div class="qcm-card"><div class="qcm-question">' + escapeHtml(q.question) + '</div>' +
-          '<div class="qcm-options">' + optsHtml + '</div>' +
-          '<div class="qcm-explanation" id="q-exp-' + qIdx + '">' + escapeHtml(q.explanation) + '</div></div>';
-      }
-      listEl.innerHTML = html;
-    }
-
-    function checkQcmAnswer(qIdx, chosenIdx) {
-      var questions = QCM_PAR_UE[currentQcmKey] || [];
-      var q = questions[qIdx];
-      if (!q) return;
-
-      for (var i = 0; i < q.options.length; i++) {
-        var btn = document.getElementById("q-" + qIdx + "-o-" + i);
-        if (!btn) continue;
-        if (btn.disabled) return;
-        btn.disabled = true;
-      }
-
-      var chosenBtn = document.getElementById("q-" + qIdx + "-o-" + chosenIdx);
-      var rightBtn = document.getElementById("q-" + qIdx + "-o-" + q.correctIndex);
-
-      if (chosenIdx === q.correctIndex) {
-        qcmCorrectCount++;
-        if (chosenBtn) chosenBtn.classList.add("correct");
-      } else {
-        if (chosenBtn) chosenBtn.classList.add("wrong");
-        if (rightBtn) rightBtn.classList.add("correct");
-      }
-
-      var exp = document.getElementById("q-exp-" + qIdx);
-      if (exp) exp.style.display = "block";
-      document.getElementById("qcm-score-display").innerText = "Score : " + qcmCorrectCount + " / " + questions.length;
-    }
-
-    function closePanel(panelId) {
-      var panel = document.getElementById(panelId);
-      if (panel) panel.classList.remove("active");
-    }
-
-    function computeAverage(notes) {
-      var total = 0;
-      var count = 0;
-      for (var i = 0; i < UE_META.length; i++) {
-        var v = notes[UE_META[i].key];
-        if (typeof v === "number") {
-          total += v;
-          count++;
-        }
-      }
-      return count > 0 ? Number((total / count).toFixed(2)) : 0;
-    }
-
-    function renderLeaderboard() {
-      var container = document.getElementById("leaderboard-container");
-      if (!container) return;
-
-      var ranked = ETUDIANTS_NOTES.map(function (st) {
-        return { name: st.name, notes: st.notes, moyenne: computeAverage(st.notes) };
-      }).sort(function (a, b) { return b.moyenne - a.moyenne; });
-
-      var html = "";
-      for (var i = 0; i < ranked.length; i++) {
-        var st = ranked[i];
-        var posClass = i === 0 ? " top1" : (i === 1 ? " top2" : (i === 2 ? " top3" : ""));
-        var ueBoxes = "";
-        for (var j = 0; j < UE_META.length; j++) {
-          var ue = UE_META[j];
-          var noteVal = typeof st.notes[ue.key] === "number" ? (st.notes[ue.key] + "/20") : "—";
-          ueBoxes += '<div class="ue-note-box"><span>' + escapeHtml(ue.label) + '</span><strong>' + escapeHtml(noteVal) + '</strong></div>';
-        }
-        html += '<div class="rank-student-card"><div class="rank-student-header">' +
-          '<div class="rank-student-left"><div class="lb-pos' + posClass + '">' + (i + 1) + '</div>' +
-          '<div style="font-weight:700; font-size:0.88rem; color:#f8fafc;">' + escapeHtml(st.name) + '</div></div>' +
-          '<div class="moyenne-pill">Moy : ' + st.moyenne.toFixed(2) + '/20</div></div>' +
-          '<div class="ue-notes-grid">' + ueBoxes + '</div></div>';
-      }
-      container.innerHTML = html;
-    }
-
-    function applyWatermarkNodes(containerId, itemClass, count) {
-      var box = document.getElementById(containerId);
-      if (!box) return;
-      var html = "";
-      for (var i = 0; i < count; i++) {
-        html += '<div class="' + itemClass + '">' + escapeHtml(WATERMARK_TEXT) + '</div>';
-      }
-      box.innerHTML = html;
-    }
-
-    /* =========================================================================
-       LECTEUR PDF HAUTE NETTETÉ (DPR SCALING + AJUSTEMENT LARGEUR + ZOOM)
-       ========================================================================= */
-    var pdfDoc = null;
-    var currentPage = 1;
-    var currentScale = 1.0;
-    var activeRenderTask = null;
-
-    function normalizePdfUrl(url) {
-      var clean = String(url || "").trim();
-      var driveMatch = clean.match(/drive\.google\.com\/file\/d\/([A-Za-z0-9_-]+)/);
-      if (driveMatch) {
-        return "https://drive.google.com/uc?export=download&id=" + driveMatch[1];
-      }
-      return clean;
-    }
-
-    function openPdfLesson(ueKey, idx) {
-      var lesson = (CATALOGUE_COURS[ueKey] || [])[idx];
-      if (!lesson || !lesson.lien || lesson.lien.trim() === "") {
-        alert("Aucun lien PDF n'est encore configuré pour cette leçon.");
-        return;
-      }
-
-      var rawUrl = lesson.lien.trim();
-      var resolvedUrl = normalizePdfUrl(rawUrl);
-
-      applyWatermarkNodes("pdf-watermark-layer", "watermark-tag", 14);
-      document.getElementById("viewer-title-text").innerText = lesson.titre;
-      document.getElementById("fallback-external-link").href = rawUrl;
-      document.getElementById("pdf-viewer-modal").classList.add("active");
-      document.getElementById("pdf-loading").style.display = "block";
-      document.getElementById("canvas-wrapper").style.display = "none";
-      document.getElementById("fallback-box").style.display = "none";
-      currentPage = 1;
-      currentScale = 1.0;
-
-      if (!window.pdfjsLib || !window.pdfjsLib.getDocument) {
-        document.getElementById("pdf-loading").style.display = "none";
-        document.getElementById("fallback-box").style.display = "block";
-        return;
-      }
-
-      if (!window.pdfjsLib.GlobalWorkerOptions.workerSrc) {
-        window.pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js";
-      }
-
-      window.pdfjsLib.getDocument({
-        url: resolvedUrl,
-        withCredentials: false,
-        disableAutoFetch: false,
-        disableStream: false
-      }).promise.then(function (doc) {
-        pdfDoc = doc;
-        document.getElementById("pdf-loading").style.display = "none";
-        document.getElementById("canvas-wrapper").style.display = "block";
-        fitPdfToWidth();
-      })["catch"](function () {
-        document.getElementById("pdf-loading").style.display = "none";
-        document.getElementById("fallback-box").style.display = "block";
-      });
-    }
-
-    function fitPdfToWidth() {
-      if (!pdfDoc) return;
-      pdfDoc.getPage(currentPage).then(function (page) {
-        var container = document.getElementById("viewer-container");
-        var availableWidth = Math.max(240, (container ? container.clientWidth : window.innerWidth) - 20);
-        var baseVp = page.getViewport({ scale: 1 });
-        currentScale = Math.max(0.6, Math.min(2.5, availableWidth / baseVp.width));
-        renderPdfPage(currentPage);
-      });
-    }
-
-    function renderPdfPage(num) {
-      if (!pdfDoc) return;
-      var canvas = document.getElementById("pdf-canvas");
-      if (!canvas || !canvas.getContext) return;
-      var ctx = canvas.getContext("2d", { alpha: false });
-
-      if (activeRenderTask && activeRenderTask.cancel) {
-        try { activeRenderTask.cancel(); } catch (e) {}
-      }
-
-      pdfDoc.getPage(num).then(function (page) {
-        var dpr = Math.min(2.25, Math.max(1.25, window.devicePixelRatio || 1));
-        var cssViewport = page.getViewport({ scale: currentScale });
-        var renderViewport = page.getViewport({ scale: currentScale * dpr });
-
-        canvas.width = Math.floor(renderViewport.width);
-        canvas.height = Math.floor(renderViewport.height);
-        canvas.style.width = Math.floor(cssViewport.width) + "px";
-        canvas.style.height = Math.floor(cssViewport.height) + "px";
-
-        ctx.fillStyle = "#ffffff";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        activeRenderTask = page.render({
-          canvasContext: ctx,
-          viewport: renderViewport
-        });
-
-        activeRenderTask.promise.then(function () {
-          activeRenderTask = null;
-          document.getElementById("page-num-display").innerText = num + " / " + pdfDoc.numPages;
-          document.getElementById("zoom-level-display").innerText = Math.round(currentScale * 100) + "%";
-        })["catch"](function () {});
-      });
-    }
-
-    function changePage(delta) {
-      if (!pdfDoc) return;
-      var next = currentPage + delta;
-      if (next >= 1 && next <= pdfDoc.numPages) {
-        currentPage = next;
-        var container = document.getElementById("viewer-container");
-        if (container) container.scrollTop = 0;
-        renderPdfPage(currentPage);
-      }
-    }
-
-    function adjustZoom(delta) {
-      if (!pdfDoc) return;
-      currentScale = Math.min(3.0, Math.max(0.5, currentScale + delta));
-      renderPdfPage(currentPage);
-    }
-
-    function closePdfViewer() {
-      if (activeRenderTask && activeRenderTask.cancel) {
-        try { activeRenderTask.cancel(); } catch (e) {}
-      }
-      document.getElementById("pdf-viewer-modal").classList.remove("active");
-      pdfDoc = null;
-    }
-
-    function extractYoutubeId(url) {
-      var m = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{6,})/);
-      return m ? m[1] : null;
-    }
-
-    function openVideoLesson(ueKey, idx) {
-      var vid = (CATALOGUE_VIDEOS[ueKey] || [])[idx];
-      if (!vid || !vid.lien || vid.lien.trim() === "") {
-        alert("Aucun lien vidéo n'est encore configuré pour cet emplacement.");
-        return;
-      }
-
-      var rawUrl = vid.lien.trim();
-      applyWatermarkNodes("video-watermark-layer", "video-watermark-item", 6);
-      document.getElementById("video-viewer-title").innerText = vid.titre;
-      document.getElementById("video-external-link").href = rawUrl;
-
-      var container = document.getElementById("video-player-container");
-      var ytId = extractYoutubeId(rawUrl);
-
-      if (ytId) {
-        container.innerHTML = '<iframe src="https://www.youtube.com/embed/' + ytId + '" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
-      } else if (/\.(mp4|webm|ogg)(\?.*)?$/i.test(rawUrl)) {
-        container.innerHTML = '<video src="' + escapeHtml(rawUrl) + '" controls autoplay playsinline controlsList="nodownload"></video>';
-      } else {
-        container.innerHTML = '<iframe src="' + escapeHtml(rawUrl) + '" allowfullscreen></iframe>';
-      }
-
-      document.getElementById("video-viewer-modal").classList.add("active");
-    }
-
-    function closeVideoViewer() {
-      document.getElementById("video-viewer-modal").classList.remove("active");
-      var container = document.getElementById("video-player-container");
-      if (container) container.innerHTML = "";
-    }
-
-    function switchTab(tabId) {
-      var sections = document.querySelectorAll(".view-section");
-      for (var i = 0; i < sections.length; i++) {
-        sections[i].classList.remove("active");
-      }
-
-      var target = document.getElementById("sec-" + tabId);
-      if (target) {
-        target.classList.add("active");
-      } else {
-        var homeSec = document.getElementById("sec-home");
-        if (homeSec) homeSec.classList.add("active");
-      }
-
-      var navItems = document.querySelectorAll(".nav-item");
-      for (var j = 0; j < navItems.length; j++) {
-        var itemTab = navItems[j].getAttribute("data-tab");
-        if (itemTab === tabId) {
-          navItems[j].classList.add("active");
-        } else {
-          navItems[j].classList.remove("active");
-        }
-      }
-
-      try { window.scrollTo(0, 0); } catch (e) {}
-    }
-
-    autoSyncApplication(true);
-  </script>
+/* Initialisation automatique au chargement */
+window.addEventListener("DOMContentLoaded", function () {
+  autoSyncApplication(true);
+});
+if (document.readyState === "complete" || document.readyState === "interactive") {
+  autoSyncApplication(true);
+}
+</script>
 </body>
 </html>
