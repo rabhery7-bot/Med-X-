@@ -785,7 +785,7 @@
           <p class="info-line"><strong>Application :</strong> MedX — Révisions & Concours de Santé</p>
           <p class="info-line"><strong>Version :</strong> <span id="about-version-text">v1.0.0</span></p>
           <p class="info-line"><strong>Auteur :</strong> Dr RABIBISOA Herilala Nantenaina Pierre</p>
-          <p class="info-line"><strong>Contact :</strong> 0342002623 • rabherilala@gmail.com</p>
+          <p class="info-line"><strong>Contact :</strong> 0342002623 • rasfrancisco35@gmail.com</p>
           <p class="info-line"><strong>Compatibilité :</strong> Android 8, 9, 10, 11, 12, 13, 14+, WebView Android et différentes tailles d'écran.</p>
           <button class="btn-primary" style="margin-top:8px;" onclick="switchTab('home')">Retour à Home</button>
         </div>
@@ -855,7 +855,7 @@
        EMPLACEMENT DÉDIÉ : COLLER ICI VOTRE CODE / LIEN WEBVIEW & COMPATIBILITÉ ANDROID
        Exemple : <script src="webview-compat.js"></script>
        ========================================================================= -->
-
+  <script src="webview-compat.js"></script>
   <!-- ========================================================================= -->
 
   <script>
@@ -863,7 +863,7 @@
        VERSION DE L'APPLICATION / DES CONTENUS
        Modifiez uniquement "APP_VERSION" à chaque mise à jour ou ajout de contenu.
        ========================================================================= */
-    var APP_VERSION = "1.3.0";
+    var APP_VERSION = "1.4.0";
     var VERSION_STORAGE_KEY = "MedX_Current_Version";
     var memoryStore = {};
 
@@ -951,21 +951,24 @@
        ========================================================================= */
     var CATALOGUE_COURS = {
       anatomie: [
-        { titre: "Leçon 1 : Anatomie", lien: "assets/anatomie/anat de nerf paces.pdf" },
-        { titre: "Leçon 2 : Anatomie", lien: "assets/anatomie/02 ESTOMAC.pdf" },
-        { titre: "Leçon 3 : Anatomie", lien: "" },
-        { titre: "Leçon 4 : Anatomie", lien: "" },
+        { titre: "Leçon 1 : Anatomie des nerfs", lien: "assets/anatomie/anat de nerf paces.pdf" },
+        { titre: "Leçon 2 : Anatomie de l’estomac", lien: "assets/anatomie/02 ESTOMAC.pdf" },
+        { titre: "Leçon 3 : Anatomie de l’oesophage", lien: "assets/anatomie/01 ŒSOPHAGE.pdf" },
+        { titre: "Leçon 4 : Anatomie", lien: "assets/anatomie/Anatomie de la rate.pdf" },
         { titre: "Leçon 5 : Anatomie", lien: "" }
+        { titre: "Leçon 6 : Anatomie", lien: "" },
+        { titre: "Leçon 7 : Anatomie", lien: "" },
+        { titre: "Leçon 8 : Anatomie", lien: "" }
       ],
       biomolecules: [
-        { titre: "Leçon 1 : Biomolécules", lien: "" },
+        { titre: "Leçon 1 : Biomolécules", lien: "assets/anatomie/sfb/Cours chimie PACES.pdf" },
         { titre: "Leçon 2 : Biomolécules", lien: "" },
         { titre: "Leçon 3 : Biomolécules", lien: "" },
         { titre: "Leçon 4 : Biomolécules", lien: "" },
         { titre: "Leçon 5 : Biomolécules", lien: "" }
       ],
       icm: [
-        { titre: "Leçon 1 : ICM", lien: "" },
+        { titre: "Leçon 1 : ICM", lien: "assets/anatomie/icm/1604323401_1-histoire_medicaments_&_pharmacie.pdf" },
         { titre: "Leçon 2 : ICM", lien: "" },
         { titre: "Leçon 3 : ICM", lien: "" },
         { titre: "Leçon 4 : ICM", lien: "" },
@@ -993,18 +996,19 @@
         { titre: "Leçon 5 : Français Médical", lien: "" }
       ],
       biocell: [
-        { titre: "Leçon 1 : Biocell & Tissu", lien: "" },
+        { titre: "Leçon 1 : Biocell & Tissu", lien: "assets/anatomie/biocell et tissu/BIOCELL.pdf" },
         { titre: "Leçon 2 : Biocell & Tissu", lien: "" },
         { titre: "Leçon 3 : Biocell & Tissu", lien: "" },
         { titre: "Leçon 4 : Biocell & Tissu", lien: "" },
         { titre: "Leçon 5 : Biocell & Tissu", lien: "" }
       ],
       uespecifique: [
-        { titre: "Leçon 1 : UE Spécifique", lien: "" },
-        { titre: "Leçon 2 : UE Spécifique", lien: "" },
+        { titre: "Leçon 1 : UE Spécifique", lien: "assets/anatomie/ue spésifique/irm/Diapo TDM.pdf" },
+        { titre: "Leçon 2 : UE Spécifique", lien: "assets/anatomie/ue spésifique/osteo/ANATOMIE DU CRANE 2023 volume 1 PACES TANA.pdf" },
         { titre: "Leçon 3 : UE Spécifique", lien: "" },
         { titre: "Leçon 4 : UE Spécifique", lien: "" },
         { titre: "Leçon 5 : UE Spécifique", lien: "" }
+
       ]
     };
 
@@ -1082,6 +1086,12 @@
           correctIndex: 0,
           explanation: "Le nerf mandibulaire (V3) traverse le foramen ovale."
         }
+        {
+          question: "Où se trouve le foie?",
+          options: ["Dans l'hypocondre gauche", "Dans l'hypochondre droite", "Dans la zone pelvienne", "Dans la cage thoracique"],
+          correctIndex: 0,
+          explanation: "Le nerf mandibulaire (V3) traverse le foramen ovale."
+        }
       ],
       biomolecules: [
         {
@@ -1155,7 +1165,8 @@
       { name: "Rafalimanana N.", notes: { anatomie: 10.5, biomolecules: 10.5, icm: 10, physiologie: 11, biomath: 10, francais: 10.5, biocell: 10.5, uespecifique: 10 } },
       { name: "Raharison V.", notes: { anatomie: 10, biomolecules: 9.5, icm: 10, physiologie: 10, biomath: 9.5, francais: 10, biocell: 9.5, uespecifique: 10 } },
       { name: "Rajaonarison E.", notes: { anatomie: 9, biomolecules: 9, icm: 8.5, physiologie: 9.5, biomath: 8.5, francais: 9, biocell: 9, uespecifique: 9 } }
-    ];
+      { name: "Rabarisoa T.", notes: { anatomie: 8, biomolecules: 7, icm: 8.5, physiologie: 10, biomath: 9, francais: 11, biocell: 8, uespecifique: 8 } }
+];
 
     function renderGrid(containerId, onSelectUe, countLabelFn) {
       var grid = document.getElementById(containerId);
