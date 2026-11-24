@@ -253,6 +253,46 @@ main {
   background-color: #0284c7;
   color: #ffffff;
 }
+.offline-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #4ade80;
+  background-color: rgba(74, 222, 128, 0.14);
+  border: 1px solid rgba(74, 222, 128, 0.35);
+  padding: 2px 7px;
+  border-radius: 999px;
+}
+.dl-btn {
+  border: 1px solid #38bdf8;
+  border-radius: 8px;
+  padding: 6px 9px;
+  font-size: 0.73rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background-color: rgba(56, 189, 248, 0.12);
+  color: #38bdf8;
+}
+.dl-btn.saved {
+  border-color: rgba(74, 222, 128, 0.45);
+  background-color: rgba(74, 222, 128, 0.14);
+  color: #4ade80;
+}
+.dl-btn:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+.item-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
 /* QCM */
 .qcm-top-bar {
   display: flex;
@@ -976,7 +1016,7 @@ var CATALOGUE_COURS = {
     // Place pour ajout de nouveaux cours de Français Médical
   ],
   biocell: [
-    { titre: "Leçon 1: Biocell(boky) Pr Rakotroka  ", lien: "assets/anatomie/biocell et tissu/BIOCELL.pdf" },
+    { titre: "Leçon 1: Biocell & Tissu", lien: "" },
     { titre: "Leçon 2: Biocell & Tissu", lien: "" },
     { titre: "Leçon 3: Biocell & Tissu", lien: "" },
     { titre: "Leçon 4: Biocell & Tissu", lien: "" },
@@ -1470,13 +1510,22 @@ function openCoursUe(ueKey) {
   for (var i = 0; i < lessons.length; i++) {
     var l = lessons[i];
     var hasLink = l.lien && l.lien.trim() !== "";
+    var mediaId = getMediaStorageId("pdf", ueKey, i, l.lien);
+    var isOffline = hasLink && isMediaStoredLocally(mediaId);
     html += '<div class="item-card">' +
       '<div class="item-main" onclick="openPdfLesson(\'' + ueKey + '\', ' + i + ')">' +
       '<i class="fa-solid fa-file-pdf" style="color:' + (hasLink ? '#f87171' : '#64748b') + '; font-size:1.2rem;"></i>' +
-      '<div><div class="item-title">' + escapeHtml(l.titre) + '</div>' +
-      '<div class="item-sub">' + (hasLink ? 'PDF prêt • Lecture nette' : 'Emplacement ' + (i + 1) + '/' + lessons.length + ' (lien à coller)') + '</div></div>' +
+      '<div><div class="item-title">' + escapeHtml(l.titre) + ' ' + (isOffline ? '<span class="offline-badge"><i class="fa-solid fa-check"></i> Hors ligne</span>' : '') + '</div>' +
+      '<div class="item-sub">' + (hasLink ? (isOffline ? 'Stocké dans l\'application (lecture hors ligne)' : 'PDF prêt • Lecture nette') : 'Emplacement ' + (i + 1) + '/' + lessons.length + ' (lien à coller)') + '</div></div>' +
       '</div>' +
-      (hasLink ? '<button class="action-btn" onclick="openPdfLesson(\'' + ueKey + '\', ' + i + ')">Lire</button>' : '') +
+      (hasLink ? (
+        '<div class="item-actions">' +
+        '<button class="action-btn" onclick="openPdfLesson(\'' + ueKey + '\', ' + i + ')">Lire</button>' +
+        (isOffline
+          ? '<button class="dl-btn saved" id="dl-btn-pdf-' + ueKey + '-' + i + '" onclick="removeOfflineMedia(\'pdf\', \'' + ueKey + '\', ' + i + ')"><i class="fa-solid fa-trash"></i> Retirer</button>'
+          : '<button class="dl-btn" id="dl-btn-pdf-' + ueKey + '-' + i + '" onclick="downloadMediaForOffline(\'pdf\', \'' + ueKey + '\', ' + i + ')"><i class="fa-solid fa-download"></i> Hors ligne</button>') +
+        '</div>'
+      ) : '') +
       '</div>';
   }
   listEl.innerHTML = html;
@@ -1494,13 +1543,22 @@ function openVideosUe(ueKey) {
   for (var i = 0; i < vids.length; i++) {
     var v = vids[i];
     var hasLink = v.lien && v.lien.trim() !== "";
+    var mediaId = getMediaStorageId("video", ueKey, i, v.lien);
+    var isOffline = hasLink && isMediaStoredLocally(mediaId);
     html += '<div class="item-card">' +
       '<div class="item-main" onclick="openVideoLesson(\'' + ueKey + '\', ' + i + ')">' +
       '<i class="fa-solid fa-circle-play" style="color:' + (hasLink ? '#38bdf8' : '#64748b') + '; font-size:1.2rem;"></i>' +
-      '<div><div class="item-title">' + escapeHtml(v.titre) + '</div>' +
-      '<div class="item-sub">' + (hasLink ? 'Vidéo prête' : 'Emplacement ' + (i + 1) + '/' + vids.length + ' (lien à coller)') + '</div></div>' +
+      '<div><div class="item-title">' + escapeHtml(v.titre) + ' ' + (isOffline ? '<span class="offline-badge"><i class="fa-solid fa-check"></i> Hors ligne</span>' : '') + '</div>' +
+      '<div class="item-sub">' + (hasLink ? (isOffline ? 'Stockée dans l\'application (lecture hors ligne)' : 'Vidéo prête') : 'Emplacement ' + (i + 1) + '/' + vids.length + ' (lien à coller)') + '</div></div>' +
       '</div>' +
-      (hasLink ? '<button class="action-btn" onclick="openVideoLesson(\'' + ueKey + '\', ' + i + ')">Lire</button>' : '') +
+      (hasLink ? (
+        '<div class="item-actions">' +
+        '<button class="action-btn" onclick="openVideoLesson(\'' + ueKey + '\', ' + i + ')">Lire</button>' +
+        (isOffline
+          ? '<button class="dl-btn saved" id="dl-btn-video-' + ueKey + '-' + i + '" onclick="removeOfflineMedia(\'video\', \'' + ueKey + '\', ' + i + ')"><i class="fa-solid fa-trash"></i> Retirer</button>'
+          : '<button class="dl-btn" id="dl-btn-video-' + ueKey + '-' + i + '" onclick="downloadMediaForOffline(\'video\', \'' + ueKey + '\', ' + i + ')"><i class="fa-solid fa-download"></i> Hors ligne</button>') +
+        '</div>'
+      ) : '') +
       '</div>';
   }
   listEl.innerHTML = html;
@@ -1625,6 +1683,252 @@ function applyWatermarkNodes(containerId, itemClass, count) {
 }
 
 /* =========================================================================
+   STOCKAGE INTERNE HORS LIGNE (INDEXEDDB - RESTE DANS L'APPLICATION)
+   Les fichiers téléchargés sont conservés dans la base locale de l'application
+   et ne sont pas exportés vers la galerie ou le dossier Téléchargements public.
+========================================================================= */
+var OFFLINE_DB_NAME = "MedX_App_Offline_Vault";
+var OFFLINE_STORE_NAME = "media_blobs";
+var OFFLINE_INDEX_KEY = "MedX_Offline_Index_v1";
+var offlineDbInstance = null;
+var offlineIndexMap = {};
+var activeObjectUrls = [];
+
+function loadOfflineIndex() {
+  try {
+    var raw = safeGet(OFFLINE_INDEX_KEY);
+    if (raw) {
+      var parsed = JSON.parse(raw);
+      if (parsed && typeof parsed === "object") offlineIndexMap = parsed;
+    }
+  } catch (e) {}
+}
+
+function saveOfflineIndex() {
+  try {
+    safeSet(OFFLINE_INDEX_KEY, JSON.stringify(offlineIndexMap));
+  } catch (e) {}
+}
+
+function getMediaStorageId(kind, ueKey, idx, url) {
+  var cleanUrl = String(url || "").trim();
+  var h = 2166136261;
+  var raw = kind + "|" + ueKey + "|" + idx + "|" + cleanUrl;
+  for (var i = 0; i < raw.length; i++) {
+    h ^= raw.charCodeAt(i);
+    h = (h * 16777619) >>> 0;
+  }
+  return kind + "_" + ueKey + "_" + idx + "_" + h.toString(16);
+}
+
+function isMediaStoredLocally(mediaId) {
+  return Boolean(mediaId && offlineIndexMap && offlineIndexMap[mediaId]);
+}
+
+function openOfflineDb(callback) {
+  if (offlineDbInstance) {
+    callback(null, offlineDbInstance);
+    return;
+  }
+  if (!window.indexedDB) {
+    callback(new Error("IndexedDB indisponible sur cet appareil."), null);
+    return;
+  }
+  try {
+    var req = window.indexedDB.open(OFFLINE_DB_NAME, 1);
+    req.onupgradeneeded = function (event) {
+      var db = event.target.result;
+      if (!db.objectStoreNames.contains(OFFLINE_STORE_NAME)) {
+        db.createObjectStore(OFFLINE_STORE_NAME, { keyPath: "id" });
+      }
+    };
+    req.onsuccess = function (event) {
+      offlineDbInstance = event.target.result;
+      callback(null, offlineDbInstance);
+    };
+    req.onerror = function () {
+      callback(req.error || new Error("Erreur ouverture base locale."), null);
+    };
+  } catch (e) {
+    callback(e, null);
+  }
+}
+
+function putMediaBlobInApp(mediaId, blob, metaObj, callback) {
+  openOfflineDb(function (err, db) {
+    if (err || !db) {
+      callback(err || new Error("Base locale indisponible."));
+      return;
+    }
+    try {
+      var tx = db.transaction([OFFLINE_STORE_NAME], "readwrite");
+      var store = tx.objectStore(OFFLINE_STORE_NAME);
+      store.put({
+        id: mediaId,
+        blob: blob,
+        mime: blob.type || metaObj.mime || "",
+        savedAt: Date.now(),
+        title: metaObj.title || ""
+      });
+      tx.oncomplete = function () {
+        offlineIndexMap[mediaId] = {
+          savedAt: Date.now(),
+          mime: blob.type || metaObj.mime || "",
+          title: metaObj.title || ""
+        };
+        saveOfflineIndex();
+        callback(null);
+      };
+      tx.onerror = function () {
+        callback(tx.error || new Error("Échec de sauvegarde interne."));
+      };
+    } catch (e) {
+      callback(e);
+    }
+  });
+}
+
+function getMediaBlobFromApp(mediaId, callback) {
+  openOfflineDb(function (err, db) {
+    if (err || !db) {
+      callback(err || new Error("Base locale indisponible."), null);
+      return;
+    }
+    try {
+      var tx = db.transaction([OFFLINE_STORE_NAME], "readonly");
+      var store = tx.objectStore(OFFLINE_STORE_NAME);
+      var req = store.get(mediaId);
+      req.onsuccess = function () {
+        var rec = req.result;
+        if (rec && rec.blob) {
+          callback(null, rec.blob);
+        } else {
+          callback(null, null);
+        }
+      };
+      req.onerror = function () {
+        callback(req.error || new Error("Erreur lecture base locale."), null);
+      };
+    } catch (e) {
+      callback(e, null);
+    }
+  });
+}
+
+function deleteMediaBlobFromApp(mediaId, callback) {
+  openOfflineDb(function (err, db) {
+    if (err || !db) {
+      if (offlineIndexMap[mediaId]) {
+        delete offlineIndexMap[mediaId];
+        saveOfflineIndex();
+      }
+      callback(null);
+      return;
+    }
+    try {
+      var tx = db.transaction([OFFLINE_STORE_NAME], "readwrite");
+      var store = tx.objectStore(OFFLINE_STORE_NAME);
+      store["delete"](mediaId);
+      tx.oncomplete = function () {
+        if (offlineIndexMap[mediaId]) {
+          delete offlineIndexMap[mediaId];
+          saveOfflineIndex();
+        }
+        callback(null);
+      };
+      tx.onerror = function () {
+        callback(tx.error || new Error("Erreur suppression locale."));
+      };
+    } catch (e) {
+      callback(e);
+    }
+  });
+}
+
+function trackObjectUrl(url) {
+  if (url) activeObjectUrls.push(url);
+  return url;
+}
+
+function revokeTrackedObjectUrls() {
+  for (var i = 0; i < activeObjectUrls.length; i++) {
+    try { URL.revokeObjectURL(activeObjectUrls[i]); } catch (e) {}
+  }
+  activeObjectUrls = [];
+}
+
+function canDirectFetchMedia(url) {
+  if (!url) return false;
+  if (/youtu\.be|youtube\.com/i.test(url)) return false;
+  return true;
+}
+
+function downloadMediaForOffline(kind, ueKey, idx) {
+  var item = kind === "pdf" ? (CATALOGUE_COURS[ueKey] || [])[idx] : (CATALOGUE_VIDEOS[ueKey] || [])[idx];
+  if (!item || !item.lien || item.lien.trim() === "") {
+    alert("Aucun lien disponible pour ce contenu.");
+    return;
+  }
+  var rawUrl = item.lien.trim();
+  var resolvedUrl = kind === "pdf" ? normalizePdfUrl(rawUrl) : rawUrl;
+  var mediaId = getMediaStorageId(kind, ueKey, idx, rawUrl);
+  var btn = document.getElementById("dl-btn-" + kind + "-" + ueKey + "-" + idx);
+
+  if (!canDirectFetchMedia(resolvedUrl)) {
+    alert("Les vidéos YouTube ne peuvent pas être enregistrées dans le stockage interne hors ligne. Utilisez un lien direct PDF ou MP4/WebM.");
+    return;
+  }
+
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Stockage...';
+  }
+
+  fetch(resolvedUrl, { credentials: "same-origin" })
+    .then(function (resp) {
+      if (!resp.ok) throw new Error("HTTP " + resp.status);
+      return resp.blob();
+    })
+    .then(function (blob) {
+      if (!blob || blob.size === 0) throw new Error("Fichier vide");
+      var forcedBlob = blob;
+      if (kind === "pdf" && (!blob.type || blob.type === "application/octet-stream")) {
+        forcedBlob = new Blob([blob], { type: "application/pdf" });
+      }
+      putMediaBlobInApp(mediaId, forcedBlob, {
+        title: item.titre,
+        mime: forcedBlob.type
+      }, function (saveErr) {
+        if (saveErr) {
+          alert("Impossible de stocker le fichier dans l'application : " + (saveErr.message || "espace insuffisant"));
+          if (kind === "pdf") openCoursUe(ueKey);
+          else openVideosUe(ueKey);
+          return;
+        }
+        if (kind === "pdf") openCoursUe(ueKey);
+        else openVideosUe(ueKey);
+      });
+    })
+    ["catch"](function () {
+      alert("Téléchargement vers l'application impossible (vérifiez la connexion ou les droits d'accès du lien).");
+      if (kind === "pdf") openCoursUe(ueKey);
+      else openVideosUe(ueKey);
+    });
+}
+
+function removeOfflineMedia(kind, ueKey, idx) {
+  var item = kind === "pdf" ? (CATALOGUE_COURS[ueKey] || [])[idx] : (CATALOGUE_VIDEOS[ueKey] || [])[idx];
+  var rawUrl = item && item.lien ? item.lien.trim() : "";
+  var mediaId = getMediaStorageId(kind, ueKey, idx, rawUrl);
+  deleteMediaBlobFromApp(mediaId, function () {
+    if (kind === "pdf") openCoursUe(ueKey);
+    else openVideosUe(ueKey);
+  });
+}
+
+loadOfflineIndex();
+
+/* =========================================================================
    LECTEUR PDF HAUTE NETTETÉ (DPR SCALING + AJUSTEMENT LARGEUR + ZOOM)
 ========================================================================= */
 var pdfDoc = null;
@@ -1669,19 +1973,27 @@ function openPdfLesson(ueKey, idx) {
     window.pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js";
   }
 
-  window.pdfjsLib.getDocument({
-    url: resolvedUrl,
-    withCredentials: false,
-    disableAutoFetch: false,
-    disableStream: false
-  }).promise.then(function (doc) {
-    pdfDoc = doc;
-    document.getElementById("pdf-loading").style.display = "none";
-    document.getElementById("canvas-wrapper").style.display = "block";
-    fitPdfToWidth();
-  })["catch"](function () {
-    document.getElementById("pdf-loading").style.display = "none";
-    document.getElementById("fallback-box").style.display = "block";
+  var pdfMediaId = getMediaStorageId("pdf", ueKey, idx, rawUrl);
+  getMediaBlobFromApp(pdfMediaId, function (dbErr, cachedBlob) {
+    var docSource = resolvedUrl;
+    if (!dbErr && cachedBlob) {
+      revokeTrackedObjectUrls();
+      docSource = trackObjectUrl(URL.createObjectURL(cachedBlob));
+    }
+    window.pdfjsLib.getDocument({
+      url: docSource,
+      withCredentials: false,
+      disableAutoFetch: false,
+      disableStream: false
+    }).promise.then(function (doc) {
+      pdfDoc = doc;
+      document.getElementById("pdf-loading").style.display = "none";
+      document.getElementById("canvas-wrapper").style.display = "block";
+      fitPdfToWidth();
+    })["catch"](function () {
+      document.getElementById("pdf-loading").style.display = "none";
+      document.getElementById("fallback-box").style.display = "block";
+    });
   });
 }
 
@@ -1750,6 +2062,7 @@ function closePdfViewer() {
   if (activeRenderTask && activeRenderTask.cancel) {
     try { activeRenderTask.cancel(); } catch (e) {}
   }
+  revokeTrackedObjectUrls();
   document.getElementById("pdf-viewer-modal").classList.remove("active");
   pdfDoc = null;
 }
@@ -1766,23 +2079,31 @@ function openVideoLesson(ueKey, idx) {
     return;
   }
   var rawUrl = vid.lien.trim();
+  var vidMediaId = getMediaStorageId("video", ueKey, idx, rawUrl);
   applyWatermarkNodes("video-watermark-layer", "video-watermark-item", 6);
   document.getElementById("video-viewer-title").innerText = vid.titre;
   document.getElementById("video-external-link").href = rawUrl;
   var container = document.getElementById("video-player-container");
   var ytId = extractYoutubeId(rawUrl);
 
-  if (ytId) {
-    container.innerHTML = '<iframe src="https://www.youtube.com/embed/' + ytId + '" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
-  } else if (/\.(mp4|webm|ogg)(\?.*)?$/i.test(rawUrl)) {
-    container.innerHTML = '<video src="' + escapeHtml(rawUrl) + '" controls autoplay playsinline controlsList="nodownload"></video>';
-  } else {
-    container.innerHTML = '<iframe src="' + escapeHtml(rawUrl) + '" allowfullscreen></iframe>';
-  }
-  document.getElementById("video-viewer-modal").classList.add("active");
+  getMediaBlobFromApp(vidMediaId, function (dbErr, cachedBlob) {
+    if (!dbErr && cachedBlob) {
+      revokeTrackedObjectUrls();
+      var localUrl = trackObjectUrl(URL.createObjectURL(cachedBlob));
+      container.innerHTML = '<video src="' + escapeHtml(localUrl) + '" controls autoplay playsinline controlsList="nodownload noplaybackrate" disablePictureInPicture></video>';
+    } else if (ytId) {
+      container.innerHTML = '<iframe src="https://www.youtube.com/embed/' + ytId + '" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+    } else if (/\.(mp4|webm|ogg)(\?.*)?$/i.test(rawUrl)) {
+      container.innerHTML = '<video src="' + escapeHtml(rawUrl) + '" controls autoplay playsinline controlsList="nodownload noplaybackrate" disablePictureInPicture></video>';
+    } else {
+      container.innerHTML = '<iframe src="' + escapeHtml(rawUrl) + '" allowfullscreen></iframe>';
+    }
+    document.getElementById("video-viewer-modal").classList.add("active");
+  });
 }
 
 function closeVideoViewer() {
+  revokeTrackedObjectUrls();
   document.getElementById("video-viewer-modal").classList.remove("active");
   var container = document.getElementById("video-player-container");
   if (container) container.innerHTML = "";
