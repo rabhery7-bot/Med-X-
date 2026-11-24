@@ -712,7 +712,7 @@
       <!-- HOME -->
       <section id="sec-home" class="view-section active">
         <div class="welcome-card">
-          <h2>Bonjour, Dr RABIBISOA ! 👋</h2>
+          <h2>Bonjour, Étudiant (e)! </h2>
           <p>Accédez aux 20 leçons par UE, aux 20 vidéos par UE, aux QCM, au classement des 50 étudiants et à la section À propos.</p>
         </div>
 
@@ -793,7 +793,7 @@
         <div class="info-card">
           <p class="info-line"><strong>Application :</strong> MedX — Révisions & Concours de Santé</p>
           <p class="info-line"><strong>Mise à jour automatique :</strong> Active (empreinte automatique du contenu <span id="about-build-hash">—</span>)</p>
-          <p class="info-line"><strong>Auteur :</strong> Dr RABIBISOA Herilala Nantenaina Pierre</p>
+          <p class="info-line"><strong>Auteur :</strong> Investissez dans une valeur, choisissez Med X pour assurer votre avenir</p>
           <p class="info-line"><strong>Contact :</strong> 0342002623 • rabherilala@gmail.com</p>
           <p class="info-line"><strong>Compatibilité :</strong> Android 8, 9, 10, 11, 12, 13, 14+, WebView Android et toutes tailles d'écran.</p>
           <button class="btn-primary" style="margin-top:8px;" onclick="switchTab('home')">Retour à Home</button>
@@ -925,10 +925,10 @@
        ========================================================================= */
     var CATALOGUE_COURS = {
       anatomie: [
-        { titre: "Leçon 1 : Anatomie", lien: "" },
-        { titre: "Leçon 2 : Anatomie", lien: "" },
-        { titre: "Leçon 3 : Anatomie", lien: "" },
-        { titre: "Leçon 4 : Anatomie", lien: "" },
+        { titre: "Leçon 1 : Anatomie des nerfs", lien: "assets/anatomie/anat de nerf paces.pdf" },
+        { titre: "Leçon 2 : Anatomie de l’estomac", lien: "assets/anatomie/02 ESTOMAC.pdf" },
+        { titre: "Leçon 3 : Anatomie de l’oesophage", lien: "assets/anatomie/01 ŒSOPHAGE.pdf" },
+        { titre: "Leçon 4 : Anatomie", lien: "assets/anatomie/Anatomie de la rate.pdf" },
         { titre: "Leçon 5 : Anatomie", lien: "" },
         { titre: "Leçon 6 : Anatomie", lien: "" },
         { titre: "Leçon 7 : Anatomie", lien: "" },
@@ -1321,6 +1321,12 @@
           correctIndex: 0,
           explanation: "Le nerf mandibulaire (V3) traverse le foramen ovale."
         }
+        {
+          question: "Où se trouve le foie ?",
+          options: ["Dans l'hypochondre gauche", "Dans l'hypochondre droite", "Dans la zone pelvienne", "Dans la cage thoracique"],
+          correctIndex: 0,
+          explanation: "Le foie se trouve dans l'hypochondre droite."
+        }
         // Place pour ajout de nouveaux QCM d'Anatomie ici...
       ],
       biomolecules: [
@@ -1443,7 +1449,8 @@
       { name: "Ratsimandresy U.", notes: { anatomie: 8.5, biomolecules: 8.5, icm: 8.5, physiologie: 9, biomath: 8.5, francais: 8.5, biocell: 8.5, uespecifique: 8.5 } },
       { name: "Andriambelo V.", notes: { anatomie: 8.5, biomolecules: 8.5, icm: 8.5, physiologie: 8.5, biomath: 8, francais: 8.5, biocell: 8.5, uespecifique: 8.5 } },
       { name: "Rakotoarivelo W.", notes: { anatomie: 8.5, biomolecules: 8.5, icm: 8, physiologie: 8.5, biomath: 8, francais: 8.5, biocell: 8, uespecifique: 8 } },
-      { name: "Randriamahefa X.", notes: { anatomie: 8, biomolecules: 8, icm: 8, physiologie: 8.5, biomath: 8, francais: 8, biocell: 8, uespecifique: 8 } }
+      { name: "Randriamahefa X.", notes: { anatomie: 8, biomolecules: 8, icm: 8, physiologie: 8.5, biomath: 8, francais: 8, biocell: 8, uespecifique: 8 } },
+      { name: "Rabarisoa T.", notes: { anatomie: 7, biomolecules: 7, icm: 6, physiologie: 8, biomath: 8, francais: 8, biocell: 8, uespecifique: 8 } }
       // =========================================================================
       // PLACE POUR L'AJOUT D'UN NOUVEAU ÉTUDIANT ET SES NOTES /20 :
       // ,{ name: "Nom Prénom", notes: { anatomie: 15, biomolecules: 14, icm: 13, physiologie: 15, biomath: 14, francais: 15, biocell: 14, uespecifique: 14 } }
