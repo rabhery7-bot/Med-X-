@@ -672,12 +672,12 @@ main {
     <section id="sec-home" class="view-section active">
       <div class="welcome-card">
         <h2>Bonjour, Étudiant(e) !</h2>
-        <p>Accédez aux 20 leçons par UE, aux 20 vidéos par UE, aux QCM, au classement des 50 étudiants et à la section À propos.</p>
+        <p>Accédez aux 20 leçons par UE, aux 20 vidéos par UE, aux QCM, au classement des étudiants et à la section À propos.</p>
       </div>
       <div class="stats-grid">
         <div class="stat-box">
           <i class="fa-solid fa-book-open"></i>
-          <h3>8 UE • 20 Leçons</h3>
+          <h3>8 UE · 20 Leçons</h3>
           <span>Cours & Vidéos par UE</span>
         </div>
         <div class="stat-box">
@@ -688,7 +688,7 @@ main {
       </div>
       <button class="btn-primary" onclick="switchTab('cours')">Accéder aux Cours (20/UE)</button>
       <button class="btn-secondary" onclick="switchTab('videos')"><i class="fa-solid fa-circle-play"></i> Voir les Vidéos (20/UE)</button>
-      <button class="btn-secondary" onclick="switchTab('classement')"><i class="fa-solid fa-trophy"></i> Classement (50 Étudiants)</button>
+      <button class="btn-secondary" onclick="switchTab('classement')"><i class="fa-solid fa-trophy"></i> Classement (Étudiants)</button>
       <button class="btn-secondary" onclick="switchTab('apropos')"><i class="fa-solid fa-circle-info"></i> À propos</button>
     </section>
 
@@ -735,7 +735,7 @@ main {
       </div>
     </section>
 
-    <!-- CLASSEMENT (50 ÉTUDIANTS NOTES PAR UE /20 + MOYENNE GÉNÉRALE) -->
+    <!-- CLASSEMENT (ÉTUDIANTS NOTES PAR UE /20 + MOYENNE GÉNÉRALE) -->
     <section id="sec-classement" class="view-section">
       <h2 class="section-title">Classement & Notes (/20)</h2>
       <div id="leaderboard-container"></div>
@@ -748,7 +748,7 @@ main {
         <p class="info-line"><strong>Application :</strong> MedX - Révisions & Concours de Santé</p>
         <p class="info-line"><strong>Mise à jour automatique :</strong> Active (empreinte automatique du contenu <span id="about-build-hash">-</span>)</p>
         <p class="info-line"><strong>Auteur :</strong> Investissez dans une valeur, choisissez Med X pour assurer votre avenir</p>
-        <p class="info-line"><strong>Contact :</strong> 0342002623 • rabherilala@gmail.com</p>
+        <p class="info-line"><strong>Contact :</strong> 0342002623 · rabherilala@gmail.com</p>
         <p class="info-line"><strong>Compatibilité :</strong> Android 8, 9, 10, 11, 12, 13, 14+, WebView Android et toutes tailles d'écran.</p>
         <button class="btn-primary" style="margin-top:8px;" onclick="switchTab('home')">Retour à Home</button>
       </div>
@@ -778,7 +778,7 @@ main {
       <div class="fallback-box" id="fallback-box">
         <p>Ce lien nécessite une ouverture directe ou un téléchargement dans votre navigateur Android :</p>
         <a id="fallback-external-link" href="#" target="_blank" rel="noopener noreferrer" class="fallback-link-btn">
-          Ouvrir le PDF directement
+          Ouvrir le document directement
         </a>
       </div>
     </div>
@@ -816,9 +816,9 @@ main {
 </div>
 
 <!-- =========================================================================
-EMPLACEMENT DÉDIÉ : COLLER ICI VOTRE CODE / LIEN WEBVIEW & COMPATIBILITÉ ANDROID
-Exemple : <script src="webview-compat.js"></script>
-========================================================================= -->
+     EMPLACEMENT DÉDIÉ : COLLER ICI VOTRE CODE / LIEN WEBVIEW & COMPATIBILITÉ ANDROID
+     Exemple: <script src="webview-compat.js"></script>
+     ========================================================================= -->
 
 <script>
 /* Garde de compatibilité Android 8+ (WebView Chromium 61+) */
@@ -874,15 +874,15 @@ var UE_META = [
 /* =========================================================================
    1. COURS PAR UE (20 LEÇONS PAR UE)
    Changez simplement "titre" et collez "lien" dans chaque leçon.
-========================================================================= */
+   ========================================================================= */
 var CATALOGUE_COURS = {
   anatomie: [
-    { titre: "Leçon 1: Anatomie des nerfs", lien: "assets/anatomie/anat de nerf paces.pdf" },
-    { titre: "Leçon 2: Anatomie de l'estomac", lien: "assets/anatomie/02 ESTOMAC.pdf" },
+    { titre: "Leçon 1: Généralité de L'anatomie", lien: "assets/anatomie/ANATOMIE GENERALE -1.pptx" },
+    { titre: "Leçon 2: Anatomie des nerfs", lien: "assets/anatomie/anat de nerf paces.pdf" },
     { titre: "Leçon 3: Anatomie de l'oesophage", lien: "assets/anatomie/01 ESOPHAGE.pdf" },
-    { titre: "Leçon 4: Anatomie de la rate", lien: "assets/anatomie/Anatomie de la rate.pdf" },
-    { titre: "Leçon 5: Anatomie", lien: "" },
-    { titre: "Leçon 6: Anatomie", lien: "" },
+    { titre: "Leçon 4: Anatomie de l'estomac", lien: "assets/anatomie/02 ESTOMAC.pdf" },
+    { titre: "Leçon 5: Anatomie de la rate", lien: "assets/anatomie/Anatomie de la rate.pdf" },
+    { titre: "Leçon 6: Anatomie du duodénum", lien: "assets/anatomie/07 DUODENUM (BLOC DUODENO-PANCREAS).pdf" },
     { titre: "Leçon 7: Anatomie", lien: "" },
     { titre: "Leçon 8: Anatomie", lien: "" },
     { titre: "Leçon 9: Anatomie", lien: "" },
@@ -898,12 +898,12 @@ var CATALOGUE_COURS = {
     { titre: "Leçon 19: Anatomie", lien: "" },
     { titre: "Leçon 20: Anatomie", lien: "" }
     // Place pour ajout de nouveaux cours d'Anatomie :
-    // { titre: "Leçon 21: ...", lien: "https://..." }
+    // ,{ titre: "Leçon 21: ...", lien: "https://..." }
   ],
   biomolecules: [
-    { titre: "Leçon 1: Biomolécules", lien: "" },
-    { titre: "Leçon 2: Biomolécules", lien: "" },
-    { titre: "Leçon 3: Biomolécules", lien: "" },
+    { titre: "Leçon 1: Chimie Dr Dina", lien: "assets/anatomie/sfb/Cours chimie PACES.pdf" },
+    { titre: "Leçon 2: acides nucléiques Pr Doll", lien: "assets/anatomie/sfb/Acide-nucleique-Pr-Doll-Rakoto.pdf" },
+    { titre: "Leçon 3: Lipides Pr Doll", lien: "assets/anatomie/sfb/Lipides Pr Doll Rakoto.pdf" },
     { titre: "Leçon 4: Biomolécules", lien: "" },
     { titre: "Leçon 5: Biomolécules", lien: "" },
     { titre: "Leçon 6: Biomolécules", lien: "" },
@@ -947,13 +947,13 @@ var CATALOGUE_COURS = {
     // Place pour ajout de nouveaux cours d'ICM
   ],
   physiologie: [
-    { titre: "Leçon 1: Physiologie", lien: "" },
-    { titre: "Leçon 2: Physiologie", lien: "" },
+    { titre: "Leçon 1: Généralité Physiologie digestif", lien: "assets/anatomie/phyysiologie/digestive/Gnralits.pptx" },
+    { titre: "Leçon 2: Physiologie (étape buccale)", lien: "assets/anatomie/phyysiologie/digestive/Etape_buccaleCORR.ppt" },
     { titre: "Leçon 3: Physiologie", lien: "" },
-    { titre: "Leçon 4: Physiologie", lien: "" },
-    { titre: "Leçon 5: Physiologie", lien: "" },
-    { titre: "Leçon 6: Physiologie", lien: "" },
-    { titre: "Leçon 7: Physiologie", lien: "" },
+    { titre: "Leçon 4: Physiologie digestif (étapes gastrique)", lien: "assets/anatomie/phyysiologie/digestive/Etapegastrique.pptx" },
+    { titre: "Leçon 5: Physiologie digestif (Étape intestinale)", lien: "assets/anatomie/phyysiologie/digestive/Etapeintestinale.ppt" },
+    { titre: "Leçon 6: Physiologie digestif (étapes colique)", lien: "assets/anatomie/phyysiologie/digestive/Etapecolique.pptx" },
+    { titre: "Leçon 7: Physiologie cardiaque", lien: "assets/anatomie/phyysiologie/circulatoire/PHYSIOLOGIE CARDIO-CIRCULATOIRE-1paces.pdf" },
     { titre: "Leçon 8: Physiologie", lien: "" },
     { titre: "Leçon 9: Physiologie", lien: "" },
     { titre: "Leçon 10: Physiologie", lien: "" },
@@ -1016,7 +1016,7 @@ var CATALOGUE_COURS = {
     // Place pour ajout de nouveaux cours de Français Médical
   ],
   biocell: [
-    { titre: "Leçon 1: Biocell(boky) Pr Rakotroka", lien: "assets/anatomie/biocell et tissu/BIOCELL.pdf" },
+    { titre: "Leçon 1: Biocell & Tissu", lien: "" },
     { titre: "Leçon 2: Biocell & Tissu", lien: "" },
     { titre: "Leçon 3: Biocell & Tissu", lien: "" },
     { titre: "Leçon 4: Biocell & Tissu", lien: "" },
@@ -1066,7 +1066,7 @@ var CATALOGUE_COURS = {
 /* =========================================================================
    2. VIDÉOS PAR UE (20 VIDÉOS PAR UE)
    Changez simplement "titre" et collez "lien" dans chaque vidéo.
-========================================================================= */
+   ========================================================================= */
 var CATALOGUE_VIDEOS = {
   anatomie: [
     { titre: "Vidéo 1: Anatomie", lien: "" },
@@ -1090,7 +1090,7 @@ var CATALOGUE_VIDEOS = {
     { titre: "Vidéo 19: Anatomie", lien: "" },
     { titre: "Vidéo 20: Anatomie", lien: "" }
     // Place pour ajout de nouvelles vidéos d'Anatomie :
-    // { titre: "Vidéo 21: ...", lien: "https://..." }
+    // ,{ titre: "Vidéo 21: ...", lien: "https://..." }
   ],
   biomolecules: [
     { titre: "Vidéo 1: Biomolécules", lien: "" },
@@ -1261,10 +1261,10 @@ var CATALOGUE_VIDEOS = {
    {
      question: "Votre question ?",
      options: ["Choix A", "Choix B", "Choix C", "Choix D"],
-     correctIndex: 0, // 0=A, 1=B, 2=C, 3=D
+     correctIndex: 0, // 0 = A, 1 = B, 2 = C, 3 = D
      explanation: "Explication de la réponse."
    }
-========================================================================= */
+   ========================================================================= */
 var QCM_PAR_UE = {
   anatomie: [
     {
@@ -1311,9 +1311,9 @@ var QCM_PAR_UE = {
   biomath: [
     {
       question: "Que mesure la sensibilité d'un test diagnostique ?",
-      options: ["P(T+ | M+)", "P(T- | M-)", "La prévalence", "La VPN"],
+      options: ["P(T+|M+)", "P(T-|M-)", "La prévalence", "La VPN"],
       correctIndex: 0,
-      explanation: "La sensibilité correspond à la probabilité P(T+ | M+)."
+      explanation: "La sensibilité correspond à la probabilité P(T+|M+)."
     }
     // Place pour ajout de nouveaux QCM de Biomath ici...
   ],
@@ -1332,6 +1332,126 @@ var QCM_PAR_UE = {
       options: ["Appareil de Golgi", "Lysosome", "Mitochondrie", "Peroxysome"],
       correctIndex: 2,
       explanation: "La mitochondrie produit l'ATP."
+    },
+    {
+      question: "Quel est le rôle principal de la fixation en microscopie optique ?",
+      options: ["Rendre les tissus transparents", "Conserver la structure cellulaire et rendre les tissus perméables", "Colorer spécifiquement les noyaux", "Durcir les tissus pour la coupe"],
+      correctIndex: 1,
+      explanation: "La fixation a pour but de conserver les structures cellulaires et tissulaires en les stabilisant, tout en rendant les tissus perméables aux colorants."
+    },
+    {
+      question: "Quelle technique permet de séparer les organites cellulaires selon leur taille et leur densité ?",
+      options: ["La cryofracture", "La centrifugation différentielle", "L'hybridation in situ", "La culture cellulaire"],
+      correctIndex: 1,
+      explanation: "La centrifugation différentielle est la méthode de référence pour le fractionnement cellulaire, permettant d'isoler les organites en fonction de leur coefficient de sédimentation."
+    },
+    {
+      question: "Concernant la membrane plasmique, quel modèle est actuellement accepté ?",
+      options: ["Le modèle de la membrane unitaire", "Le modèle de la mosaïque fluide", "Le modèle du sandwich protéique", "Le modèle lipidique rigide"],
+      correctIndex: 1,
+      explanation: "Le modèle de la mosaïque fluide décrit la membrane comme une double couche lipidique dans laquelle les protéines sont insérées et peuvent se déplacer latéralement."
+    },
+    {
+      question: "Quel est le principal rôle du réticulum endoplasmique rugueux (RER) ?",
+      options: ["La synthèse des lipides", "La détoxification cellulaire", "La synthèse des protéines destinées à la sécrétion", "Le stockage du calcium"],
+      correctIndex: 2,
+      explanation: "Le RER, parsemé de ribosomes, est le lieu de synthèse des protéines membranaires et des protéines sécrétées."
+    },
+    {
+      question: "Quelle est la fonction de l'appareil de Golgi ?",
+      options: ["La production d'ATP", "La maturation et le tri des protéines", "La réplication de l'ADN", "La digestion intracellulaire"],
+      correctIndex: 1,
+      explanation: "L'appareil de Golgi reçoit les protéines du RER, les modifie (glycosylation) et les trie vers leur destination finale (sécrétion, membrane, lysosome)."
+    },
+    {
+      question: "Quel organite est considéré comme la « centrale énergétique » de la cellule ?",
+      options: ["Le lysosome", "Le peroxysome", "La mitochondrie", "Le protéasome"],
+      correctIndex: 2,
+      explanation: "La mitochondrie produit l'ATP nécessaire au fonctionnement cellulaire via la respiration cellulaire."
+    },
+    {
+      question: "Quelle est la caractéristique principale de la membrane nucléaire ?",
+      options: ["Elle est continue et imperméable", "Elle est double et percée de pores nucléaires", "Elle est simple et rigide", "Elle est absente chez les eucaryotes"],
+      correctIndex: 1,
+      explanation: "L'enveloppe nucléaire est constituée de deux membranes concentriques fusionnées au niveau des pores nucléaires, permettant les échanges entre noyau et cytoplasme."
+    },
+    {
+      question: "Lors de la mitose, à quelle phase les chromosomes s'alignent-ils sur la plaque équatoriale ?",
+      options: ["Prophase", "Métaphase", "Anaphase", "Télophase"],
+      correctIndex: 1,
+      explanation: "La métaphase est caractérisée par l'alignement des chromosomes sur le plan équatorial de la cellule."
+    },
+    {
+      question: "Quel est le rôle des lysosomes ?",
+      options: ["Synthétiser les protéines", "Digérer les macromolécules et les organites usés", "Produire de l'énergie", "Stocker les lipides"],
+      correctIndex: 1,
+      explanation: "Les lysosomes contiennent des enzymes hydrolytiques qui dégradent les substances ingérées par endocytose ou les organites cellulaires endommagés (autophagie)."
+    },
+    {
+      question: "Parmi ces tissus, lequel est caractérisé par des cellules jointives reposant sur une lame basale ?",
+      options: ["Le tissu conjonctif", "Le tissu épithélial", "Le tissu musculaire", "Le tissu nerveux"],
+      correctIndex: 1,
+      explanation: "Le tissu épithélial est formé de cellules étroitement juxtaposées, solidarisées par des jonctions, et repose toujours sur une lame basale."
+    },
+    {
+      question: "Quel type d'épithélium tapisse les alvéoles pulmonaires ?",
+      options: ["Épithélium cubique simple", "Épithélium pavimenteux simple", "Épithélium prismatique stratifié", "Épithélium de transition"],
+      correctIndex: 1,
+      explanation: "Les alvéoles pulmonaires sont tapissés d'un épithélium pavimenteux simple (très fin) pour permettre les échanges gazeux."
+    },
+    {
+      question: "Quelle est la caractéristique des glandes exocrines ?",
+      options: ["Elles déversent leur sécrétion dans le sang", "Elles sont toujours unicellulaires", "Elles déversent leur sécrétion à la surface via un canal", "Elles n'ont pas de rôle de sécrétion"],
+      correctIndex: 2,
+      explanation: "Les glandes exocrines conservent un canal excréteur qui déverse la sécrétion à la surface de l'épithélium ou dans une cavité communicante avec l'extérieur."
+    },
+    {
+      question: "Quelle est la fonction principale des hématies (globules rouges) ?",
+      options: ["Défense immunitaire", "Transport de l'oxygène", "Coagulation sanguine", "Production d'anticorps"],
+      correctIndex: 1,
+      explanation: "Les hématies, grâce à l'hémoglobine, assurent le transport de l'oxygène des poumons vers les tissus."
+    },
+    {
+      question: "Quel est le composant principal de la matrice extracellulaire du tissu conjonctif dense ?",
+      options: ["Les fibres de collagène", "Les cristaux de phosphate de calcium", "Les cellules épithéliales", "Les neurofilaments"],
+      correctIndex: 0,
+      explanation: "Le tissu conjonctif dense est riche en fibres de collagène, qui lui confèrent une grande résistance aux tractions."
+    },
+    {
+      question: "Parmi les cellules suivantes, laquelle est une cellule libre du tissu conjonctif impliquée dans la phagocytose ?",
+      options: ["Le fibroblaste", "Le macrophage", "L'adipocyte", "Le chondrocyte"],
+      correctIndex: 1,
+      explanation: "Le macrophage est une cellule mobile du tissu conjonctif, issue du monocyte, spécialisée dans la phagocytose des débris et des agents pathogènes."
+    },
+    {
+      question: "Quelle est l'unité structurale et fonctionnelle du muscle strié squelettique ?",
+      options: ["Le sarcomère", "Le neurone", "L'ostéon", "Le néphron"],
+      correctIndex: 0,
+      explanation: "Le sarcomère est l'unité contractile répétitive du muscle strié, délimitée par deux stries Z."
+    },
+    {
+      question: "Quel type de muscle est sous contrôle involontaire et possède des cellules mononucléées ?",
+      options: ["Le muscle strié squelettique", "Le muscle cardiaque", "Le muscle lisse", "Le muscle strié volontaire"],
+      correctIndex: 2,
+      explanation: "Le muscle lisse (viscères, vaisseaux) est involontaire, constitué de cellules fusiformes mononucléées sans striation."
+    },
+    {
+      question: "Quelle est la principale fonction du tissu nerveux ?",
+      options: ["Le soutien structural", "La réception, l'intégration et la transmission des influx nerveux", "Le transport des nutriments", "La contraction"],
+      correctIndex: 1,
+      explanation: "Le tissu nerveux est spécialisé dans la communication rapide via les neurones, qui reçoivent, intègrent et transmettent des signaux électriques."
+    },
+    {
+      question: "Quel est le rôle des cellules gliales ?",
+      options: ["Transmettre l'influx nerveux", "Soutenir, nourrir et protéger les neurones", "Contracter les muscles", "Produire les hormones"],
+      correctIndex: 1,
+      explanation: "Les cellules gliales (astrocytes, oligodendrocytes, etc.) assurent le soutien trophique et structural des neurones, et participent à la barrière hémato-encéphalique."
+    },
+    {
+      question: "Lors de l'hématopoïèse, où se forment les cellules sanguines chez l'adulte en conditions normales ?",
+      options: ["Dans le foie", "Dans la rate", "Dans la moelle osseuse rouge", "Dans le thymus"],
+      correctIndex: 2,
+      explanation: "Chez l'adulte, l'hématopoïèse normale se déroule dans la moelle osseuse rouge des os plats (sternum, côtes, bassin)."
     }
     // Place pour ajout de nouveaux QCM de Biocell & Tissu ici...
   ],
@@ -1347,11 +1467,17 @@ var QCM_PAR_UE = {
 };
 
 /* =========================================================================
-   4. CLASSEMENT : 50 ÉTUDIANTS + PLACE POUR AJOUT DE NOUVEAU ÉTUDIANT
+   4. CLASSEMENT : ÉTUDIANTS + PLACE POUR AJOUT DE NOUVEAU ÉTUDIANT
    Modifiez les noms et les notes sur /20 directement dans ce tableau.
    La moyenne générale sur /20 et le rang sont calculés automatiquement.
-========================================================================= */
+   ========================================================================= */
 var ETUDIANTS_NOTES = [
+  { name: "RABIBISOA H.", notes: { anatomie: 16, biomolecules: 16.5, icm: 15, physiologie: 18, biomath: 20, francais: 16.5, biocell: 16, uespecifique: 16.5 } },
+  { name: "Rakotoarisoa M.", notes: { anatomie: 16.5, biomolecules: 16, icm: 15.5, physiologie: 16.5, biomath: 15.5, francais: 16, biocell: 16.5, uespecifique: 16 } },
+  { name: "Santatra Arivelo.", notes: { anatomie: 18, biomolecules: 16.5, icm: 16, physiologie: 17, biomath: 16, francais: 17, biocell: 17.5, uespecifique: 16.5 } },
+  { name: "Rakotoarisoa M.", notes: { anatomie: 16.5, biomolecules: 16, icm: 15.5, physiologie: 16.5, biomath: 15.5, francais: 16, biocell: 16.5, uespecifique: 16 } },
+  { name: "Jaovita E.", notes: { anatomie: 18, biomolecules: 16.5, icm: 15, physiologie: 15, biomath: 18, francais: 15, biocell: 17.5, uespecifique: 16.5 } },
+  { name: "Rakotoarisoa M.", notes: { anatomie: 16.5, biomolecules: 16, icm: 15.5, physiologie: 16.5, biomath: 15.5, francais: 16, biocell: 16.5, uespecifique: 16 } },
   { name: "Andrianina R.", notes: { anatomie: 17.5, biomolecules: 16.5, icm: 16, physiologie: 17, biomath: 16, francais: 16.5, biocell: 17.5, uespecifique: 16.5 } },
   { name: "Rakotoarisoa M.", notes: { anatomie: 16.5, biomolecules: 16, icm: 15.5, physiologie: 16.5, biomath: 15.5, francais: 16, biocell: 16.5, uespecifique: 16 } },
   { name: "Rasoanaivo T.", notes: { anatomie: 16, biomolecules: 15.5, icm: 15, physiologie: 16, biomath: 15, francais: 15.5, biocell: 16, uespecifique: 15.5 } },
@@ -1412,7 +1538,7 @@ var ETUDIANTS_NOTES = [
 /* =========================================================================
    SYSTÈME DE MISE À JOUR AUTOMATIQUE (DÉTECTE N'IMPORTE QUEL CHANGEMENT)
    Calcule automatiquement une empreinte du code et de toutes vos données.
-========================================================================= */
+   ========================================================================= */
 var AUTO_SYNC_KEY = "MedX_Auto_Fingerprint";
 var lastDetectedFingerprint = "";
 
@@ -1437,7 +1563,7 @@ function autoSyncApplication(forceRefreshUi) {
   var previousFingerprint = safeGet(AUTO_SYNC_KEY);
   var badge = document.getElementById("auto-sync-badge");
   var aboutHash = document.getElementById("about-build-hash");
-  if (badge) badge.innerText = "À jour " + currentFingerprint;
+  if (badge) badge.innerText = "À jour · " + currentFingerprint;
   if (aboutHash) aboutHash.innerText = currentFingerprint;
 
   if (previousFingerprint !== currentFingerprint || lastDetectedFingerprint !== currentFingerprint || forceRefreshUi) {
@@ -1501,29 +1627,41 @@ function renderGrid(containerId, onSelectUe, countLabelFn) {
   grid.innerHTML = html;
 }
 
+function isPdfFile(url) {
+  var clean = String(url || "").trim().toLowerCase();
+  return /\.pdf(\?.*)?$/.test(clean) || /drive\.google\.com\/file\/d\//.test(clean);
+}
+
 function openCoursUe(ueKey) {
   var meta = UE_META.find(function (u) { return u.key === ueKey; }) || UE_META[0];
   var lessons = CATALOGUE_COURS[ueKey] || [];
-  document.getElementById("cours-panel-title").innerText = "Cours " + meta.label + " (" + lessons.length + ")";
+  document.getElementById("cours-panel-title").innerText = "Cours · " + meta.label + " (" + lessons.length + ")";
   var listEl = document.getElementById("cours-lessons-list");
   var html = "";
   for (var i = 0; i < lessons.length; i++) {
     var l = lessons[i];
     var hasLink = l.lien && l.lien.trim() !== "";
+    var isPdf = hasLink && isPdfFile(l.lien);
     var mediaId = getMediaStorageId("pdf", ueKey, i, l.lien);
     var isOffline = hasLink && isMediaStoredLocally(mediaId);
+    var iconClass = isPdf ? "fa-file-pdf" : (hasLink ? "fa-file-powerpoint" : "fa-file-pdf");
+    var iconColor = hasLink ? (isPdf ? "#f87171" : "#fb923c") : "#64748b";
+    var subText = hasLink
+      ? (isOffline ? "Stocké dans l'application (lecture hors ligne)" : (isPdf ? "PDF prêt · Lecture nette" : "Document PPT/PPTX prêt · Ouverture"))
+      : ("Emplacement " + (i + 1) + "/" + lessons.length + " (lien à coller)");
+
     html += '<div class="item-card">' +
       '<div class="item-main" onclick="openPdfLesson(\'' + ueKey + '\', ' + i + ')">' +
-      '<i class="fa-solid fa-file-pdf" style="color:' + (hasLink ? '#f87171' : '#64748b') + '; font-size:1.2rem;"></i>' +
-      '<div><div class="item-title">' + escapeHtml(l.titre) + ' ' + (isOffline ? '<span class="offline-badge"><i class="fa-solid fa-check"></i> Hors ligne</span>' : '') + '</div>' +
-      '<div class="item-sub">' + (hasLink ? (isOffline ? 'Stocké dans l\'application (lecture hors ligne)' : 'PDF prêt • Lecture nette') : 'Emplacement ' + (i + 1) + '/' + lessons.length + ' (lien à coller)') + '</div></div>' +
+        '<i class="fa-solid ' + iconClass + '" style="color:' + iconColor + '; font-size:1.2rem;"></i>' +
+        '<div><div class="item-title">' + escapeHtml(l.titre) + ' ' + (isOffline ? '<span class="offline-badge"><i class="fa-solid fa-check"></i> Hors ligne</span>' : '') + '</div>' +
+        '<div class="item-sub">' + subText + '</div></div>' +
       '</div>' +
       (hasLink ? (
         '<div class="item-actions">' +
-        '<button class="action-btn" onclick="openPdfLesson(\'' + ueKey + '\', ' + i + ')">Lire</button>' +
-        (isOffline
-          ? '<button class="dl-btn saved" id="dl-btn-pdf-' + ueKey + '-' + i + '" onclick="removeOfflineMedia(\'pdf\', \'' + ueKey + '\', ' + i + ')"><i class="fa-solid fa-trash"></i> Retirer</button>'
-          : '<button class="dl-btn" id="dl-btn-pdf-' + ueKey + '-' + i + '" onclick="downloadMediaForOffline(\'pdf\', \'' + ueKey + '\', ' + i + ')"><i class="fa-solid fa-download"></i> Hors ligne</button>') +
+          '<button class="action-btn" onclick="openPdfLesson(\'' + ueKey + '\', ' + i + ')">Lire</button>' +
+          (isOffline
+            ? '<button class="dl-btn saved" id="dl-btn-pdf-' + ueKey + '-' + i + '" onclick="removeOfflineMedia(\'pdf\', \'' + ueKey + '\', ' + i + ')"><i class="fa-solid fa-trash"></i> Retirer</button>'
+            : '<button class="dl-btn" id="dl-btn-pdf-' + ueKey + '-' + i + '" onclick="downloadMediaForOffline(\'pdf\', \'' + ueKey + '\', ' + i + ')"><i class="fa-solid fa-download"></i> Hors ligne</button>') +
         '</div>'
       ) : '') +
       '</div>';
@@ -1537,7 +1675,7 @@ function openCoursUe(ueKey) {
 function openVideosUe(ueKey) {
   var meta = UE_META.find(function (u) { return u.key === ueKey; }) || UE_META[0];
   var vids = CATALOGUE_VIDEOS[ueKey] || [];
-  document.getElementById("videos-panel-title").innerText = "Vidéos " + meta.label + " (" + vids.length + ")";
+  document.getElementById("videos-panel-title").innerText = "Vidéos · " + meta.label + " (" + vids.length + ")";
   var listEl = document.getElementById("videos-lessons-list");
   var html = "";
   for (var i = 0; i < vids.length; i++) {
@@ -1547,16 +1685,16 @@ function openVideosUe(ueKey) {
     var isOffline = hasLink && isMediaStoredLocally(mediaId);
     html += '<div class="item-card">' +
       '<div class="item-main" onclick="openVideoLesson(\'' + ueKey + '\', ' + i + ')">' +
-      '<i class="fa-solid fa-circle-play" style="color:' + (hasLink ? '#38bdf8' : '#64748b') + '; font-size:1.2rem;"></i>' +
-      '<div><div class="item-title">' + escapeHtml(v.titre) + ' ' + (isOffline ? '<span class="offline-badge"><i class="fa-solid fa-check"></i> Hors ligne</span>' : '') + '</div>' +
-      '<div class="item-sub">' + (hasLink ? (isOffline ? 'Stockée dans l\'application (lecture hors ligne)' : 'Vidéo prête') : 'Emplacement ' + (i + 1) + '/' + vids.length + ' (lien à coller)') + '</div></div>' +
+        '<i class="fa-solid fa-circle-play" style="color:' + (hasLink ? '#38bdf8' : '#64748b') + '; font-size:1.2rem;"></i>' +
+        '<div><div class="item-title">' + escapeHtml(v.titre) + ' ' + (isOffline ? '<span class="offline-badge"><i class="fa-solid fa-check"></i> Hors ligne</span>' : '') + '</div>' +
+        '<div class="item-sub">' + (hasLink ? (isOffline ? 'Stockée dans l\'application (lecture hors ligne)' : 'Vidéo prête') : 'Emplacement ' + (i + 1) + '/' + vids.length + ' (lien à coller)') + '</div></div>' +
       '</div>' +
       (hasLink ? (
         '<div class="item-actions">' +
-        '<button class="action-btn" onclick="openVideoLesson(\'' + ueKey + '\', ' + i + ')">Lire</button>' +
-        (isOffline
-          ? '<button class="dl-btn saved" id="dl-btn-video-' + ueKey + '-' + i + '" onclick="removeOfflineMedia(\'video\', \'' + ueKey + '\', ' + i + ')"><i class="fa-solid fa-trash"></i> Retirer</button>'
-          : '<button class="dl-btn" id="dl-btn-video-' + ueKey + '-' + i + '" onclick="downloadMediaForOffline(\'video\', \'' + ueKey + '\', ' + i + ')"><i class="fa-solid fa-download"></i> Hors ligne</button>') +
+          '<button class="action-btn" onclick="openVideoLesson(\'' + ueKey + '\', ' + i + ')">Lire</button>' +
+          (isOffline
+            ? '<button class="dl-btn saved" id="dl-btn-video-' + ueKey + '-' + i + '" onclick="removeOfflineMedia(\'video\', \'' + ueKey + '\', ' + i + ')"><i class="fa-solid fa-trash"></i> Retirer</button>'
+            : '<button class="dl-btn" id="dl-btn-video-' + ueKey + '-' + i + '" onclick="downloadMediaForOffline(\'video\', \'' + ueKey + '\', ' + i + ')"><i class="fa-solid fa-download"></i> Hors ligne</button>') +
         '</div>'
       ) : '') +
       '</div>';
@@ -1573,7 +1711,7 @@ var qcmCorrectCount = 0;
 function openQcmUe(ueKey) {
   currentQcmKey = ueKey;
   var meta = UE_META.find(function (u) { return u.key === ueKey; }) || UE_META[0];
-  document.getElementById("qcm-panel-title").innerText = "QCM " + meta.label;
+  document.getElementById("qcm-panel-title").innerText = "QCM · " + meta.label;
   resetCurrentQcm();
   var panel = document.getElementById("qcm-ue-panel");
   panel.classList.add("active");
@@ -1604,17 +1742,14 @@ function checkQcmAnswer(qIdx, chosenIdx) {
   var questions = QCM_PAR_UE[currentQcmKey] || [];
   var q = questions[qIdx];
   if (!q) return;
-
   for (var i = 0; i < q.options.length; i++) {
     var btn = document.getElementById("q-" + qIdx + "-o-" + i);
     if (!btn) continue;
     if (btn.disabled) return;
     btn.disabled = true;
   }
-
   var chosenBtn = document.getElementById("q-" + qIdx + "-o-" + chosenIdx);
   var rightBtn = document.getElementById("q-" + qIdx + "-o-" + q.correctIndex);
-
   if (chosenIdx === q.correctIndex) {
     qcmCorrectCount++;
     if (chosenBtn) chosenBtn.classList.add("correct");
@@ -1622,10 +1757,9 @@ function checkQcmAnswer(qIdx, chosenIdx) {
     if (chosenBtn) chosenBtn.classList.add("wrong");
     if (rightBtn) rightBtn.classList.add("correct");
   }
-
   var exp = document.getElementById("q-exp-" + qIdx);
   if (exp) exp.style.display = "block";
-  document.getElementById("qcm-score-display").innerText = "Score : " + qcmCorrectCount + "/" + questions.length;
+  document.getElementById("qcm-score-display").innerText = "Score: " + qcmCorrectCount + "/" + questions.length;
 }
 
 function closePanel(panelId) {
@@ -1686,7 +1820,7 @@ function applyWatermarkNodes(containerId, itemClass, count) {
    STOCKAGE INTERNE HORS LIGNE (INDEXEDDB - RESTE DANS L'APPLICATION)
    Les fichiers téléchargés sont conservés dans la base locale de l'application
    et ne sont pas exportés vers la galerie ou le dossier Téléchargements public.
-========================================================================= */
+   ========================================================================= */
 var OFFLINE_DB_NAME = "MedX_App_Offline_Vault";
 var OFFLINE_STORE_NAME = "media_blobs";
 var OFFLINE_INDEX_KEY = "MedX_Offline_Index_v1";
@@ -1884,7 +2018,7 @@ function downloadMediaForOffline(kind, ueKey, idx) {
     btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Stockage...';
   }
 
-  fetch(resolvedUrl, { credentials: "same-origin" })
+  fetch(encodeURI(resolvedUrl), { credentials: "same-origin" })
     .then(function (resp) {
       if (!resp.ok) throw new Error("HTTP " + resp.status);
       return resp.blob();
@@ -1892,7 +2026,7 @@ function downloadMediaForOffline(kind, ueKey, idx) {
     .then(function (blob) {
       if (!blob || blob.size === 0) throw new Error("Fichier vide");
       var forcedBlob = blob;
-      if (kind === "pdf" && (!blob.type || blob.type === "application/octet-stream")) {
+      if (kind === "pdf" && isPdfFile(rawUrl) && (!blob.type || blob.type === "application/octet-stream")) {
         forcedBlob = new Blob([blob], { type: "application/pdf" });
       }
       putMediaBlobInApp(mediaId, forcedBlob, {
@@ -1900,7 +2034,7 @@ function downloadMediaForOffline(kind, ueKey, idx) {
         mime: forcedBlob.type
       }, function (saveErr) {
         if (saveErr) {
-          alert("Impossible de stocker le fichier dans l'application : " + (saveErr.message || "espace insuffisant"));
+          alert("Impossible de stocker le fichier dans l'application: " + (saveErr.message || "espace insuffisant"));
           if (kind === "pdf") openCoursUe(ueKey);
           else openVideosUe(ueKey);
           return;
@@ -1930,7 +2064,7 @@ loadOfflineIndex();
 
 /* =========================================================================
    LECTEUR PDF HAUTE NETTETÉ (DPR SCALING + AJUSTEMENT LARGEUR + ZOOM)
-========================================================================= */
+   ========================================================================= */
 var pdfDoc = null;
 var currentPage = 1;
 var currentScale = 1.0;
@@ -1955,7 +2089,7 @@ function openPdfLesson(ueKey, idx) {
   var resolvedUrl = normalizePdfUrl(rawUrl);
   applyWatermarkNodes("pdf-watermark-layer", "watermark-tag", 14);
   document.getElementById("viewer-title-text").innerText = lesson.titre;
-  document.getElementById("fallback-external-link").href = rawUrl;
+  document.getElementById("fallback-external-link").href = encodeURI(rawUrl);
   document.getElementById("pdf-viewer-modal").classList.add("active");
   document.getElementById("pdf-loading").style.display = "block";
   document.getElementById("canvas-wrapper").style.display = "none";
@@ -1963,23 +2097,29 @@ function openPdfLesson(ueKey, idx) {
   currentPage = 1;
   currentScale = 1.0;
 
-  if (!window.pdfjsLib || !window.pdfjsLib.getDocument) {
+  if (!isPdfFile(rawUrl)) {
     document.getElementById("pdf-loading").style.display = "none";
     document.getElementById("fallback-box").style.display = "block";
     return;
   }
 
+  if (!window.pdfjsLib || !window.pdfjsLib.getDocument) {
+    document.getElementById("pdf-loading").style.display = "none";
+    document.getElementById("fallback-box").style.display = "block";
+    return;
+  }
   if (!window.pdfjsLib.GlobalWorkerOptions.workerSrc) {
     window.pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js";
   }
 
   var pdfMediaId = getMediaStorageId("pdf", ueKey, idx, rawUrl);
   getMediaBlobFromApp(pdfMediaId, function (dbErr, cachedBlob) {
-    var docSource = resolvedUrl;
+    var docSource = encodeURI(resolvedUrl);
     if (!dbErr && cachedBlob) {
       revokeTrackedObjectUrls();
       docSource = trackObjectUrl(URL.createObjectURL(cachedBlob));
     }
+
     window.pdfjsLib.getDocument({
       url: docSource,
       withCredentials: false,
@@ -2016,15 +2156,16 @@ function renderPdfPage(num) {
   if (activeRenderTask && activeRenderTask.cancel) {
     try { activeRenderTask.cancel(); } catch (e) {}
   }
-
   pdfDoc.getPage(num).then(function (page) {
     var dpr = Math.min(2.25, Math.max(1.25, window.devicePixelRatio || 1));
     var cssViewport = page.getViewport({ scale: currentScale });
     var renderViewport = page.getViewport({ scale: currentScale * dpr });
+
     canvas.width = Math.floor(renderViewport.width);
     canvas.height = Math.floor(renderViewport.height);
     canvas.style.width = Math.floor(cssViewport.width) + "px";
     canvas.style.height = Math.floor(cssViewport.height) + "px";
+
     ctx.fillStyle = "#ffffff";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -2032,7 +2173,6 @@ function renderPdfPage(num) {
       canvasContext: ctx,
       viewport: renderViewport
     });
-
     activeRenderTask.promise.then(function () {
       activeRenderTask = null;
       document.getElementById("page-num-display").innerText = num + "/" + pdfDoc.numPages;
@@ -2079,10 +2219,11 @@ function openVideoLesson(ueKey, idx) {
     return;
   }
   var rawUrl = vid.lien.trim();
+  var encodedUrl = encodeURI(rawUrl);
   var vidMediaId = getMediaStorageId("video", ueKey, idx, rawUrl);
   applyWatermarkNodes("video-watermark-layer", "video-watermark-item", 6);
   document.getElementById("video-viewer-title").innerText = vid.titre;
-  document.getElementById("video-external-link").href = rawUrl;
+  document.getElementById("video-external-link").href = encodedUrl;
   var container = document.getElementById("video-player-container");
   var ytId = extractYoutubeId(rawUrl);
 
@@ -2094,9 +2235,9 @@ function openVideoLesson(ueKey, idx) {
     } else if (ytId) {
       container.innerHTML = '<iframe src="https://www.youtube.com/embed/' + ytId + '" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
     } else if (/\.(mp4|webm|ogg)(\?.*)?$/i.test(rawUrl)) {
-      container.innerHTML = '<video src="' + escapeHtml(rawUrl) + '" controls autoplay playsinline controlsList="nodownload noplaybackrate" disablePictureInPicture></video>';
+      container.innerHTML = '<video src="' + escapeHtml(encodedUrl) + '" controls autoplay playsinline controlsList="nodownload noplaybackrate" disablePictureInPicture></video>';
     } else {
-      container.innerHTML = '<iframe src="' + escapeHtml(rawUrl) + '" allowfullscreen></iframe>';
+      container.innerHTML = '<iframe src="' + escapeHtml(encodedUrl) + '" allowfullscreen></iframe>';
     }
     document.getElementById("video-viewer-modal").classList.add("active");
   });
